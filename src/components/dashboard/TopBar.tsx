@@ -9,7 +9,7 @@ export function TopBar() {
   const { toggleMobile } = useSidebar();
 
   return (
-    <header className="flex h-14 items-center gap-4 border-b border-border bg-background px-4">
+    <header className="flex h-14 items-center gap-4 border-b border-border bg-background px-6">
       {/* Mobile menu button */}
       <Button
         variant="ghost"
