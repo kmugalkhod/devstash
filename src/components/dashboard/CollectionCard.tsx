@@ -12,8 +12,6 @@ import {
   MoreVertical,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { itemTypes } from "@/lib/mock-data";
-
 const iconMap: Record<string, React.ComponentType<LucideProps>> = {
   Code,
   Sparkles,
@@ -24,23 +22,26 @@ const iconMap: Record<string, React.ComponentType<LucideProps>> = {
   Image,
 };
 
+interface TypeInfo {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+}
+
 interface CollectionCardProps {
   name: string;
   itemCount: number;
   description: string | null;
-  typeIds: string[];
+  types: TypeInfo[];
 }
 
 export function CollectionCard({
   name,
   itemCount,
   description,
-  typeIds,
+  types,
 }: CollectionCardProps) {
-  const types = typeIds
-    .map((id) => itemTypes.find((t) => t.id === id))
-    .filter(Boolean);
-
   const rawColor = types[0]?.color || "#94a3b8";
   // Gray colors are invisible as overlays — use green tint instead
   const dominantColor = rawColor === "#6b7280" ? "#10b981" : rawColor;
