@@ -5,6 +5,7 @@ import {
   getUserCollections,
   getDashboardStats,
 } from "@/lib/db/collections";
+import { getPinnedItems, getRecentItems } from "@/lib/db/items";
 
 // TODO: Replace with actual authenticated user ID
 const DEMO_USER_ID = "demo-user-id";
@@ -22,9 +23,11 @@ async function getDemoUserId(): Promise<string> {
 export default async function DashboardPage() {
   const userId = await getDemoUserId();
 
-  const [collections, stats] = await Promise.all([
+  const [collections, stats, pinnedItems, recentItems] = await Promise.all([
     getUserCollections(userId),
     getDashboardStats(userId),
+    getPinnedItems(userId),
+    getRecentItems(userId),
   ]);
 
   return (
@@ -58,8 +61,8 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* Items (still using mock data — will be replaced later) */}
-      <DashboardItems />
+      {/* Items */}
+      <DashboardItems pinnedItems={pinnedItems} recentItems={recentItems} />
     </div>
   );
 }

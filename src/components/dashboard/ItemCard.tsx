@@ -12,7 +12,6 @@ import {
   Star,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { itemTypes } from "@/lib/mock-data";
 import { getRelativeTime } from "@/lib/utils";
 
 const iconMap: Record<string, React.ComponentType<LucideProps>> = {
@@ -28,7 +27,9 @@ const iconMap: Record<string, React.ComponentType<LucideProps>> = {
 interface ItemCardProps {
   title: string;
   content: string | null;
-  typeId: string;
+  typeName: string;
+  typeIcon: string;
+  typeColor: string;
   isFavorite: boolean;
   tags: string[];
   createdAt: string;
@@ -37,15 +38,14 @@ interface ItemCardProps {
 export function ItemCard({
   title,
   content,
-  typeId,
+  typeName,
+  typeIcon,
+  typeColor,
   isFavorite,
   tags,
   createdAt,
 }: ItemCardProps) {
-  const type = itemTypes.find((t) => t.id === typeId);
-  if (!type) return null;
-
-  const Icon = iconMap[type.icon];
+  const Icon = iconMap[typeIcon];
 
   return (
     <motion.div
@@ -54,7 +54,7 @@ export function ItemCard({
       className="flex h-full flex-col justify-between rounded-xl border border-border bg-card p-5"
       style={{
         borderLeftWidth: "3px",
-        borderLeftColor: type.color,
+        borderLeftColor: typeColor,
       }}
     >
       <div>
@@ -62,20 +62,23 @@ export function ItemCard({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             {Icon && (
-              <Icon className="size-4" style={{ color: type.color }} />
+              <Icon className="size-4" style={{ color: typeColor }} />
             )}
             <span
               className="text-xs font-bold uppercase tracking-wide"
-              style={{ color: type.color }}
+              style={{ color: typeColor }}
             >
-              {type.name}
+              {typeName}
             </span>
           </div>
           <div className="flex items-center gap-2">
             {isFavorite && (
               <Star className="size-3.5 fill-yellow-500 text-yellow-500" />
             )}
-            <span className="text-xs text-muted-foreground">
+            <span
+              className="text-xs text-muted-foreground"
+              suppressHydrationWarning
+            >
               {getRelativeTime(createdAt)}
             </span>
           </div>

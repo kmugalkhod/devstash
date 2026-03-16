@@ -9,7 +9,6 @@ import {
   Image,
   Star,
 } from "lucide-react";
-import { itemTypes } from "@/lib/mock-data";
 import { getRelativeTime } from "@/lib/utils";
 
 const iconMap: Record<string, React.ComponentType<LucideProps>> = {
@@ -25,7 +24,9 @@ const iconMap: Record<string, React.ComponentType<LucideProps>> = {
 interface ItemCardListProps {
   title: string;
   content: string | null;
-  typeId: string;
+  typeName: string;
+  typeIcon: string;
+  typeColor: string;
   isFavorite: boolean;
   tags: string[];
   createdAt: string;
@@ -34,34 +35,33 @@ interface ItemCardListProps {
 export function ItemCardList({
   title,
   content,
-  typeId,
+  typeName,
+  typeIcon,
+  typeColor,
   isFavorite,
   tags,
   createdAt,
 }: ItemCardListProps) {
-  const type = itemTypes.find((t) => t.id === typeId);
-  if (!type) return null;
-
-  const Icon = iconMap[type.icon];
+  const Icon = iconMap[typeIcon];
 
   return (
     <div
       className="flex items-center gap-5 rounded-xl border border-border bg-card px-5 py-4"
       style={{
         borderLeftWidth: "3px",
-        borderLeftColor: type.color,
+        borderLeftColor: typeColor,
       }}
     >
       {/* Type badge */}
       <div className="flex w-28 shrink-0 items-center gap-1.5">
         {Icon && (
-          <Icon className="size-4" style={{ color: type.color }} />
+          <Icon className="size-4" style={{ color: typeColor }} />
         )}
         <span
           className="text-xs font-bold uppercase tracking-wide"
-          style={{ color: type.color }}
+          style={{ color: typeColor }}
         >
-          {type.name}
+          {typeName}
         </span>
       </div>
 
@@ -101,7 +101,10 @@ export function ItemCardList({
       )}
 
       {/* Time */}
-      <span className="shrink-0 text-xs text-muted-foreground">
+      <span
+        className="shrink-0 text-xs text-muted-foreground"
+        suppressHydrationWarning
+      >
         {getRelativeTime(createdAt)}
       </span>
     </div>

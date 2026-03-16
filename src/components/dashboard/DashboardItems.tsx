@@ -5,15 +5,7 @@ import { ItemCard } from "@/components/dashboard/ItemCard";
 import { ItemCardList } from "@/components/dashboard/ItemCardList";
 import { Pin, LayoutGrid, List } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { items } from "@/lib/mock-data";
-
-const pinnedItems = items.filter((i) => i.isPinned);
-const recentItems = [...items]
-  .sort(
-    (a, b) =>
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  )
-  .slice(0, 10);
+import type { DashboardItem } from "@/lib/db/items";
 
 type ViewMode = "grid" | "list";
 
@@ -54,7 +46,15 @@ function ViewToggle({
   );
 }
 
-export function DashboardItems() {
+interface DashboardItemsProps {
+  pinnedItems: DashboardItem[];
+  recentItems: DashboardItem[];
+}
+
+export function DashboardItems({
+  pinnedItems,
+  recentItems,
+}: DashboardItemsProps) {
   const [pinnedView, setPinnedView] = useState<ViewMode>("grid");
   const [recentView, setRecentView] = useState<ViewMode>("grid");
 
@@ -79,7 +79,9 @@ export function DashboardItems() {
                   key={item.id}
                   title={item.title}
                   content={item.content}
-                  typeId={item.typeId}
+                  typeName={item.type.name}
+                  typeIcon={item.type.icon}
+                  typeColor={item.type.color}
                   isFavorite={item.isFavorite}
                   tags={item.tags}
                   createdAt={item.createdAt}
@@ -93,7 +95,9 @@ export function DashboardItems() {
                   key={item.id}
                   title={item.title}
                   content={item.content}
-                  typeId={item.typeId}
+                  typeName={item.type.name}
+                  typeIcon={item.type.icon}
+                  typeColor={item.type.color}
                   isFavorite={item.isFavorite}
                   tags={item.tags}
                   createdAt={item.createdAt}
@@ -119,7 +123,9 @@ export function DashboardItems() {
                 key={item.id}
                 title={item.title}
                 content={item.content}
-                typeId={item.typeId}
+                typeName={item.type.name}
+                typeIcon={item.type.icon}
+                typeColor={item.type.color}
                 isFavorite={item.isFavorite}
                 tags={item.tags}
                 createdAt={item.createdAt}
@@ -133,7 +139,9 @@ export function DashboardItems() {
                 key={item.id}
                 title={item.title}
                 content={item.content}
-                typeId={item.typeId}
+                typeName={item.type.name}
+                typeIcon={item.type.icon}
+                typeColor={item.type.color}
                 isFavorite={item.isFavorite}
                 tags={item.tags}
                 createdAt={item.createdAt}
