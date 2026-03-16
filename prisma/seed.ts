@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
+import bcrypt from "bcryptjs";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
@@ -11,188 +12,462 @@ const prisma = new PrismaClient({ adapter });
 // ─── System Item Types ──────────────────────────────────
 
 const systemItemTypes = [
-  { name: "Snippet", icon: "Code", color: "#3b82f6", isSystem: true },
-  { name: "Prompt", icon: "Sparkles", color: "#8b5cf6", isSystem: true },
-  { name: "Command", icon: "Terminal", color: "#f97316", isSystem: true },
-  { name: "Note", icon: "StickyNote", color: "#fde047", isSystem: true },
-  { name: "Link", icon: "Link", color: "#10b981", isSystem: true },
-  { name: "File", icon: "File", color: "#6b7280", isSystem: true },
-  { name: "Image", icon: "Image", color: "#ec4899", isSystem: true },
+  { name: "snippet", icon: "Code", color: "#3b82f6", isSystem: true },
+  { name: "prompt", icon: "Sparkles", color: "#8b5cf6", isSystem: true },
+  { name: "command", icon: "Terminal", color: "#f97316", isSystem: true },
+  { name: "note", icon: "StickyNote", color: "#fde047", isSystem: true },
+  { name: "file", icon: "File", color: "#6b7280", isSystem: true },
+  { name: "image", icon: "Image", color: "#ec4899", isSystem: true },
+  { name: "link", icon: "Link", color: "#10b981", isSystem: true },
 ];
 
 // ─── Demo User ──────────────────────────────────────────
 
 const demoUser = {
-  id: "user-1",
-  name: "Kunal",
-  email: "kunalmugalkhod007@gmail.com",
-  isPro: true,
+  id: "demo-user-1",
+  name: "Demo User",
+  email: "demo@devstash.io",
+  isPro: false,
+  emailVerified: new Date(),
+  // Password: 12345678 (hashed below, ready for when User model gets a password field)
 };
 
-// ─── Demo Collections ───────────────────────────────────
+// ─── Collections ────────────────────────────────────────
 
-const demoCollections = [
+const collections = [
   {
-    id: "col-1",
+    id: "col-react-patterns",
     name: "React Patterns",
-    description: "Common hooks and components",
+    description: "Reusable React patterns and hooks",
     isFavorite: true,
   },
   {
-    id: "col-2",
-    name: "Context Files",
-    description: "Project context for LLMs",
+    id: "col-ai-workflows",
+    name: "AI Workflows",
+    description: "AI prompts and workflow automations",
     isFavorite: true,
   },
   {
-    id: "col-3",
-    name: "Interview Prep",
-    description: "Algorithms and system design",
-    isFavorite: true,
-  },
-  {
-    id: "col-4",
-    name: "Python Snippets",
-    description: "Data processing scripts",
+    id: "col-devops",
+    name: "DevOps",
+    description: "Infrastructure and deployment resources",
     isFavorite: false,
+  },
+  {
+    id: "col-terminal-commands",
+    name: "Terminal Commands",
+    description: "Useful shell commands for everyday development",
+    isFavorite: false,
+  },
+  {
+    id: "col-design-resources",
+    name: "Design Resources",
+    description: "UI/UX resources and references",
+    isFavorite: true,
   },
 ];
 
-// ─── Demo Items ─────────────────────────────────────────
-// typeName is resolved to itemTypeId during seeding
+// ─── Items ──────────────────────────────────────────────
 
-const demoItems = [
+interface SeedItem {
+  id: string;
+  title: string;
+  contentType: "text" | "url";
+  content: string;
+  typeName: string;
+  language: string | null;
+  isFavorite: boolean;
+  isPinned: boolean;
+  tags: string[];
+  collectionIds: string[];
+}
+
+const items: SeedItem[] = [
+  // ── React Patterns (3 snippets) ───────────────────────
   {
-    id: "item-1",
-    title: "useDebounce hook",
+    id: "item-rp-1",
+    title: "useDebounce Hook",
     contentType: "text",
-    content:
-      "import { useState, useEffect } from 'react'; export function useDebounce<T>(value: T, delay: number...",
-    typeName: "Snippet",
+    content: `import { useState, useEffect } from "react";
+
+export function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
+// Usage:
+// const debouncedSearch = useDebounce(searchTerm, 300);`,
+    typeName: "snippet",
     language: "typescript",
     isFavorite: true,
     isPinned: true,
-    tags: ["react", "hooks", "frontend"],
-    collectionIds: ["col-1"],
+    tags: ["react", "hooks", "typescript"],
+    collectionIds: ["col-react-patterns"],
   },
   {
-    id: "item-2",
-    title: "Explain code to junior dev",
+    id: "item-rp-2",
+    title: "Context Provider Pattern",
     contentType: "text",
-    content:
-      "Explain the following code snippet as if you are talking to a junior developer who just started lear...",
-    typeName: "Prompt",
-    language: null,
+    content: `import { createContext, useContext, useState, type ReactNode } from "react";
+
+interface ThemeContextType {
+  theme: "light" | "dark";
+  toggleTheme: () => void;
+}
+
+const ThemeContext = createContext<ThemeContextType | null>(null);
+
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+export function useTheme() {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error("useTheme must be used within a ThemeProvider");
+  }
+  return context;
+}`,
+    typeName: "snippet",
+    language: "typescript",
+    isFavorite: false,
+    isPinned: false,
+    tags: ["react", "patterns", "context"],
+    collectionIds: ["col-react-patterns"],
+  },
+  {
+    id: "item-rp-3",
+    title: "Array Utility Functions",
+    contentType: "text",
+    content: `export function groupBy<T>(array: T[], key: keyof T): Record<string, T[]> {
+  return array.reduce(
+    (result, item) => {
+      const groupKey = String(item[key]);
+      if (!result[groupKey]) result[groupKey] = [];
+      result[groupKey].push(item);
+      return result;
+    },
+    {} as Record<string, T[]>
+  );
+}
+
+export function uniqueBy<T>(array: T[], key: keyof T): T[] {
+  const seen = new Set();
+  return array.filter((item) => {
+    const value = item[key];
+    if (seen.has(value)) return false;
+    seen.add(value);
+    return true;
+  });
+}
+
+export function chunk<T>(array: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+  return chunks;
+}`,
+    typeName: "snippet",
+    language: "typescript",
     isFavorite: false,
     isPinned: true,
-    tags: ["ai"],
-    collectionIds: ["col-3"],
+    tags: ["typescript", "utilities"],
+    collectionIds: ["col-react-patterns"],
+  },
+
+  // ── AI Workflows (3 prompts) ──────────────────────────
+  {
+    id: "item-ai-1",
+    title: "Code Review Prompt",
+    contentType: "text",
+    content: `You are a senior software engineer performing a thorough code review. Analyze the following code and provide feedback on:
+
+1. **Security** — Look for injection vulnerabilities, auth issues, and data exposure
+2. **Performance** — Identify N+1 queries, unnecessary re-renders, memory leaks
+3. **Readability** — Suggest naming improvements, simplifications, and better abstractions
+4. **Edge Cases** — Point out unhandled error states, null checks, and boundary conditions
+5. **Best Practices** — Flag deviations from framework conventions and patterns
+
+Format your response as:
+- 🔴 Critical (must fix)
+- 🟡 Warning (should fix)
+- 🟢 Suggestion (nice to have)
+
+Code to review:
+\`\`\`
+{paste code here}
+\`\`\``,
+    typeName: "prompt",
+    language: null,
+    isFavorite: true,
+    isPinned: true,
+    tags: ["ai", "code-review"],
+    collectionIds: ["col-ai-workflows"],
   },
   {
-    id: "item-3",
-    title: "Docker cleanup all",
+    id: "item-ai-2",
+    title: "Documentation Generator",
     contentType: "text",
-    content: "docker system prune -a --volumes",
-    typeName: "Command",
-    language: "bash",
-    isFavorite: false,
-    isPinned: false,
-    tags: ["docker"],
-    collectionIds: [],
-  },
-  {
-    id: "item-4",
-    title: "Meeting notes - Q3 Planning",
-    contentType: "text",
-    content:
-      "# Q3 Planning - Focus on performance improvements - Migrate to Next.js 16 - Implement new AI featur...",
-    typeName: "Note",
+    content: `Generate comprehensive documentation for the following code. Include:
+
+1. **Overview** — A one-paragraph summary of what this code does and why it exists
+2. **API Reference** — For each exported function/class/type:
+   - Description
+   - Parameters with types and descriptions
+   - Return value
+   - Example usage
+3. **Dependencies** — List external dependencies and why they're needed
+4. **Architecture Notes** — Explain key design decisions and patterns used
+
+Write in a clear, developer-friendly tone. Use JSDoc format for inline documentation.
+
+Code:
+\`\`\`
+{paste code here}
+\`\`\``,
+    typeName: "prompt",
     language: null,
     isFavorite: false,
     isPinned: false,
-    tags: [],
-    collectionIds: [],
+    tags: ["ai", "documentation"],
+    collectionIds: ["col-ai-workflows"],
   },
   {
-    id: "item-5",
-    title: "Next.js 16 Docs",
+    id: "item-ai-3",
+    title: "Refactoring Assistant",
+    contentType: "text",
+    content: `You are a refactoring expert. Analyze the following code and suggest refactoring improvements. Focus on:
+
+1. **Extract Method** — Identify blocks that should be separate functions
+2. **Reduce Complexity** — Simplify nested conditionals and loops
+3. **DRY Violations** — Find duplicated logic that should be abstracted
+4. **Type Safety** — Strengthen types, remove \`any\`, add missing generics
+5. **Modern Syntax** — Use modern language features where they improve clarity
+
+For each suggestion:
+- Show the before/after code
+- Explain why the refactoring improves the code
+- Rate the priority (high/medium/low)
+
+Code to refactor:
+\`\`\`
+{paste code here}
+\`\`\``,
+    typeName: "prompt",
+    language: null,
+    isFavorite: false,
+    isPinned: false,
+    tags: ["ai", "refactoring"],
+    collectionIds: ["col-ai-workflows"],
+  },
+
+  // ── DevOps (1 snippet, 1 command, 2 links) ───────────
+  {
+    id: "item-do-1",
+    title: "Multi-Stage Dockerfile",
+    contentType: "text",
+    content: `# Stage 1: Dependencies
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --only=production
+
+# Stage 2: Build
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run build
+
+# Stage 3: Production
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+EXPOSE 3000
+ENV PORT=3000
+
+CMD ["node", "server.js"]`,
+    typeName: "snippet",
+    language: "dockerfile",
+    isFavorite: false,
+    isPinned: false,
+    tags: ["docker", "devops", "ci-cd"],
+    collectionIds: ["col-devops"],
+  },
+  {
+    id: "item-do-2",
+    title: "Deploy with PM2",
+    contentType: "text",
+    content: `pm2 start ecosystem.config.js --env production && pm2 save`,
+    typeName: "command",
+    language: "bash",
+    isFavorite: false,
+    isPinned: false,
+    tags: ["devops", "deployment"],
+    collectionIds: ["col-devops"],
+  },
+  {
+    id: "item-do-3",
+    title: "GitHub Actions Documentation",
     contentType: "url",
-    content: "https://nextjs.org/docs",
-    typeName: "Link",
+    content: "https://docs.github.com/en/actions",
+    typeName: "link",
     language: null,
     isFavorite: false,
     isPinned: false,
-    tags: ["react", "frontend"],
-    collectionIds: ["col-1"],
+    tags: ["devops", "ci-cd", "documentation"],
+    collectionIds: ["col-devops"],
   },
   {
-    id: "item-6",
-    title: "Data processing script",
-    contentType: "text",
-    content:
-      "import pandas as pd\ndef process_data(file_path): df = pd.read_csv(file_path) df = df.dropna...",
-    typeName: "Snippet",
-    language: "python",
-    isFavorite: false,
-    isPinned: false,
-    tags: ["python"],
-    collectionIds: ["col-4"],
-  },
-  {
-    id: "item-7",
-    title: "Tailwind CSS Grid Layout",
-    contentType: "text",
-    content:
-      '<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">  <div>1</div> <div>2</div>...',
-    typeName: "Snippet",
-    language: "tsx",
-    isFavorite: false,
-    isPinned: false,
-    tags: ["frontend"],
-    collectionIds: ["col-1"],
-  },
-  {
-    id: "item-8",
-    title: "System Prompt: Code Reviewer",
-    contentType: "text",
-    content:
-      "You are an expert code reviewer. Review the following code for security vulnerabilities, performance...",
-    typeName: "Prompt",
+    id: "item-do-4",
+    title: "Docker Hub Official Images",
+    contentType: "url",
+    content: "https://hub.docker.com/search?type=image&image_filter=official",
+    typeName: "link",
     language: null,
     isFavorite: false,
     isPinned: false,
-    tags: ["ai"],
-    collectionIds: ["col-3"],
+    tags: ["docker", "devops"],
+    collectionIds: ["col-devops"],
+  },
+
+  // ── Terminal Commands (4 commands) ────────────────────
+  {
+    id: "item-tc-1",
+    title: "Interactive Rebase Last N Commits",
+    contentType: "text",
+    content: `git rebase -i HEAD~5`,
+    typeName: "command",
+    language: "bash",
+    isFavorite: true,
+    isPinned: true,
+    tags: ["git", "terminal"],
+    collectionIds: ["col-terminal-commands"],
   },
   {
-    id: "item-9",
-    title: "Git Reset Hard",
+    id: "item-tc-2",
+    title: "Stop All Running Docker Containers",
     contentType: "text",
-    content: "git reset --hard HEAD~1",
-    typeName: "Command",
+    content: `docker stop $(docker ps -q)`,
+    typeName: "command",
     language: "bash",
     isFavorite: false,
     isPinned: false,
-    tags: ["git"],
-    collectionIds: [],
+    tags: ["docker", "terminal"],
+    collectionIds: ["col-terminal-commands"],
   },
   {
-    id: "item-10",
-    title: "Architecture Diagram",
-    contentType: "file",
-    content: null,
-    fileUrl: "/mock/architecture-diagram.png",
-    fileName: "architecture-diagram.png",
-    typeName: "Image",
+    id: "item-tc-3",
+    title: "Find and Kill Process on Port",
+    contentType: "text",
+    content: `lsof -ti :3000 | xargs kill -9`,
+    typeName: "command",
+    language: "bash",
+    isFavorite: false,
+    isPinned: false,
+    tags: ["terminal", "process"],
+    collectionIds: ["col-terminal-commands"],
+  },
+  {
+    id: "item-tc-4",
+    title: "List Outdated npm Packages",
+    contentType: "text",
+    content: `npm outdated --long`,
+    typeName: "command",
+    language: "bash",
+    isFavorite: false,
+    isPinned: false,
+    tags: ["npm", "terminal"],
+    collectionIds: ["col-terminal-commands"],
+  },
+
+  // ── Design Resources (4 links) ────────────────────────
+  {
+    id: "item-dr-1",
+    title: "Tailwind CSS Documentation",
+    contentType: "url",
+    content: "https://tailwindcss.com/docs",
+    typeName: "link",
+    language: null,
+    isFavorite: true,
+    isPinned: false,
+    tags: ["css", "tailwind", "frontend"],
+    collectionIds: ["col-design-resources"],
+  },
+  {
+    id: "item-dr-2",
+    title: "shadcn/ui Component Library",
+    contentType: "url",
+    content: "https://ui.shadcn.com",
+    typeName: "link",
+    language: null,
+    isFavorite: true,
+    isPinned: false,
+    tags: ["components", "ui", "frontend"],
+    collectionIds: ["col-design-resources"],
+  },
+  {
+    id: "item-dr-3",
+    title: "Radix UI Primitives",
+    contentType: "url",
+    content: "https://www.radix-ui.com/primitives",
+    typeName: "link",
     language: null,
     isFavorite: false,
     isPinned: false,
-    tags: [],
-    collectionIds: [],
+    tags: ["components", "ui", "design-system"],
+    collectionIds: ["col-design-resources"],
+  },
+  {
+    id: "item-dr-4",
+    title: "Lucide Icons",
+    contentType: "url",
+    content: "https://lucide.dev/icons",
+    typeName: "link",
+    language: null,
+    isFavorite: false,
+    isPinned: false,
+    tags: ["icons", "ui", "frontend"],
+    collectionIds: ["col-design-resources"],
   },
 ];
 
+// ─── Main ───────────────────────────────────────────────
+
 async function main() {
+  // Hash password (ready for when User model gets a password field)
+  const hashedPassword = await bcrypt.hash("12345678", 12);
+  console.log(`Password hash generated: ${hashedPassword.slice(0, 20)}...`);
+
   // 1. Seed system item types
   console.log("Seeding system item types...");
   const typeMap = new Map<string, string>();
@@ -219,25 +494,34 @@ async function main() {
   console.log("Seeding demo user...");
   await prisma.user.upsert({
     where: { id: demoUser.id },
-    update: { name: demoUser.name, email: demoUser.email, isPro: demoUser.isPro },
+    update: {
+      name: demoUser.name,
+      email: demoUser.email,
+      isPro: demoUser.isPro,
+      emailVerified: demoUser.emailVerified,
+    },
     create: demoUser,
   });
-  console.log(`  ✓ User: ${demoUser.name}`);
+  console.log(`  ✓ User: ${demoUser.name} (${demoUser.email})`);
 
   // 3. Seed collections
   console.log("Seeding collections...");
-  for (const col of demoCollections) {
+  for (const col of collections) {
     await prisma.collection.upsert({
       where: { id: col.id },
-      update: { name: col.name, description: col.description, isFavorite: col.isFavorite },
+      update: {
+        name: col.name,
+        description: col.description,
+        isFavorite: col.isFavorite,
+      },
       create: { ...col, userId: demoUser.id },
     });
   }
-  console.log(`  ✓ ${demoCollections.length} collections`);
+  console.log(`  ✓ ${collections.length} collections`);
 
   // 4. Seed tags
   console.log("Seeding tags...");
-  const allTags = [...new Set(demoItems.flatMap((item) => item.tags))];
+  const allTags = [...new Set(items.flatMap((item) => item.tags))];
   const tagMap = new Map<string, string>();
 
   for (const tagName of allTags) {
@@ -252,7 +536,7 @@ async function main() {
 
   // 5. Seed items with tags and collection links
   console.log("Seeding items...");
-  for (const item of demoItems) {
+  for (const item of items) {
     const itemTypeId = typeMap.get(item.typeName)!;
 
     await prisma.item.upsert({
@@ -265,8 +549,6 @@ async function main() {
         isFavorite: item.isFavorite,
         isPinned: item.isPinned,
         itemTypeId,
-        fileUrl: "fileUrl" in item ? (item as Record<string, unknown>).fileUrl as string : null,
-        fileName: "fileName" in item ? (item as Record<string, unknown>).fileName as string : null,
       },
       create: {
         id: item.id,
@@ -278,8 +560,6 @@ async function main() {
         isPinned: item.isPinned,
         itemTypeId,
         userId: demoUser.id,
-        fileUrl: "fileUrl" in item ? (item as Record<string, unknown>).fileUrl as string : undefined,
-        fileName: "fileName" in item ? (item as Record<string, unknown>).fileName as string : undefined,
       },
     });
 
@@ -296,15 +576,17 @@ async function main() {
     // Link collections
     for (const colId of item.collectionIds) {
       await prisma.itemCollection.upsert({
-        where: { itemId_collectionId: { itemId: item.id, collectionId: colId } },
+        where: {
+          itemId_collectionId: { itemId: item.id, collectionId: colId },
+        },
         update: {},
         create: { itemId: item.id, collectionId: colId },
       });
     }
   }
-  console.log(`  ✓ ${demoItems.length} items`);
+  console.log(`  ✓ ${items.length} items`);
 
-  console.log("Seed complete!");
+  console.log("\nSeed complete!");
 }
 
 main()
