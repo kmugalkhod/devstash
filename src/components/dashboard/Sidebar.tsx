@@ -29,9 +29,9 @@ import {
   SheetContent,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { itemTypes, collections, currentUser } from "@/lib/mock-data";
 import { useSidebar } from "./SidebarContext";
 import { cn } from "@/lib/utils";
+import type { ItemTypeInfo, SidebarCollection, SidebarUser } from "@/lib/db/items";
 
 const iconMap: Record<string, React.ComponentType<LucideProps>> = {
   Code,
@@ -43,7 +43,7 @@ const iconMap: Record<string, React.ComponentType<LucideProps>> = {
   Image,
 };
 
-const proTypes = new Set(["File", "Image"]);
+const proTypes = new Set(["file", "image"]);
 
 function getTypeSlug(name: string): string {
   return name.toLowerCase() + "s";
@@ -58,8 +58,22 @@ function getInitials(name: string): string {
     .slice(0, 2);
 }
 
-const favoriteCollections = collections.filter((c) => c.isFavorite);
-function SidebarContent({ collapsed }: { collapsed: boolean }) {
+interface SidebarProps {
+  itemTypes: ItemTypeInfo[];
+  favoriteCollections: SidebarCollection[];
+  recentCollections: SidebarCollection[];
+  user: SidebarUser;
+}
+
+function SidebarContent({
+  collapsed,
+  itemTypes,
+  favoriteCollections,
+  recentCollections,
+  user,
+}: {
+  collapsed: boolean;
+} & SidebarProps) {
   return (
     <div className="flex h-full flex-col">
       {/* Item Types */}
@@ -92,7 +106,7 @@ function SidebarContent({ collapsed }: { collapsed: boolean }) {
                 )}
                 {!collapsed && (
                   <>
-                    <span className="flex-1">{type.name}</span>
+                    <span className="flex-1 capitalize">{type.name}</span>
                     {isPro && (
                       <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
                         PRO
@@ -110,7 +124,7 @@ function SidebarContent({ collapsed }: { collapsed: boolean }) {
                     {linkContent}
                   </TooltipTrigger>
                   <TooltipContent side="right">
-                    {type.name}
+                    <span className="capitalize">{type.name}</span>
                     {isPro && " (Pro)"}
                   </TooltipContent>
                 </Tooltip>
@@ -155,6 +169,19 @@ function SidebarContent({ collapsed }: { collapsed: boolean }) {
             </Link>
           )}
 
+          {/* Favorite Collections */}
+          {!collapsed &&
+            favoriteCollections.map((collection) => (
+              <Link
+                key={collection.id}
+                href={`/collections/${collection.id}`}
+                className="flex items-center gap-3 rounded-md px-2 py-2 pl-5 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              >
+                <Star className="size-3.5 shrink-0 text-yellow-500" />
+                <span className="truncate">{collection.name}</span>
+              </Link>
+            ))}
+
           {/* Recent */}
           {collapsed ? (
             <Tooltip>
@@ -178,18 +205,34 @@ function SidebarContent({ collapsed }: { collapsed: boolean }) {
             </Link>
           )}
 
-          {/* Favorite Collections */}
+          {/* Recent Collections with colored circles */}
           {!collapsed &&
-            favoriteCollections.map((collection) => (
+            recentCollections.map((collection) => (
               <Link
                 key={collection.id}
                 href={`/collections/${collection.id}`}
-                className="flex items-center gap-3 rounded-md px-2 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                className="flex items-center gap-3 rounded-md px-2 py-2 pl-5 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               >
-                <Folder className="size-4 shrink-0 text-muted-foreground" />
+                <span
+                  className="size-3 shrink-0 rounded-full"
+                  style={{
+                    backgroundColor: collection.dominantColor ?? "#6b7280",
+                  }}
+                />
                 <span className="truncate">{collection.name}</span>
               </Link>
             ))}
+
+          {/* View all collections */}
+          {!collapsed && (
+            <Link
+              href="/collections"
+              className="mt-1 flex items-center gap-3 rounded-md px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            >
+              <Folder className="size-4 shrink-0" />
+              <span>View all collections</span>
+            </Link>
+          )}
         </nav>
       </div>
 
@@ -200,12 +243,12 @@ function SidebarContent({ collapsed }: { collapsed: boolean }) {
             <Tooltip>
               <TooltipTrigger render={<div />}>
                 <Avatar size="sm">
-                  {currentUser.image && <AvatarImage src={currentUser.image} />}
-                  <AvatarFallback>{getInitials(currentUser.name)}</AvatarFallback>
+                  {user.image && <AvatarImage src={user.image} />}
+                  <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
                 </Avatar>
               </TooltipTrigger>
               <TooltipContent side="right">
-                {currentUser.name}
+                {user.name}
               </TooltipContent>
             </Tooltip>
             <Tooltip>
@@ -220,15 +263,15 @@ function SidebarContent({ collapsed }: { collapsed: boolean }) {
         ) : (
           <div className="flex items-center gap-3">
             <Avatar size="default">
-              {currentUser.image && <AvatarImage src={currentUser.image} />}
-              <AvatarFallback>{getInitials(currentUser.name)}</AvatarFallback>
+              {user.image && <AvatarImage src={user.image} />}
+              <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
               <p className="truncate text-sm font-medium text-foreground">
-                {currentUser.name}
+                {user.name}
               </p>
               <p className="truncate text-xs text-muted-foreground">
-                {currentUser.email}
+                {user.email}
               </p>
             </div>
             <Button variant="ghost" size="icon-sm">
@@ -241,7 +284,7 @@ function SidebarContent({ collapsed }: { collapsed: boolean }) {
   );
 }
 
-export function Sidebar() {
+export function Sidebar({ itemTypes, favoriteCollections, recentCollections, user }: SidebarProps) {
   const { isCollapsed, isMobileOpen, toggleCollapsed, closeMobile } = useSidebar();
 
   return (
@@ -285,7 +328,13 @@ export function Sidebar() {
           </Button>
         </div>
 
-        <SidebarContent collapsed={isCollapsed} />
+        <SidebarContent
+          collapsed={isCollapsed}
+          itemTypes={itemTypes}
+          favoriteCollections={favoriteCollections}
+          recentCollections={recentCollections}
+          user={user}
+        />
       </aside>
 
       {/* Mobile Sidebar (Sheet) */}
@@ -307,7 +356,13 @@ export function Sidebar() {
               </span>
             </Link>
           </div>
-          <SidebarContent collapsed={false} />
+          <SidebarContent
+            collapsed={false}
+            itemTypes={itemTypes}
+            favoriteCollections={favoriteCollections}
+            recentCollections={recentCollections}
+            user={user}
+          />
         </SheetContent>
       </Sheet>
     </>

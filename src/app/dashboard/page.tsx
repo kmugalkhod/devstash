@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { CollectionCard } from "@/components/dashboard/CollectionCard";
 import { DashboardItems } from "@/components/dashboard/DashboardItems";
@@ -6,13 +7,12 @@ import {
   getDashboardStats,
 } from "@/lib/db/collections";
 import { getPinnedItems, getRecentItems } from "@/lib/db/items";
+import { prisma } from "@/lib/prisma";
 
 // TODO: Replace with actual authenticated user ID
 const DEMO_USER_ID = "demo-user-id";
 
 async function getDemoUserId(): Promise<string> {
-  // Temporary: look up the demo user by email
-  const { prisma } = await import("@/lib/prisma");
   const user = await prisma.user.findUnique({
     where: { email: "demo@devstash.io" },
     select: { id: true },
@@ -44,9 +44,12 @@ export default async function DashboardPage() {
       <section>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold text-foreground">Collections</h2>
-          <button className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <Link
+            href="/collections"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
             View all
-          </button>
+          </Link>
         </div>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {collections.map((collection) => (
