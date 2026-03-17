@@ -1,7 +1,16 @@
 # Current Feature
 
-No active feature.
+## Status
 
+Not Started
+
+## Goals
+
+<!-- Define goals here -->
+
+## Notes
+
+<!-- Additional context here -->
 ## History
 
 <!-- Keep this updated. Earliest to latest -->

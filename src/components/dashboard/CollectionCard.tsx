@@ -50,11 +50,15 @@ export function CollectionCard({
     <motion.div
       whileHover={{ y: -2 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-5 transition-colors hover:border-muted-foreground/30"
+      className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-5 transition-all hover:border-muted-foreground/30"
+      style={{
+        borderTopWidth: "2px",
+        borderTopColor: dominantColor,
+      }}
     >
       {/* Color overlay */}
       <div
-        className="absolute inset-0 opacity-5 transition-opacity group-hover:opacity-10"
+        className="absolute inset-0 opacity-[0.03] transition-opacity group-hover:opacity-[0.07]"
         style={{ backgroundColor: dominantColor }}
       />
 
@@ -85,10 +89,10 @@ export function CollectionCard({
           return (
             <div
               key={type.id}
-              className="flex size-7 items-center justify-center rounded"
+              className="flex size-8 items-center justify-center rounded"
               style={{ backgroundColor: `${type.color}15`, color: type.color }}
             >
-              <Icon className="size-3.5" />
+              <Icon className="size-4" />
             </div>
           );
         })}

@@ -31,7 +31,7 @@ export default async function DashboardPage() {
   ]);
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-8">
       {/* Stats Cards */}
       <StatsCards
         totalItems={stats.totalItems}
@@ -42,8 +42,8 @@ export default async function DashboardPage() {
 
       {/* Collections */}
       <section>
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-foreground">Collections</h2>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-xl font-bold text-foreground">Collections</h2>
           <button className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             View all
           </button>

@@ -50,14 +50,23 @@ export function StatsCards({
           key={stat.label}
           whileHover={{ y: -2 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="rounded-xl border border-border bg-card p-5"
+          className="group rounded-xl border border-border bg-card p-5 transition-all hover:bg-card/80 hover:shadow-md"
+          style={{
+            borderLeftWidth: "3px",
+            borderLeftColor: stat.color,
+          }}
         >
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">{stat.label}</p>
-            <stat.icon
-              className="size-5"
-              style={{ color: stat.color }}
-            />
+            <div
+              className="flex size-9 items-center justify-center rounded-lg"
+              style={{ backgroundColor: `${stat.color}0d` }}
+            >
+              <stat.icon
+                className="size-5"
+                style={{ color: stat.color }}
+              />
+            </div>
           </div>
           <p className="mt-3 text-3xl font-bold text-foreground">
             {stat.value}

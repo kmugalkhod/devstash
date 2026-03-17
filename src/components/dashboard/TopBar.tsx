@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Plus, FolderPlus, PanelLeft } from "lucide-react";
+import { Search, Plus, FolderPlus, PanelLeft, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSidebar } from "./SidebarContext";
@@ -35,7 +35,10 @@ export function TopBar() {
       </div>
 
       <div className="ml-auto flex items-center gap-2">
-<Button variant="outline" className="hidden sm:inline-flex">
+        <Button variant="ghost" size="icon" aria-label="Settings">
+          <Settings className="size-4" />
+        </Button>
+<Button variant="outline" className="hidden border-muted-foreground/20 sm:inline-flex">
           <FolderPlus className="size-4" />
           New Collection
         </Button>

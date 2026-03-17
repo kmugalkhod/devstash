@@ -14,6 +14,7 @@ import {
   Clock,
   Settings,
   ChevronLeft,
+  Folder,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -63,7 +64,7 @@ function SidebarContent({ collapsed }: { collapsed: boolean }) {
     <div className="flex h-full flex-col">
       {/* Item Types */}
       <div className="flex-1 overflow-y-auto px-4 py-4">
-        <div className={cn("mb-3", collapsed ? "px-0" : "px-2")}>
+        <div className={cn("mb-2", collapsed ? "px-0" : "px-2")}>
           {!collapsed && (
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Item Types
@@ -123,7 +124,7 @@ function SidebarContent({ collapsed }: { collapsed: boolean }) {
         <Separator className="my-5" />
 
         {/* Collections */}
-        <div className={cn("mb-3", collapsed ? "px-0" : "px-2")}>
+        <div className={cn("mb-2", collapsed ? "px-0" : "px-2")}>
           {!collapsed && (
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Collections
@@ -185,9 +186,7 @@ function SidebarContent({ collapsed }: { collapsed: boolean }) {
                 href={`/collections/${collection.id}`}
                 className="flex items-center gap-3 rounded-md px-2 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               >
-                <div className="flex size-4 shrink-0 items-center justify-center rounded text-muted-foreground">
-                  <div className="size-1.5 rounded-sm bg-muted-foreground/50" />
-                </div>
+                <Folder className="size-4 shrink-0 text-muted-foreground" />
                 <span className="truncate">{collection.name}</span>
               </Link>
             ))}

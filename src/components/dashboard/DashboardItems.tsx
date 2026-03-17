@@ -63,10 +63,10 @@ export function DashboardItems({
       {/* Pinned Items */}
       {pinnedItems.length > 0 && (
         <section>
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-5 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Pin className="size-4 text-muted-foreground" />
-              <h2 className="text-lg font-semibold text-foreground">
+              <h2 className="text-xl font-bold text-foreground">
                 Pinned Items
               </h2>
             </div>
@@ -110,8 +110,8 @@ export function DashboardItems({
 
       {/* Recent Items */}
       <section>
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-foreground">
+        <div className="mb-5 flex items-center justify-between">
+          <h2 className="text-xl font-bold text-foreground">
             Recent Items
           </h2>
           <ViewToggle view={recentView} onChange={setRecentView} />

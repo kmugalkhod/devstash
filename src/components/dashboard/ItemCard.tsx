@@ -51,13 +51,13 @@ export function ItemCard({
     <motion.div
       whileHover={{ y: -2 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className="flex h-full flex-col justify-between rounded-xl border border-border bg-card p-5"
+      className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-5 transition-colors hover:border-muted-foreground/20"
       style={{
         borderLeftWidth: "3px",
         borderLeftColor: typeColor,
       }}
     >
-      <div>
+      <div className="relative z-10">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
@@ -85,12 +85,12 @@ export function ItemCard({
         </div>
 
         {/* Title */}
-        <h3 className="mt-4 font-bold text-foreground">{title}</h3>
+        <h3 className="mt-4 line-clamp-2 font-bold text-foreground">{title}</h3>
 
         {/* Content preview */}
         {content && (
-          <div className="mt-4 rounded-lg bg-black/30 px-4 py-3">
-            <p className="line-clamp-3 font-mono text-xs leading-relaxed text-muted-foreground/70">
+          <div className="mt-4 rounded-lg bg-black/50 px-4 py-3">
+            <p className="line-clamp-3 font-mono text-xs leading-relaxed text-muted-foreground">
               {content}
             </p>
           </div>
@@ -99,11 +99,11 @@ export function ItemCard({
 
       {/* Tags */}
       {tags.length > 0 && (
-        <div className="mt-5 flex flex-wrap gap-2">
+        <div className="relative z-10 mt-5 flex flex-wrap gap-2">
           {tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-md bg-white/5 px-2.5 py-1 text-xs text-muted-foreground"
+              className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-xs text-muted-foreground"
             >
               {tag}
             </span>
