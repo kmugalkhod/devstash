@@ -46,7 +46,7 @@ export function ItemCardList({
 
   return (
     <div
-      className="group flex cursor-pointer items-center gap-5 rounded-xl border border-border bg-card px-5 py-4 transition-colors hover:border-muted-foreground/20 hover:bg-card/80"
+      className="group flex cursor-pointer items-center gap-5 rounded-xl border border-border bg-card px-6 py-5 transition-all hover:border-muted-foreground/20 hover:bg-card/80 hover:shadow-md hover:shadow-white/3"
       style={{
         borderLeftWidth: "3px",
         borderLeftColor: typeColor,
@@ -78,8 +78,8 @@ export function ItemCardList({
       {/* Content preview */}
       {content && (
         <div className="hidden min-w-0 flex-1 lg:block">
-          <div className="rounded-lg bg-black/50 px-4 py-2">
-            <p className="truncate font-mono text-xs text-muted-foreground">
+          <div className="rounded-lg bg-black/40 px-4 py-2">
+            <p className="truncate font-mono text-xs text-zinc-400">
               {content}
             </p>
           </div>
@@ -92,7 +92,7 @@ export function ItemCardList({
           {tags.slice(0, 3).map((tag) => (
             <span
               key={tag}
-              className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-xs text-muted-foreground"
+              className="rounded-full border border-white/10 bg-white/8 px-2.5 py-0.5 text-xs text-zinc-300"
             >
               {tag}
             </span>
@@ -102,7 +102,7 @@ export function ItemCardList({
 
       {/* Time */}
       <span
-        className="shrink-0 text-xs text-muted-foreground"
+        className="shrink-0 text-xs text-zinc-500"
         suppressHydrationWarning
       >
         {getRelativeTime(createdAt)}

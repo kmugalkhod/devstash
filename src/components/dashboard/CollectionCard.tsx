@@ -50,7 +50,7 @@ export function CollectionCard({
     <motion.div
       whileHover={{ y: -2 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-5 transition-all hover:border-muted-foreground/30"
+      className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-6 transition-all hover:border-muted-foreground/30 hover:shadow-md hover:shadow-white/3"
       style={{
         borderTopWidth: "2px",
         borderTopColor: dominantColor,
@@ -68,7 +68,7 @@ export function CollectionCard({
             <h3 className="font-bold text-foreground transition-colors group-hover:text-white">
               {name}
             </h3>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="mt-1 text-xs text-zinc-400">
               {itemCount} items
             </p>
           </div>
@@ -77,7 +77,7 @@ export function CollectionCard({
           </button>
         </div>
         {description && (
-          <p className="mt-5 text-sm text-muted-foreground">{description}</p>
+          <p className="mt-5 text-sm text-zinc-400">{description}</p>
         )}
       </div>
 

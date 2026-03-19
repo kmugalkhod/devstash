@@ -34,6 +34,7 @@ export async function getUserCollections(
   const collections = await prisma.collection.findMany({
     where: { userId },
     orderBy: { updatedAt: "desc" },
+    take: 4,
     include: {
       items: {
         include: {

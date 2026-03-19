@@ -2,20 +2,16 @@
 
 ## Status
 
-In Progress
+<!-- Define status here -->
 
 ## Goals
 
-- Display stats in the main area from database data instead of mock data, keeping the current design/layout
-- Display system item types in the sidebar with their icons, linking to /items/[typename]
-- Add "View all collections" link under the collections list that goes to /collections
-- Keep star icons for favorite collections but for recents, show a colored circle based on the most-used item type in that collection
-- Create `src/lib/db/items.ts` with database functions (use `src/lib/db/collections.ts` for reference)
+<!-- Define goals here -->
 
 ## Notes
 
-- Reference spec: `context/features/stats-sidebar-spec.md`
-- Reference implementation: `src/lib/db/collections.ts`
+<!-- Additional context here -->
+
 ## History
 
 <!-- Keep this updated. Earliest to latest -->
@@ -28,3 +24,5 @@ In Progress
 - **2026-03-17** — Seed data overhaul completed. Rewrote prisma/seed.ts to match seed-spec.md. Demo user (demo@devstash.io), 7 system item types (lowercase names), 5 collections (React Patterns, AI Workflows, DevOps, Terminal Commands, Design Resources), 18 items with realistic content, 25 tags. Installed bcryptjs for password hashing. All links use real URLs.
 - **2026-03-17** — Dashboard Collections (Real Data) completed. Created `src/lib/db/collections.ts` with `getUserCollections` and `getDashboardStats` Prisma queries. Converted dashboard page to server component fetching real data from Neon. Updated CollectionCard to accept type objects as props (dominant type = most-used). Updated StatsCards to accept stats as props. Extracted items sections into DashboardItems client component (still mock data for now). Fixed pg SSL deprecation warning.
 - **2026-03-17** — Dashboard Items (Real Data) completed. Created `src/lib/db/items.ts` with `getPinnedItems` and `getRecentItems` Prisma queries. Updated DashboardItems to accept real data as props. Updated ItemCard and ItemCardList to accept type info (name, icon, color) as props instead of looking up from mock data. Removed mock-data dependency from all item components. Added `suppressHydrationWarning` for relative time stamps. If no pinned items exist, the section is hidden.
+- **2026-03-18** — Stats & Sidebar (Real Data) completed. Wired sidebar to real database data: system item types with correct order, icons, and links. Favorite collections with star icons, recent collections with colored circles based on dominant item type. Added "View all collections" link. Created db functions for sidebar data. Replaced all mock data in dashboard layout and sidebar with Prisma queries.
+- **2026-03-20** — UI/UX Refinement completed. Reduced stat card height (smaller padding, font, icon). Improved typography contrast: secondary text lightened to zinc-400, timestamps to zinc-500, snippet previews to zinc-400 on bg-black/40, tags brightened to zinc-300 with bg-white/8. Increased card padding (+4px). Increased section margins (space-y-10, mb-6). Added hover shadow glow (shadow-white/3) on all cards. Limited dashboard collections to 4 to fit grid.
