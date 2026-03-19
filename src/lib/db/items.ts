@@ -143,10 +143,14 @@ export interface SidebarUser {
  * Fetch user info for sidebar display.
  */
 export async function getSidebarUser(userId: string): Promise<SidebarUser> {
-  const user = await prisma.user.findUniqueOrThrow({
+  const user = await prisma.user.findUnique({
     where: { id: userId },
     select: { name: true, email: true, image: true },
   });
+
+  if (!user) {
+    return { name: "User", email: "", image: null };
+  }
   return {
     name: user.name ?? "User",
     email: user.email ?? "",
