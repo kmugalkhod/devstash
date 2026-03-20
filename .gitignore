@@ -48,4 +48,4 @@ next-env.d.ts
 # claude code
 
 
-.env.production
+.env.production.claude/worktrees/
