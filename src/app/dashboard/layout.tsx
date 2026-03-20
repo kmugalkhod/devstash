@@ -9,18 +9,7 @@ import {
   getSidebarCollections,
   getSidebarUser,
 } from "@/lib/db/items";
-import { prisma } from "@/lib/prisma";
-
-// TODO: Replace with actual authenticated user ID
-const DEMO_USER_ID = "demo-user-id";
-
-async function getDemoUserId(): Promise<string> {
-  const user = await prisma.user.findUnique({
-    where: { email: "demo@devstash.io" },
-    select: { id: true },
-  });
-  return user?.id ?? DEMO_USER_ID;
-}
+import { getDemoUserId } from "@/lib/demo-user";
 
 export default async function DashboardLayout({
   children,

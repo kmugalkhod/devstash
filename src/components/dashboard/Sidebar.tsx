@@ -1,15 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { LucideProps } from "lucide-react";
 import {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  Link as LinkIcon,
-  File,
-  Image,
   Star,
   Clock,
   Settings,
@@ -31,17 +23,8 @@ import {
 } from "@/components/ui/sheet";
 import { useSidebar } from "./SidebarContext";
 import { cn } from "@/lib/utils";
+import { iconMap } from "@/lib/icons";
 import type { ItemTypeInfo, SidebarCollection, SidebarUser } from "@/lib/db/items";
-
-const iconMap: Record<string, React.ComponentType<LucideProps>> = {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  Link: LinkIcon,
-  File,
-  Image,
-};
 
 const proTypes = new Set(["file", "image"]);
 

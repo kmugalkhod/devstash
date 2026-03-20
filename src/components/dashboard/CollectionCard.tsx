@@ -1,26 +1,9 @@
 "use client";
 
-import type { LucideProps } from "lucide-react";
-import {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  Link as LinkIcon,
-  File,
-  Image,
-  MoreVertical,
-} from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import { motion } from "motion/react";
-const iconMap: Record<string, React.ComponentType<LucideProps>> = {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  Link: LinkIcon,
-  File,
-  Image,
-};
+import { iconMap } from "@/lib/icons";
+import { Button } from "@/components/ui/button";
 
 interface TypeInfo {
   id: string;
@@ -43,8 +26,9 @@ export function CollectionCard({
   types,
 }: CollectionCardProps) {
   const rawColor = types[0]?.color || "#94a3b8";
-  // Gray colors are invisible as overlays — use green tint instead
-  const dominantColor = rawColor === "#6b7280" ? "#10b981" : rawColor;
+  // Low-chroma colors (e.g. gray for file type) are invisible as overlays — use fallback
+  const LOW_CHROMA_COLORS = new Set(["#6b7280", "#94a3b8"]);
+  const dominantColor = LOW_CHROMA_COLORS.has(rawColor) ? "#10b981" : rawColor;
 
   return (
     <motion.div
@@ -72,9 +56,14 @@ export function CollectionCard({
               {itemCount} items
             </p>
           </div>
-          <button className="rounded-md p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-white/5 hover:text-foreground group-hover:opacity-100">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Collection options"
+            className="opacity-0 transition-opacity hover:bg-white/5 group-hover:opacity-100"
+          >
             <MoreVertical className="size-4" />
-          </button>
+          </Button>
         </div>
         {description && (
           <p className="mt-5 text-sm text-zinc-400">{description}</p>

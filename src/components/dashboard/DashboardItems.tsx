@@ -46,6 +46,65 @@ function ViewToggle({
   );
 }
 
+function ItemSection({
+  title,
+  icon: Icon,
+  items,
+  view,
+  onViewChange,
+}: {
+  title: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  items: DashboardItem[];
+  view: ViewMode;
+  onViewChange: (v: ViewMode) => void;
+}) {
+  return (
+    <section>
+      <div className="mb-6 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          {Icon && <Icon className="size-4 text-muted-foreground" />}
+          <h2 className="text-xl font-bold text-foreground">{title}</h2>
+        </div>
+        <ViewToggle view={view} onChange={onViewChange} />
+      </div>
+      {view === "grid" ? (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {items.map((item) => (
+            <ItemCard
+              key={item.id}
+              title={item.title}
+              content={item.content}
+              typeName={item.type.name}
+              typeIcon={item.type.icon}
+              typeColor={item.type.color}
+              isFavorite={item.isFavorite}
+              tags={item.tags}
+              createdAt={item.createdAt}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {items.map((item) => (
+            <ItemCardList
+              key={item.id}
+              title={item.title}
+              content={item.content}
+              typeName={item.type.name}
+              typeIcon={item.type.icon}
+              typeColor={item.type.color}
+              isFavorite={item.isFavorite}
+              tags={item.tags}
+              createdAt={item.createdAt}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
 interface DashboardItemsProps {
   pinnedItems: DashboardItem[];
   recentItems: DashboardItem[];
@@ -60,96 +119,22 @@ export function DashboardItems({
 
   return (
     <>
-      {/* Pinned Items */}
       {pinnedItems.length > 0 && (
-        <section>
-          <div className="mb-6 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Pin className="size-4 text-muted-foreground" />
-              <h2 className="text-xl font-bold text-foreground">
-                Pinned Items
-              </h2>
-            </div>
-            <ViewToggle view={pinnedView} onChange={setPinnedView} />
-          </div>
-          {pinnedView === "grid" ? (
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {pinnedItems.map((item) => (
-                <ItemCard
-                  key={item.id}
-                  title={item.title}
-                  content={item.content}
-                  typeName={item.type.name}
-                  typeIcon={item.type.icon}
-                  typeColor={item.type.color}
-                  isFavorite={item.isFavorite}
-                  tags={item.tags}
-                  createdAt={item.createdAt}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {pinnedItems.map((item) => (
-                <ItemCardList
-                  key={item.id}
-                  title={item.title}
-                  content={item.content}
-                  typeName={item.type.name}
-                  typeIcon={item.type.icon}
-                  typeColor={item.type.color}
-                  isFavorite={item.isFavorite}
-                  tags={item.tags}
-                  createdAt={item.createdAt}
-                />
-              ))}
-            </div>
-          )}
-        </section>
+        <ItemSection
+          title="Pinned Items"
+          icon={Pin}
+          items={pinnedItems}
+          view={pinnedView}
+          onViewChange={setPinnedView}
+        />
       )}
 
-      {/* Recent Items */}
-      <section>
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-foreground">
-            Recent Items
-          </h2>
-          <ViewToggle view={recentView} onChange={setRecentView} />
-        </div>
-        {recentView === "grid" ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {recentItems.map((item) => (
-              <ItemCard
-                key={item.id}
-                title={item.title}
-                content={item.content}
-                typeName={item.type.name}
-                typeIcon={item.type.icon}
-                typeColor={item.type.color}
-                isFavorite={item.isFavorite}
-                tags={item.tags}
-                createdAt={item.createdAt}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {recentItems.map((item) => (
-              <ItemCardList
-                key={item.id}
-                title={item.title}
-                content={item.content}
-                typeName={item.type.name}
-                typeIcon={item.type.icon}
-                typeColor={item.type.color}
-                isFavorite={item.isFavorite}
-                tags={item.tags}
-                createdAt={item.createdAt}
-              />
-            ))}
-          </div>
-        )}
-      </section>
+      <ItemSection
+        title="Recent Items"
+        items={recentItems}
+        view={recentView}
+        onViewChange={setRecentView}
+      />
     </>
   );
 }

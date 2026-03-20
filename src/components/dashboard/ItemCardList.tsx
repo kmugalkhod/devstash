@@ -1,25 +1,6 @@
-import type { LucideProps } from "lucide-react";
-import {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  Link as LinkIcon,
-  File,
-  Image,
-  Star,
-} from "lucide-react";
+import { Star } from "lucide-react";
 import { getRelativeTime } from "@/lib/utils";
-
-const iconMap: Record<string, React.ComponentType<LucideProps>> = {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  Link: LinkIcon,
-  File,
-  Image,
-};
+import { iconMap } from "@/lib/icons";
 
 interface ItemCardListProps {
   title: string;

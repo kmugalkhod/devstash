@@ -1,28 +1,6 @@
-"use client";
-
-import type { LucideProps } from "lucide-react";
-import {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  Link as LinkIcon,
-  File,
-  Image,
-  Star,
-} from "lucide-react";
-import { motion } from "motion/react";
+import { Star } from "lucide-react";
 import { getRelativeTime } from "@/lib/utils";
-
-const iconMap: Record<string, React.ComponentType<LucideProps>> = {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  Link: LinkIcon,
-  File,
-  Image,
-};
+import { iconMap } from "@/lib/icons";
 
 interface ItemCardProps {
   title: string;
@@ -48,10 +26,8 @@ export function ItemCard({
   const Icon = iconMap[typeIcon];
 
   return (
-    <motion.div
-      whileHover={{ y: -2 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-6 transition-all hover:border-muted-foreground/20 hover:shadow-md hover:shadow-white/3"
+    <div
+      className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-muted-foreground/20 hover:shadow-md hover:shadow-white/3"
       style={{
         borderLeftWidth: "3px",
         borderLeftColor: typeColor,
@@ -110,6 +86,6 @@ export function ItemCard({
           ))}
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }

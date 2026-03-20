@@ -6,20 +6,19 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getRelativeTime(dateString: string): string {
-  const now = new Date();
-  const date = new Date(dateString);
-  const diffMs = now.getTime() - date.getTime();
-  const diffSeconds = Math.floor(diffMs / 1000);
-  const diffMinutes = Math.floor(diffSeconds / 60);
-  const diffHours = Math.floor(diffMinutes / 60);
-  const diffDays = Math.floor(diffHours / 24);
-  const diffWeeks = Math.floor(diffDays / 7);
-  const diffMonths = Math.floor(diffDays / 30);
+  const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+  const diffMs = new Date(dateString).getTime() - Date.now();
+  const diffSec = Math.round(diffMs / 1000);
+  const diffMin = Math.round(diffSec / 60);
+  const diffHour = Math.round(diffMin / 60);
+  const diffDay = Math.round(diffHour / 24);
+  const diffWeek = Math.round(diffDay / 7);
+  const diffMonth = Math.round(diffDay / 30.44);
 
-  if (diffMinutes < 1) return "just now";
-  if (diffMinutes < 60) return `${diffMinutes} min ago`;
-  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
-  if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
-  if (diffWeeks < 5) return `${diffWeeks} week${diffWeeks > 1 ? "s" : ""} ago`;
-  return `${diffMonths} month${diffMonths > 1 ? "s" : ""} ago`;
+  if (Math.abs(diffSec) < 60) return rtf.format(diffSec, "second");
+  if (Math.abs(diffMin) < 60) return rtf.format(diffMin, "minute");
+  if (Math.abs(diffHour) < 24) return rtf.format(diffHour, "hour");
+  if (Math.abs(diffDay) < 7) return rtf.format(diffDay, "day");
+  if (Math.abs(diffWeek) < 5) return rtf.format(diffWeek, "week");
+  return rtf.format(diffMonth, "month");
 }

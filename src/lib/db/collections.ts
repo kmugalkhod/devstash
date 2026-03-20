@@ -46,6 +46,10 @@ export async function getUserCollections(
     },
   });
 
+  if (collections.length === 0) {
+    return [];
+  }
+
   // Fetch all system item types once
   const itemTypes = await prisma.itemType.findMany({
     where: { isSystem: true },
