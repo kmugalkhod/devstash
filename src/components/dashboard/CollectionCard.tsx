@@ -42,7 +42,7 @@ export function CollectionCard({
     >
       {/* Color overlay */}
       <div
-        className="absolute inset-0 opacity-[0.03] transition-opacity group-hover:opacity-[0.07]"
+        className="absolute inset-0 opacity-[0.06] transition-opacity group-hover:opacity-[0.12]"
         style={{ backgroundColor: dominantColor }}
       />
 
@@ -60,13 +60,13 @@ export function CollectionCard({
             variant="ghost"
             size="icon-sm"
             aria-label="Collection options"
-            className="opacity-0 transition-opacity hover:bg-white/5 group-hover:opacity-100"
+            className="opacity-0 transition-opacity hover:bg-white/5 group-hover:opacity-100 group-focus-within:opacity-100"
           >
             <MoreVertical className="size-4" />
           </Button>
         </div>
         {description && (
-          <p className="mt-5 text-sm text-zinc-400">{description}</p>
+          <p className="mt-4 text-sm text-zinc-400">{description}</p>
         )}
       </div>
 

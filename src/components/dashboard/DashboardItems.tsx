@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ItemCard } from "@/components/dashboard/ItemCard";
 import { ItemCardList } from "@/components/dashboard/ItemCardList";
-import { Pin, LayoutGrid, List } from "lucide-react";
+import { Pin, Clock, LayoutGrid, List } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { DashboardItem } from "@/lib/db/items";
 
@@ -23,7 +23,7 @@ function ViewToggle({
         className={cn(
           "rounded-md p-1.5 transition-colors",
           view === "grid"
-            ? "bg-muted text-foreground"
+            ? "bg-muted text-foreground shadow-sm"
             : "text-muted-foreground hover:text-foreground"
         )}
         aria-label="Grid view"
@@ -35,7 +35,7 @@ function ViewToggle({
         className={cn(
           "rounded-md p-1.5 transition-colors",
           view === "list"
-            ? "bg-muted text-foreground"
+            ? "bg-muted text-foreground shadow-sm"
             : "text-muted-foreground hover:text-foreground"
         )}
         aria-label="List view"
@@ -131,6 +131,7 @@ export function DashboardItems({
 
       <ItemSection
         title="Recent Items"
+        icon={Clock}
         items={recentItems}
         view={recentView}
         onViewChange={setRecentView}

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Search, Plus, FolderPlus, PanelLeft, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +22,14 @@ export function TopBar() {
         <PanelLeft className="size-5" />
       </Button>
 
-      <div className="relative flex-1 max-w-md">
+      {/* Mobile brand logomark */}
+      <Link href="/dashboard" className="flex items-center md:hidden">
+        <div className="flex size-7 items-center justify-center rounded-md bg-blue-600 text-xs font-bold text-white">
+          D
+        </div>
+      </Link>
+
+      <div className="relative flex-1 max-w-xl">
         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
         <Input
           type="search"
@@ -44,6 +52,7 @@ export function TopBar() {
         </Button>
         <Button>
           <Plus className="size-4" />
+          <span className="sm:hidden">New</span>
           <span className="hidden sm:inline">New Item</span>
         </Button>
       </div>

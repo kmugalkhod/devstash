@@ -91,7 +91,7 @@ function SidebarContent({
                   <>
                     <span className="flex-1 capitalize">{type.name}</span>
                     {isPro && (
-                      <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                      <span className="rounded border border-amber-500/25 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-amber-400">
                         PRO
                       </span>
                     )}
@@ -173,7 +173,7 @@ function SidebarContent({
                   href="/collections/recent"
                   className="flex items-center justify-center rounded-md px-2 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 >
-                  <Clock className="size-4 shrink-0" />
+                  <Clock className="size-4 shrink-0 text-sky-400" />
                 </Link>
               </TooltipTrigger>
               <TooltipContent side="right">Recent</TooltipContent>
@@ -183,7 +183,7 @@ function SidebarContent({
               href="/collections/recent"
               className="flex items-center gap-3 rounded-md px-2 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             >
-              <Clock className="size-4 shrink-0" />
+              <Clock className="size-4 shrink-0 text-sky-400" />
               <span>Recent</span>
             </Link>
           )}

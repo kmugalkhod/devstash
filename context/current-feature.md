@@ -1,16 +1,35 @@
-# Current Feature
+# Current Feature: UI Improvements — Dashboard
 
 ## Status
 
-<!-- Define status here -->
+In Progress
 
 ## Goals
 
-<!-- Define goals here -->
+### High Priority
+- [ ] Add Suspense boundaries with skeleton fallbacks for each dashboard section (Stats, Collections, Pinned Items, Recent Items)
+
+### Medium Priority
+- [ ] Restyle PRO badge with amber/premium visual distinction
+- [ ] Add Clock icon to "Recent Items" section heading for consistency with "Pinned Items"
+- [ ] Increase collection card color overlay opacity (0.03→0.06, hover 0.07→0.12)
+- [ ] Increase stats card icon background opacity (5%→10-15%)
+- [ ] Widen search bar max-width (max-w-md→max-w-xl) for better desktop use
+- [ ] Add DevStash logomark to mobile topbar when sidebar is closed
+
+### Low Priority
+- [ ] Show short "New" label on mobile instead of icon-only for New Item button
+- [ ] Tighten collection card description spacing (mt-5→mt-4)
+- [ ] Improve view toggle active state visibility (add shadow or border)
+- [ ] Add subtle color tint to sidebar "Recent" Clock icon
+- [ ] Add group-focus-within:opacity-100 to collection card options button for keyboard accessibility
 
 ## Notes
 
-<!-- Additional context here -->
+- Spec file: `tests/main/improvements.md`
+- All changes target the `/dashboard` route and its components
+- 1 high priority, 6 medium priority, 5 low priority items
+- Most changes are small CSS/class tweaks; skeleton loading is the largest task
 
 ## History
 
@@ -26,3 +45,4 @@
 - **2026-03-17** — Dashboard Items (Real Data) completed. Created `src/lib/db/items.ts` with `getPinnedItems` and `getRecentItems` Prisma queries. Updated DashboardItems to accept real data as props. Updated ItemCard and ItemCardList to accept type info (name, icon, color) as props instead of looking up from mock data. Removed mock-data dependency from all item components. Added `suppressHydrationWarning` for relative time stamps. If no pinned items exist, the section is hidden.
 - **2026-03-18** — Stats & Sidebar (Real Data) completed. Wired sidebar to real database data: system item types with correct order, icons, and links. Favorite collections with star icons, recent collections with colored circles based on dominant item type. Added "View all collections" link. Created db functions for sidebar data. Replaced all mock data in dashboard layout and sidebar with Prisma queries.
 - **2026-03-20** — UI/UX Refinement completed. Reduced stat card height (smaller padding, font, icon). Improved typography contrast: secondary text lightened to zinc-400, timestamps to zinc-500, snippet previews to zinc-400 on bg-black/40, tags brightened to zinc-300 with bg-white/8. Increased card padding (+4px). Increased section margins (space-y-10, mb-6). Added hover shadow glow (shadow-white/3) on all cards. Limited dashboard collections to 4 to fit grid.
+- **2026-03-22** — Prisma 7 compliance audit completed. Verified all v7 breaking changes already addressed: prisma.config.ts with defineConfig(), @prisma/adapter-pg driver adapter, correct PrismaClient import from generated output, no url in datasource block, no deprecated preview flags, Node.js 22.13.1, TypeScript 5.9.3. No code changes needed — project was set up with Prisma 7 from the start.

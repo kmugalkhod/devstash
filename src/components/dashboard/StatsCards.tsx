@@ -60,7 +60,7 @@ export function StatsCards({
             <p className="text-sm text-zinc-400">{stat.label}</p>
             <div
               className="flex size-8 items-center justify-center rounded-lg"
-              style={{ backgroundColor: `${stat.color}0d` }}
+              style={{ backgroundColor: `${stat.color}1a` }}
             >
               <stat.icon
                 className="size-4"
