@@ -1,21 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AuthHeader } from "../AuthHeader";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -47,7 +47,38 @@ export default function RegisterPage() {
       return;
     }
 
-    router.push("/sign-in?registered=true");
+    setEmailSent(true);
+  }
+
+  if (emailSent) {
+    return (
+      <div className="space-y-6 text-center">
+        <AuthHeader
+          title="Check your email"
+          subtitle="We sent a verification link to your email"
+        />
+
+        <div className="flex justify-center">
+          <div className="flex size-12 items-center justify-center rounded-full bg-blue-500/10">
+            <Mail className="size-6 text-blue-400" />
+          </div>
+        </div>
+
+        <p className="text-sm text-zinc-400">
+          Click the link in the email to verify your account. The link expires in 24 hours.
+        </p>
+
+        <p className="text-center text-sm text-muted-foreground">
+          Already verified?{" "}
+          <Link
+            href="/sign-in"
+            className="font-medium text-foreground underline-offset-4 hover:underline"
+          >
+            Sign in
+          </Link>
+        </p>
+      </div>
+    );
   }
 
   return (

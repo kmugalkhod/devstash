@@ -1,10 +1,24 @@
-# Current Feature
+# Current Feature: Email Verification on Signup
 
 ## Status
+In Progress
 
 ## Goals
+- Install Resend SDK and create email sending utility (`src/lib/email.ts`)
+- Generate a secure verification token on registration and store it in the existing `VerificationToken` model
+- Send a verification email with a clickable link using Resend
+- Create a `/verify-email` route that validates the token, sets `user.emailVerified`, and redirects to sign-in
+- Block sign-in for unverified credential users (show "please verify your email" message)
+- Update the register flow to show "check your email" message instead of redirecting to sign-in immediately
+- GitHub OAuth users skip verification (already verified by GitHub)
 
 ## Notes
+- Resend API key is already in `.env` as `RESEND_API_KEY`
+- The `VerificationToken` model already exists in the Prisma schema — no migration needed
+- The `User.emailVerified` field (DateTime, nullable) already exists — just needs to be set on verification
+- Credentials provider in `auth.ts` needs a check: reject sign-in if `emailVerified` is null
+- Token expiration: 24 hours
+- From address: use Resend's default or `noreply@devstash.io` if domain is configured
 
 ## History
 

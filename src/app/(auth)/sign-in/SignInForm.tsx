@@ -20,6 +20,7 @@ export function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const registered = searchParams.get("registered") === "true";
+  const verified = searchParams.get("verified") === "true";
   const oauthError = searchParams.get("error");
 
   const [email, setEmail] = useState("");
@@ -45,7 +46,11 @@ export function SignInForm() {
     });
 
     if (result?.error) {
-      setError("Invalid email or password");
+      if (result.code === "EMAIL_NOT_VERIFIED") {
+        setError("Please verify your email before signing in. Check your inbox for the verification link.");
+      } else {
+        setError("Invalid email or password");
+      }
       setLoading(false);
       return;
     }
@@ -61,10 +66,15 @@ export function SignInForm() {
         subtitle="Sign in to your DevStash account"
       />
 
-      {/* Success message after registration */}
+      {/* Success messages */}
       {registered && (
+        <div className="rounded-lg border border-blue-500/50 bg-blue-500/10 px-3 py-2 text-sm text-blue-400">
+          Account created! Check your email for a verification link before signing in.
+        </div>
+      )}
+      {verified && (
         <div className="rounded-lg border border-emerald-500/50 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-400">
-          Account created successfully. Please sign in.
+          Email verified successfully. You can now sign in.
         </div>
       )}
 

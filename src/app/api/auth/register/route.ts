@@ -3,6 +3,8 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
+import { generateVerificationToken } from "@/lib/tokens";
+import { sendVerificationEmail } from "@/lib/email";
 
 const registerSchema = z.object({
   name: z.string().min(1).max(100),
@@ -58,6 +60,10 @@ export async function POST(request: Request) {
         password: hashedPassword,
       },
     });
+
+    // Generate verification token and send email
+    const token = await generateVerificationToken(email);
+    await sendVerificationEmail(email, token);
 
     return NextResponse.json(
       { success: true, user: { id: user.id, name: user.name, email: user.email } },
