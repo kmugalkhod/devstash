@@ -1,24 +1,10 @@
-# Current Feature: Auth UI - Sign In, Register & Sign Out
+# Current Feature
 
 ## Status
 
-In Progress
-
 ## Goals
 
-- Custom sign-in page (`/sign-in`) with email/password fields, GitHub OAuth button, and link to register
-- Custom register page (`/register`) with name, email, password, confirm password fields, validation, and redirect to sign-in
-- User avatar in bottom of sidebar (GitHub image or initials fallback)
-- Dropdown/popover on avatar click with "Sign out" option
-- Clicking avatar icon navigates to `/profile`
-
 ## Notes
-
-- Replace NextAuth default pages with custom UI
-- Avatar logic: use GitHub `image` if available, otherwise generate initials from name (e.g., "Brad Traversy" → "BT")
-- Create a reusable avatar component that handles both cases
-- Register form submits to existing `/api/auth/register` endpoint
-- Form validation: passwords match, email format, error display
 
 ## History
 
@@ -38,3 +24,4 @@ In Progress
 - **2026-03-22** — Dashboard UI Improvements completed. Added Suspense boundaries with skeleton fallbacks for all dashboard sections. Restyled PRO badge with amber theme. Added Clock icon to Recent Items heading. Increased collection overlay and stats icon opacities. Widened search bar. Added mobile brand logomark and short "New" label. Tightened card spacing. Improved view toggle active state. Added sky-400 tint to sidebar Recent icon. Added keyboard accessibility to collection options button.
 - **2026-03-22** — Auth Setup (Phase 1) completed. Installed NextAuth v5 (next-auth@beta) with @auth/prisma-adapter. Split auth config pattern: edge-compatible auth.config.ts (GitHub provider) + full auth.ts (Prisma adapter, JWT strategy, user.id in session). Route protection via src/proxy.ts redirecting unauthenticated users from /dashboard/* to NextAuth default sign-in page. Created API route handler and next-auth type declarations. Fixed malformed AUTH_SECRET in .env.
 - **2026-03-22** — Auth Credentials (Phase 2) completed. Added Credentials provider to split auth config pattern. Added password field to User model via migration. Created registration API route (POST /api/auth/register) with validation (required fields, password match, min 8 chars, duplicate check, bcrypt hashing). Credentials sign-in with bcrypt verification in auth.ts. GitHub OAuth still works alongside credentials.
+- **2026-03-22** — Auth UI (Phase 3) completed. Custom sign-in page (`/sign-in`) with email/password form, GitHub OAuth button, registration success banner, and OAuth error handling. Custom register page (`/register`) with Zod-validated form. Sidebar avatar dropdown with profile link and sign-out. Replaced `getDemoUserId()` with real NextAuth session (`getAuthUserId`). Added rate limiting, Zod validation to register API. Extended middleware matcher for static assets. Added empty states for collections/items. Extracted shared AuthHeader component with DevStash brand wordmark. Code quality fixes: getInitials crash guard, pinned items query limit, computed saturation check for collection colors, Link-based profile navigation. Deleted dead code (mock-data.ts, demo-user.ts).
