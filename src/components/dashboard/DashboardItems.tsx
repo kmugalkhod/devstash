@@ -68,7 +68,15 @@ function ItemSection({
         </div>
         <ViewToggle view={view} onChange={onViewChange} />
       </div>
-      {view === "grid" ? (
+      {items.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-12 text-center">
+          {Icon && <Icon className="mb-2 size-5 text-muted-foreground/50" />}
+          <p className="text-sm text-muted-foreground">No {title.toLowerCase()} yet</p>
+          <p className="mt-1 text-xs text-muted-foreground/60">
+            Create your first item to get started
+          </p>
+        </div>
+      ) : view === "grid" ? (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {items.map((item) => (
             <ItemCard

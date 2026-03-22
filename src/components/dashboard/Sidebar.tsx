@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import {
   Star,
   Clock,
-  Settings,
   ChevronLeft,
   Folder,
+  LogOut,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -16,6 +18,15 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetContent,
@@ -33,12 +44,14 @@ function getTypeSlug(name: string): string {
 }
 
 function getInitials(name: string): string {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
+  return (
+    name
+      .split(" ")
+      .map((n) => n[0] ?? "")
+      .join("")
+      .toUpperCase()
+      .slice(0, 2) || "?"
+  );
 }
 
 interface SidebarProps {
@@ -221,47 +234,53 @@ function SidebarContent({
 
       {/* User Avatar Area */}
       <div className="border-t border-sidebar-border p-3">
-        {collapsed ? (
-          <div className="flex flex-col items-center gap-2">
-            <Tooltip>
-              <TooltipTrigger render={<div />}>
-                <Avatar size="sm">
-                  {user.image && <AvatarImage src={user.image} />}
-                  <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
-                </Avatar>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                {user.name}
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger render={<div />}>
-                <Button variant="ghost" size="icon-sm">
-                  <Settings className="size-3.5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">Settings</TooltipContent>
-            </Tooltip>
-          </div>
-        ) : (
-          <div className="flex items-center gap-3">
-            <Avatar size="default">
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className={cn(
+              "flex w-full cursor-pointer items-center rounded-md p-1 transition-colors hover:bg-sidebar-accent",
+              collapsed ? "justify-center" : "gap-3"
+            )}
+          >
+            <Avatar size={collapsed ? "sm" : "default"}>
               {user.image && <AvatarImage src={user.image} />}
               <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
             </Avatar>
-            <div className="flex-1 overflow-hidden">
-              <p className="truncate text-sm font-medium text-foreground">
-                {user.name}
-              </p>
-              <p className="truncate text-xs text-muted-foreground">
-                {user.email}
-              </p>
-            </div>
-            <Button variant="ghost" size="icon-sm">
-              <Settings className="size-3.5" />
-            </Button>
-          </div>
-        )}
+            {!collapsed && (
+              <div className="flex-1 overflow-hidden text-left">
+                <p className="truncate text-sm font-medium text-foreground">
+                  {user.name}
+                </p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {user.email}
+                </p>
+              </div>
+            )}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="top" align="start" sideOffset={8}>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium">{user.name}</span>
+                  <span className="text-xs font-normal text-muted-foreground">
+                    {user.email}
+                  </span>
+                </div>
+              </DropdownMenuLabel>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem render={<Link href="/profile" />}>
+              <User className="size-4" />
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => signOut({ callbackUrl: "/sign-in" })}
+            >
+              <LogOut className="size-4" />
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

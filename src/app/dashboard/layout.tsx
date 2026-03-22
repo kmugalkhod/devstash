@@ -9,14 +9,14 @@ import {
   getSidebarCollections,
   getSidebarUser,
 } from "@/lib/db/items";
-import { getDemoUserId } from "@/lib/demo-user";
+import { getAuthUserId } from "@/lib/auth-utils";
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const userId = await getDemoUserId();
+  const userId = await getAuthUserId();
 
   const [itemTypes, sidebarCollections, user] = await Promise.all([
     getSystemItemTypes(),

@@ -499,8 +499,12 @@ async function main() {
       email: demoUser.email,
       isPro: demoUser.isPro,
       emailVerified: demoUser.emailVerified,
+      password: hashedPassword,
     },
-    create: demoUser,
+    create: {
+      ...demoUser,
+      password: hashedPassword,
+    },
   });
   console.log(`  ✓ User: ${demoUser.name} (${demoUser.email})`);
 

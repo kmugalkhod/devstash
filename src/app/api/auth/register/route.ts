@@ -1,31 +1,42 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
+
+const registerSchema = z.object({
+  name: z.string().min(1).max(100),
+  email: z.string().email(),
+  password: z.string().min(8).max(72),
+});
+
+const limiter = rateLimit({ limit: 5, windowMs: 15 * 60 * 1000 });
 
 export async function POST(request: Request) {
   try {
-    const { name, email, password, confirmPassword } = await request.json();
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+      "unknown";
+    const { success } = limiter.check(ip);
 
-    if (!name || !email || !password || !confirmPassword) {
+    if (!success) {
       return NextResponse.json(
-        { error: "All fields are required" },
+        { error: "Too many requests. Please try again later." },
+        { status: 429 }
+      );
+    }
+
+    const body = await request.json();
+    const result = registerSchema.safeParse(body);
+
+    if (!result.success) {
+      return NextResponse.json(
+        { error: "Invalid input. Check your name, email, and password." },
         { status: 400 }
       );
     }
 
-    if (password !== confirmPassword) {
-      return NextResponse.json(
-        { error: "Passwords do not match" },
-        { status: 400 }
-      );
-    }
-
-    if (password.length < 8) {
-      return NextResponse.json(
-        { error: "Password must be at least 8 characters" },
-        { status: 400 }
-      );
-    }
+    const { name, email, password } = result.data;
 
     const existingUser = await prisma.user.findUnique({
       where: { email },

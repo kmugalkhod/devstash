@@ -13,10 +13,9 @@ import {
   getDashboardStats,
 } from "@/lib/db/collections";
 import { getPinnedItems, getRecentItems } from "@/lib/db/items";
-import { getDemoUserId } from "@/lib/demo-user";
+import { getAuthUserId } from "@/lib/auth-utils";
 
-async function StatsSection() {
-  const userId = await getDemoUserId();
+async function StatsSection({ userId }: { userId: string }) {
   const stats = await getDashboardStats(userId);
 
   return (
@@ -29,8 +28,7 @@ async function StatsSection() {
   );
 }
 
-async function CollectionsSection() {
-  const userId = await getDemoUserId();
+async function CollectionsSection({ userId }: { userId: string }) {
   const collections = await getUserCollections(userId);
 
   return (
@@ -44,23 +42,31 @@ async function CollectionsSection() {
           View all
         </Link>
       </div>
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {collections.map((collection) => (
-          <CollectionCard
-            key={collection.id}
-            name={collection.name}
-            itemCount={collection.itemCount}
-            description={collection.description}
-            types={collection.types}
-          />
-        ))}
-      </div>
+      {collections.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-12 text-center">
+          <p className="text-sm text-muted-foreground">No collections yet</p>
+          <p className="mt-1 text-xs text-muted-foreground/60">
+            Create your first collection to organize your items
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {collections.map((collection) => (
+            <CollectionCard
+              key={collection.id}
+              name={collection.name}
+              itemCount={collection.itemCount}
+              description={collection.description}
+              types={collection.types}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }
 
-async function ItemsSection() {
-  const userId = await getDemoUserId();
+async function ItemsSection({ userId }: { userId: string }) {
   const [pinnedItems, recentItems] = await Promise.all([
     getPinnedItems(userId),
     getRecentItems(userId),
@@ -69,19 +75,21 @@ async function ItemsSection() {
   return <DashboardItems pinnedItems={pinnedItems} recentItems={recentItems} />;
 }
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const userId = await getAuthUserId();
+
   return (
     <div className="space-y-10">
       <Suspense fallback={<StatsCardsSkeleton />}>
-        <StatsSection />
+        <StatsSection userId={userId} />
       </Suspense>
 
       <Suspense fallback={<CollectionsSkeleton />}>
-        <CollectionsSection />
+        <CollectionsSection userId={userId} />
       </Suspense>
 
       <Suspense fallback={<ItemsSkeleton />}>
-        <ItemsSection />
+        <ItemsSection userId={userId} />
       </Suspense>
     </div>
   );

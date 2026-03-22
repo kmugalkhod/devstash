@@ -10,12 +10,14 @@ export const proxy = auth((req) => {
   const isProtectedRoute = pathname.startsWith("/dashboard");
 
   if (isProtectedRoute && !req.auth) {
-    return NextResponse.redirect(new URL("/api/auth/signin", req.nextUrl));
+    return NextResponse.redirect(new URL("/sign-in", req.nextUrl));
   }
 
   return NextResponse.next();
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon\\.ico|.*\\.(?:png|jpg|jpeg|gif|svg|ico|webp|woff|woff2|ttf|css|js)$).*)",
+  ],
 };

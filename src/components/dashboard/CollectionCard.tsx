@@ -12,6 +12,16 @@ interface TypeInfo {
   color: string;
 }
 
+function isLowChroma(hex: string): boolean {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const saturation = max === 0 ? 0 : (max - min) / max;
+  return saturation < 0.15;
+}
+
 interface CollectionCardProps {
   name: string;
   itemCount: number;
@@ -26,9 +36,7 @@ export function CollectionCard({
   types,
 }: CollectionCardProps) {
   const rawColor = types[0]?.color || "#94a3b8";
-  // Low-chroma colors (e.g. gray for file type) are invisible as overlays — use fallback
-  const LOW_CHROMA_COLORS = new Set(["#6b7280", "#94a3b8"]);
-  const dominantColor = LOW_CHROMA_COLORS.has(rawColor) ? "#10b981" : rawColor;
+  const dominantColor = isLowChroma(rawColor) ? "#10b981" : rawColor;
 
   return (
     <motion.div

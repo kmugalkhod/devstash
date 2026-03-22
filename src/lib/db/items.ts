@@ -100,10 +100,11 @@ export interface DashboardItem {
 /**
  * Fetch pinned items for a user, ordered by most recently updated.
  */
-export async function getPinnedItems(userId: string): Promise<DashboardItem[]> {
+export async function getPinnedItems(userId: string, limit = 8): Promise<DashboardItem[]> {
   const items = await prisma.item.findMany({
     where: { userId, isPinned: true },
     orderBy: { updatedAt: "desc" },
+    take: limit,
     include: {
       itemType: { select: { id: true, name: true, icon: true, color: true } },
       tags: { include: { tag: { select: { name: true } } } },
