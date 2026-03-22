@@ -1,24 +1,10 @@
-# Current Feature: Email Verification on Signup
+# Current Feature
 
 ## Status
-In Progress
 
 ## Goals
-- Install Resend SDK and create email sending utility (`src/lib/email.ts`)
-- Generate a secure verification token on registration and store it in the existing `VerificationToken` model
-- Send a verification email with a clickable link using Resend
-- Create a `/verify-email` route that validates the token, sets `user.emailVerified`, and redirects to sign-in
-- Block sign-in for unverified credential users (show "please verify your email" message)
-- Update the register flow to show "check your email" message instead of redirecting to sign-in immediately
-- GitHub OAuth users skip verification (already verified by GitHub)
 
 ## Notes
-- Resend API key is already in `.env` as `RESEND_API_KEY`
-- The `VerificationToken` model already exists in the Prisma schema — no migration needed
-- The `User.emailVerified` field (DateTime, nullable) already exists — just needs to be set on verification
-- Credentials provider in `auth.ts` needs a check: reject sign-in if `emailVerified` is null
-- Token expiration: 24 hours
-- From address: use Resend's default or `noreply@devstash.io` if domain is configured
 
 ## History
 
@@ -39,3 +25,4 @@ In Progress
 - **2026-03-22** — Auth Setup (Phase 1) completed. Installed NextAuth v5 (next-auth@beta) with @auth/prisma-adapter. Split auth config pattern: edge-compatible auth.config.ts (GitHub provider) + full auth.ts (Prisma adapter, JWT strategy, user.id in session). Route protection via src/proxy.ts redirecting unauthenticated users from /dashboard/* to NextAuth default sign-in page. Created API route handler and next-auth type declarations. Fixed malformed AUTH_SECRET in .env.
 - **2026-03-22** — Auth Credentials (Phase 2) completed. Added Credentials provider to split auth config pattern. Added password field to User model via migration. Created registration API route (POST /api/auth/register) with validation (required fields, password match, min 8 chars, duplicate check, bcrypt hashing). Credentials sign-in with bcrypt verification in auth.ts. GitHub OAuth still works alongside credentials.
 - **2026-03-22** — Auth UI (Phase 3) completed. Custom sign-in page (`/sign-in`) with email/password form, GitHub OAuth button, registration success banner, and OAuth error handling. Custom register page (`/register`) with Zod-validated form. Sidebar avatar dropdown with profile link and sign-out. Replaced `getDemoUserId()` with real NextAuth session (`getAuthUserId`). Added rate limiting, Zod validation to register API. Extended middleware matcher for static assets. Added empty states for collections/items. Extracted shared AuthHeader component with DevStash brand wordmark. Code quality fixes: getInitials crash guard, pinned items query limit, computed saturation check for collection colors, Link-based profile navigation. Deleted dead code (mock-data.ts, demo-user.ts).
+- **2026-03-22** — Email Verification completed. Installed Resend SDK. Created `src/lib/email.ts` (branded HTML email template) and `src/lib/tokens.ts` (24-hour token generation/validation using existing VerificationToken model). Registration sends verification email via Resend, shows "check your email" screen. `/verify-email` route validates token and sets `user.emailVerified`. Unverified credential users blocked at sign-in with custom `EmailNotVerifiedError`. GitHub OAuth users skip verification. Verify-email page with success/failure states using soft icon containers.
