@@ -1,28 +1,10 @@
-# Current Feature: Auth Setup — NextAuth + GitHub Provider
+# Current Feature
 
 ## Status
 
-In Progress
-
 ## Goals
 
-- Install NextAuth v5 (`next-auth@beta`) and `@auth/prisma-adapter`
-- Set up split auth config pattern for edge compatibility (`auth.config.ts` + `auth.ts`)
-- Add GitHub OAuth provider
-- Protect `/dashboard/*` routes using Next.js 16 proxy (`src/proxy.ts`)
-- Redirect unauthenticated users to sign-in (NextAuth default pages)
-- Extend Session type with `user.id`
-
 ## Notes
-
-- Use `next-auth@beta` (not `@latest` which installs v4)
-- Proxy file must be at `src/proxy.ts` (same level as `app/`)
-- Use named export: `export const proxy = auth(...)` not default export
-- Use `session: { strategy: 'jwt' }` with split config pattern
-- Don't set custom `pages.signIn` — use NextAuth's default page
-- Environment variables needed: `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`
-- Use Context7 to verify newest NextAuth config and conventions
-- Full spec: `context/features/auth-phase-1-spec.md`
 
 ## History
 
@@ -40,3 +22,4 @@ In Progress
 - **2026-03-20** — UI/UX Refinement completed. Reduced stat card height (smaller padding, font, icon). Improved typography contrast: secondary text lightened to zinc-400, timestamps to zinc-500, snippet previews to zinc-400 on bg-black/40, tags brightened to zinc-300 with bg-white/8. Increased card padding (+4px). Increased section margins (space-y-10, mb-6). Added hover shadow glow (shadow-white/3) on all cards. Limited dashboard collections to 4 to fit grid.
 - **2026-03-22** — Prisma 7 compliance audit completed. Verified all v7 breaking changes already addressed: prisma.config.ts with defineConfig(), @prisma/adapter-pg driver adapter, correct PrismaClient import from generated output, no url in datasource block, no deprecated preview flags, Node.js 22.13.1, TypeScript 5.9.3. No code changes needed — project was set up with Prisma 7 from the start.
 - **2026-03-22** — Dashboard UI Improvements completed. Added Suspense boundaries with skeleton fallbacks for all dashboard sections. Restyled PRO badge with amber theme. Added Clock icon to Recent Items heading. Increased collection overlay and stats icon opacities. Widened search bar. Added mobile brand logomark and short "New" label. Tightened card spacing. Improved view toggle active state. Added sky-400 tint to sidebar Recent icon. Added keyboard accessibility to collection options button.
+- **2026-03-22** — Auth Setup (Phase 1) completed. Installed NextAuth v5 (next-auth@beta) with @auth/prisma-adapter. Split auth config pattern: edge-compatible auth.config.ts (GitHub provider) + full auth.ts (Prisma adapter, JWT strategy, user.id in session). Route protection via src/proxy.ts redirecting unauthenticated users from /dashboard/* to NextAuth default sign-in page. Created API route handler and next-auth type declarations. Fixed malformed AUTH_SECRET in .env.
