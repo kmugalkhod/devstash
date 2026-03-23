@@ -21,6 +21,7 @@ export function SignInForm() {
   const searchParams = useSearchParams();
   const registered = searchParams.get("registered") === "true";
   const verified = searchParams.get("verified") === "true";
+  const passwordReset = searchParams.get("password-reset") === "true";
   const oauthError = searchParams.get("error");
 
   const [email, setEmail] = useState("");
@@ -77,6 +78,11 @@ export function SignInForm() {
           Email verified successfully. You can now sign in.
         </div>
       )}
+      {passwordReset && (
+        <div className="rounded-lg border border-emerald-500/50 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-400">
+          Password reset successfully. You can now sign in with your new password.
+        </div>
+      )}
 
       {/* GitHub OAuth */}
       <Button
@@ -122,7 +128,15 @@ export function SignInForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password">Password</Label>
+            <Link
+              href="/forgot-password"
+              className="text-xs text-muted-foreground hover:text-foreground"
+            >
+              Forgot password?
+            </Link>
+          </div>
           <Input
             id="password"
             type="password"
