@@ -1,18 +1,10 @@
-# Current Feature: Toggle Email Verification
+# Current Feature
 
 ## Status
-Complete
 
 ## Goals
-- Add an env variable `EMAIL_VERIFICATION_ENABLED` (default `true`) to toggle the email verification system
-- When disabled: registration auto-verifies users (sets `emailVerified` immediately), skips sending Resend email, and sign-in doesn't block unverified users
-- When enabled: current behavior unchanged (send email, block unverified at sign-in)
-- This unblocks development since Resend free tier only sends to the account owner's email without a custom domain
 
 ## Notes
-- Touch points: `src/app/api/auth/register/route.ts` (skip token+email, auto-verify), `src/auth.ts` (skip emailVerified check), `src/app/(auth)/register/RegisterForm.tsx` (adjust redirect — skip "check email" message)
-- Keep all verification code in place — just gate it behind the flag
-- Env var approach is simplest and standard for this kind of toggle
 
 ## History
 
@@ -34,3 +26,4 @@ Complete
 - **2026-03-22** — Auth Credentials (Phase 2) completed. Added Credentials provider to split auth config pattern. Added password field to User model via migration. Created registration API route (POST /api/auth/register) with validation (required fields, password match, min 8 chars, duplicate check, bcrypt hashing). Credentials sign-in with bcrypt verification in auth.ts. GitHub OAuth still works alongside credentials.
 - **2026-03-22** — Auth UI (Phase 3) completed. Custom sign-in page (`/sign-in`) with email/password form, GitHub OAuth button, registration success banner, and OAuth error handling. Custom register page (`/register`) with Zod-validated form. Sidebar avatar dropdown with profile link and sign-out. Replaced `getDemoUserId()` with real NextAuth session (`getAuthUserId`). Added rate limiting, Zod validation to register API. Extended middleware matcher for static assets. Added empty states for collections/items. Extracted shared AuthHeader component with DevStash brand wordmark. Code quality fixes: getInitials crash guard, pinned items query limit, computed saturation check for collection colors, Link-based profile navigation. Deleted dead code (mock-data.ts, demo-user.ts).
 - **2026-03-22** — Email Verification completed. Installed Resend SDK. Created `src/lib/email.ts` (branded HTML email template) and `src/lib/tokens.ts` (24-hour token generation/validation using existing VerificationToken model). Registration sends verification email via Resend, shows "check your email" screen. `/verify-email` route validates token and sets `user.emailVerified`. Unverified credential users blocked at sign-in with custom `EmailNotVerifiedError`. GitHub OAuth users skip verification. Verify-email page with success/failure states using soft icon containers.
+- **2026-03-24** — Toggle Email Verification completed. Added `EMAIL_VERIFICATION_ENABLED` env variable (default `true`). When set to `false`: registration auto-verifies users, skips Resend email, sign-in allows unverified users. Enabled GitHub OAuth account linking (`allowDangerousEmailAccountLinking`) for existing credential users. Added `scripts/delete-user.ts` utility for cleaning up test users.
