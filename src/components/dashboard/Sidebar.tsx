@@ -268,7 +268,7 @@ function SidebarContent({
               </DropdownMenuLabel>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem render={<Link href="/profile" />}>
+            <DropdownMenuItem render={<Link href="/dashboard/profile" />}>
               <User className="size-4" />
               Profile
             </DropdownMenuItem>
