@@ -14,6 +14,53 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   callbacks: {
+    async signIn({ user, account, profile }) {
+      if (account?.provider === "github") {
+        // Only allow linking to an existing account if GitHub has verified the email
+        if (!profile?.email_verified) {
+          return false;
+        }
+
+        // Check if a credential-based account already exists with this email
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+          include: { accounts: true },
+        });
+
+        if (existingUser) {
+          const hasGitHubAccount = existingUser.accounts.some(
+            (a) => a.provider === "github"
+          );
+
+          if (!hasGitHubAccount) {
+            // Link GitHub account to existing user
+            await prisma.account.create({
+              data: {
+                userId: existingUser.id,
+                type: account.type,
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+                access_token: account.access_token,
+                token_type: account.token_type,
+                scope: account.scope,
+              },
+            });
+
+            // Ensure emailVerified is set
+            if (!existingUser.emailVerified) {
+              await prisma.user.update({
+                where: { id: existingUser.id },
+                data: { emailVerified: new Date() },
+              });
+            }
+
+            return true;
+          }
+        }
+      }
+
+      return true;
+    },
     jwt({ token, user }) {
       if (user?.id) {
         token.id = user.id;
@@ -29,7 +76,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   ...authConfig,
   providers: [
-    GitHub({ allowDangerousEmailAccountLinking: true }),
+    GitHub,
     Credentials({
       credentials: {
         email: { label: "Email", type: "email" },
