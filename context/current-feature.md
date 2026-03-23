@@ -1,10 +1,18 @@
-# Current Feature
+# Current Feature: Toggle Email Verification
 
 ## Status
+Complete
 
 ## Goals
+- Add an env variable `EMAIL_VERIFICATION_ENABLED` (default `true`) to toggle the email verification system
+- When disabled: registration auto-verifies users (sets `emailVerified` immediately), skips sending Resend email, and sign-in doesn't block unverified users
+- When enabled: current behavior unchanged (send email, block unverified at sign-in)
+- This unblocks development since Resend free tier only sends to the account owner's email without a custom domain
 
 ## Notes
+- Touch points: `src/app/api/auth/register/route.ts` (skip token+email, auto-verify), `src/auth.ts` (skip emailVerified check), `src/app/(auth)/register/RegisterForm.tsx` (adjust redirect — skip "check email" message)
+- Keep all verification code in place — just gate it behind the flag
+- Env var approach is simplest and standard for this kind of toggle
 
 ## History
 

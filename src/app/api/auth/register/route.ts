@@ -61,12 +61,26 @@ export async function POST(request: Request) {
       },
     });
 
-    // Generate verification token and send email
-    const token = await generateVerificationToken(email);
-    await sendVerificationEmail(email, token);
+    const emailVerificationEnabled = process.env.EMAIL_VERIFICATION_ENABLED !== "false";
+
+    if (emailVerificationEnabled) {
+      // Generate verification token and send email
+      const token = await generateVerificationToken(email);
+      await sendVerificationEmail(email, token);
+    } else {
+      // Auto-verify the user when email verification is disabled
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { emailVerified: new Date() },
+      });
+    }
 
     return NextResponse.json(
-      { success: true, user: { id: user.id, name: user.name, email: user.email } },
+      {
+        success: true,
+        emailVerificationRequired: emailVerificationEnabled,
+        user: { id: user.id, name: user.name, email: user.email },
+      },
       { status: 201 }
     );
   } catch (error) {

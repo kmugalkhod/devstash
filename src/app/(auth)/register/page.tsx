@@ -47,7 +47,12 @@ export default function RegisterPage() {
       return;
     }
 
-    setEmailSent(true);
+    if (data.emailVerificationRequired) {
+      setEmailSent(true);
+    } else {
+      // Verification disabled — go straight to sign-in
+      window.location.href = "/sign-in?registered=true";
+    }
   }
 
   if (emailSent) {

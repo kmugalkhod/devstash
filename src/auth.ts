@@ -1,6 +1,7 @@
 import NextAuth, { CredentialsSignin } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import Credentials from "next-auth/providers/credentials";
+import GitHub from "next-auth/providers/github";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import authConfig from "./auth.config";
@@ -28,9 +29,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   ...authConfig,
   providers: [
-    ...authConfig.providers.filter(
-      (p) => (p as { id?: string }).id !== "credentials"
-    ),
+    GitHub({ allowDangerousEmailAccountLinking: true }),
     Credentials({
       credentials: {
         email: { label: "Email", type: "email" },
@@ -48,7 +47,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) return null;
 
-        if (!user.emailVerified) {
+        const emailVerificationEnabled = process.env.EMAIL_VERIFICATION_ENABLED !== "false";
+        if (emailVerificationEnabled && !user.emailVerified) {
           throw new EmailNotVerifiedError();
         }
 
