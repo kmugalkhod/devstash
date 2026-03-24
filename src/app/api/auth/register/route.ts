@@ -2,7 +2,12 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { rateLimit } from "@/lib/rate-limit";
+import {
+  registerLimiter,
+  getClientIp,
+  checkRateLimit,
+  rateLimitResponse,
+} from "@/lib/rate-limit";
 import { generateVerificationToken } from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/email";
 
@@ -12,20 +17,13 @@ const registerSchema = z.object({
   password: z.string().min(8).max(72),
 });
 
-const limiter = rateLimit({ limit: 5, windowMs: 15 * 60 * 1000 });
-
 export async function POST(request: Request) {
   try {
-    const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      "unknown";
-    const { success } = limiter.check(ip);
+    const ip = getClientIp(request);
+    const { success, reset } = await checkRateLimit(registerLimiter, ip);
 
     if (!success) {
-      return NextResponse.json(
-        { error: "Too many requests. Please try again later." },
-        { status: 429 }
-      );
+      return rateLimitResponse(reset);
     }
 
     const body = await request.json();

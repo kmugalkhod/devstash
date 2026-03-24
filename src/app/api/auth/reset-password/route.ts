@@ -3,6 +3,12 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { validateVerificationToken } from "@/lib/tokens";
+import {
+  resetPasswordLimiter,
+  getClientIp,
+  checkRateLimit,
+  rateLimitResponse,
+} from "@/lib/rate-limit";
 
 const schema = z.object({
   token: z.string().min(1),
@@ -11,6 +17,13 @@ const schema = z.object({
 
 export async function POST(request: Request) {
   try {
+    const ip = getClientIp(request);
+    const { success, reset } = await checkRateLimit(resetPasswordLimiter, ip);
+
+    if (!success) {
+      return rateLimitResponse(reset);
+    }
+
     const body = await request.json();
     const result = schema.safeParse(body);
 

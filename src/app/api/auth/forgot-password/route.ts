@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { rateLimit } from "@/lib/rate-limit";
+import {
+  forgotPasswordLimiter,
+  getClientIp,
+  checkRateLimit,
+  rateLimitResponse,
+} from "@/lib/rate-limit";
 import { generateVerificationToken } from "@/lib/tokens";
 import { sendPasswordResetEmail } from "@/lib/email";
 
@@ -9,20 +14,13 @@ const schema = z.object({
   email: z.string().email(),
 });
 
-const limiter = rateLimit({ limit: 3, windowMs: 15 * 60 * 1000 });
-
 export async function POST(request: Request) {
   try {
-    const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      "unknown";
-    const { success } = limiter.check(ip);
+    const ip = getClientIp(request);
+    const { success, reset } = await checkRateLimit(forgotPasswordLimiter, ip);
 
     if (!success) {
-      return NextResponse.json(
-        { error: "Too many requests. Please try again later." },
-        { status: 429 }
-      );
+      return rateLimitResponse(reset);
     }
 
     const body = await request.json();

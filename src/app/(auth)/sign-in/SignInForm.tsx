@@ -47,7 +47,9 @@ export function SignInForm() {
     });
 
     if (result?.error) {
-      if (result.code === "EMAIL_NOT_VERIFIED") {
+      if (result.error === "RateLimited") {
+        setError("Too many sign-in attempts. Please try again in a few minutes.");
+      } else if (result.code === "EMAIL_NOT_VERIFIED") {
         setError("Please verify your email before signing in. Check your inbox for the verification link.");
       } else {
         setError("Invalid email or password");
