@@ -1,25 +1,10 @@
-# Current Feature: Fix GitHub OAuth Redirect
+# Current Feature
 
 ## Status
 
-In Progress
-
 ## Goals
 
-- GitHub OAuth sign-in works in a single click (no double-click needed)
-- Replace client-side `signIn` with server-side `signIn` via Server Action
-- Create `src/actions/auth.ts` with `signInWithGitHub` server action
-- Update sign-in form to use `<form action={...}>` for GitHub button
-- Build passes (`npm run build`) and tests pass (`npm run test`)
-
 ## Notes
-
-- Root cause: client-side `signIn` from `next-auth/react` has unreliable redirect behavior
-- Solution: use server-side `signIn` from `@/auth` (recommended NextAuth v5 pattern)
-- Use `redirectTo` (v5) not `callbackUrl` (v4)
-- Keep credentials login as-is (uses `redirect: false`, works fine)
-- No SessionProvider needed
-- Spec: `context/fixes/github-oauth-redirect-fix.md`
 
 ## History
 
@@ -46,3 +31,4 @@ In Progress
 - **2026-03-24** — Profile Page completed. Created `/dashboard/profile` with user info card (avatar, name, email, member since), usage stats (total items, collections, per-type breakdown with colored icons), change password dialog (email users only), and delete account with AlertDialog confirmation. API routes: `POST /api/auth/change-password` (verifies current password, bcrypt hashes new), `DELETE /api/auth/delete-account` (cascading delete + sign out). Installed shadcn AlertDialog and Dialog components. Fixed sidebar profile link to `/dashboard/profile`.
 - **2026-03-24** — Auth Security Audit completed. Ran full auth security audit (2 high, 2 medium, 1 low findings). Fixed HIGH: replaced `allowDangerousEmailAccountLinking` with safe `signIn` callback that checks `profile.email_verified` before linking GitHub accounts. Added missing env vars to `.env.production`. Audit report saved to `docs/audit-results/AUTH_SECURITY_REVIEW.md`.
 - **2026-03-25** — Rate Limiting for Auth completed. Replaced in-memory rate limiter with Upstash Redis (`@upstash/ratelimit`) using sliding window algorithm. Rate limited: login (5/15min per IP), register (3/hour per IP), forgot-password (3/hour per IP), reset-password (5/15min per IP). Wrapped NextAuth `[...nextauth]` POST handler for login rate limiting with NextAuth-compatible 429 response format (includes `url` field required by `signIn()` client). Fail-open if Redis unavailable. `Retry-After` header on all 429 responses. Frontend displays rate limit errors on sign-in form.
+- **2026-03-25** — Fix GitHub OAuth Redirect completed. Replaced client-side `signIn("github")` from `next-auth/react` with server-side `signIn` via Server Action (`src/actions/auth.ts`). Uses `redirectTo` (v5) instead of `callbackUrl` (v4). GitHub button now uses `<form action={signInWithGitHub}>` for reliable server-side redirect. Fixes double-click issue where first sign-in authenticated but failed to redirect to `/dashboard`.
