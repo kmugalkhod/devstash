@@ -1,29 +1,10 @@
-# Current Feature: Rate Limiting for Auth
+# Current Feature
 
 ## Status
 
-In Progress
-
 ## Goals
 
-- Create reusable `src/lib/rate-limit.ts` utility using Upstash Redis + `@upstash/ratelimit`
-- Rate limit login (`/api/auth/callback/credentials`): 5 attempts / 15 min per IP+email
-- Rate limit registration (`/api/auth/register`): 3 attempts / 1 hour per IP
-- Rate limit forgot password (`/api/auth/forgot-password`): 3 attempts / 1 hour per IP
-- Rate limit reset password (`/api/auth/reset-password`): 5 attempts / 15 min per IP
-- Rate limit resend verification (`/api/auth/resend-verification`): 3 attempts / 15 min per IP+email
-- Return 429 responses with `Retry-After` header and user-friendly error messages
-- Display rate limit errors on frontend via toast notifications
-- Fail open if Upstash is unavailable (allow request through)
-
 ## Notes
-
-- Uses Upstash Redis with sliding window algorithm (serverless-compatible)
-- Env vars needed: `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`
-- Upstash free tier allows 10k requests/day (sufficient for auth limiting)
-- Login limiting with NextAuth credentials may need custom sign-in handler
-- IP extracted from `x-forwarded-for` header (Vercel) or fallback
-- Rate limit key = IP alone or IP+email depending on endpoint
 
 ## History
 
@@ -49,3 +30,4 @@ In Progress
 - **2026-03-24** — Forgot Password completed. Added `/forgot-password` page (email input, "check your email" confirmation), `/reset-password` page (new password + confirm form, success state). API routes: `POST /api/auth/forgot-password` (rate-limited, doesn't reveal if email exists) and `POST /api/auth/reset-password` (validates token, bcrypt hashes new password, sets emailVerified). Reused existing `VerificationToken` model and token utilities. Extracted `brandedEmail` helper in `email.ts`, added `sendPasswordResetEmail`. Added "Forgot password?" link and password-reset success banner to sign-in page.
 - **2026-03-24** — Profile Page completed. Created `/dashboard/profile` with user info card (avatar, name, email, member since), usage stats (total items, collections, per-type breakdown with colored icons), change password dialog (email users only), and delete account with AlertDialog confirmation. API routes: `POST /api/auth/change-password` (verifies current password, bcrypt hashes new), `DELETE /api/auth/delete-account` (cascading delete + sign out). Installed shadcn AlertDialog and Dialog components. Fixed sidebar profile link to `/dashboard/profile`.
 - **2026-03-24** — Auth Security Audit completed. Ran full auth security audit (2 high, 2 medium, 1 low findings). Fixed HIGH: replaced `allowDangerousEmailAccountLinking` with safe `signIn` callback that checks `profile.email_verified` before linking GitHub accounts. Added missing env vars to `.env.production`. Audit report saved to `docs/audit-results/AUTH_SECURITY_REVIEW.md`.
+- **2026-03-25** — Rate Limiting for Auth completed. Replaced in-memory rate limiter with Upstash Redis (`@upstash/ratelimit`) using sliding window algorithm. Rate limited: login (5/15min per IP), register (3/hour per IP), forgot-password (3/hour per IP), reset-password (5/15min per IP). Wrapped NextAuth `[...nextauth]` POST handler for login rate limiting with NextAuth-compatible 429 response format (includes `url` field required by `signIn()` client). Fail-open if Redis unavailable. `Retry-After` header on all 429 responses. Frontend displays rate limit errors on sign-in form.
