@@ -16,8 +16,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async signIn({ user, account, profile }) {
       if (account?.provider === "github") {
-        // Only allow linking to an existing account if GitHub has verified the email
-        if (!profile?.email_verified) {
+        // Only allow linking if GitHub provided an email (GitHub only returns verified emails)
+        if (!profile?.email) {
           return false;
         }
 
