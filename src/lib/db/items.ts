@@ -98,6 +98,28 @@ export interface DashboardItem {
 }
 
 /**
+ * Fetch items for a user filtered by type name, ordered by most recent.
+ */
+export async function getItemsByType(
+  userId: string,
+  typeName: string
+): Promise<DashboardItem[]> {
+  const items = await prisma.item.findMany({
+    where: {
+      userId,
+      itemType: { name: typeName },
+    },
+    orderBy: { createdAt: "desc" },
+    include: {
+      itemType: { select: { id: true, name: true, icon: true, color: true } },
+      tags: { include: { tag: { select: { name: true } } } },
+    },
+  });
+
+  return items.map(mapItem);
+}
+
+/**
  * Fetch pinned items for a user, ordered by most recently updated.
  */
 export async function getPinnedItems(userId: string, limit = 8): Promise<DashboardItem[]> {

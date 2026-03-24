@@ -88,7 +88,7 @@ function SidebarContent({
 
             const linkContent = (
               <Link
-                href={`/items/${getTypeSlug(type.name)}`}
+                href={`/dashboard/items/${getTypeSlug(type.name)}`}
                 className={cn(
                   "flex items-center gap-3 rounded-md px-2 py-2 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                   collapsed && "justify-center px-0"
