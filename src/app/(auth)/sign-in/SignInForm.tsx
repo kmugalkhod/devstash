@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { signInWithGitHub } from "@/actions/auth";
 import Link from "next/link";
 import { Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -87,15 +88,17 @@ export function SignInForm() {
       )}
 
       {/* GitHub OAuth */}
-      <Button
-        variant="outline"
-        className="w-full"
-        size="lg"
-        onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
-      >
-        <Github className="size-4" />
-        Sign in with GitHub
-      </Button>
+      <form action={signInWithGitHub}>
+        <Button
+          variant="outline"
+          className="w-full"
+          size="lg"
+          type="submit"
+        >
+          <Github className="size-4" />
+          Sign in with GitHub
+        </Button>
+      </form>
 
       {/* Divider */}
       <div className="relative">

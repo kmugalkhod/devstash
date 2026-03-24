@@ -1,10 +1,25 @@
-# Current Feature
+# Current Feature: Fix GitHub OAuth Redirect
 
 ## Status
 
+In Progress
+
 ## Goals
 
+- GitHub OAuth sign-in works in a single click (no double-click needed)
+- Replace client-side `signIn` with server-side `signIn` via Server Action
+- Create `src/actions/auth.ts` with `signInWithGitHub` server action
+- Update sign-in form to use `<form action={...}>` for GitHub button
+- Build passes (`npm run build`) and tests pass (`npm run test`)
+
 ## Notes
+
+- Root cause: client-side `signIn` from `next-auth/react` has unreliable redirect behavior
+- Solution: use server-side `signIn` from `@/auth` (recommended NextAuth v5 pattern)
+- Use `redirectTo` (v5) not `callbackUrl` (v4)
+- Keep credentials login as-is (uses `redirect: false`, works fine)
+- No SessionProvider needed
+- Spec: `context/fixes/github-oauth-redirect-fix.md`
 
 ## History
 
