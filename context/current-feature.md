@@ -1,19 +1,10 @@
-# Current Feature: Items List View
+# Current Feature
 
 ## Status
-In Progress
 
 ## Goals
-- Create dynamic route `/items/[type]` (e.g., /items/snippets, /items/notes)
-- Fetch and display items filtered by type from the database
-- Responsive grid of ItemCard components (two columns on md+)
-- Each card has left border colored by item type
-- Follow existing codebase patterns (server components, Prisma queries, existing ItemCard)
 
 ## Notes
-- Sidebar already has links to `/items/TYPE` for each system item type
-- ItemCard component already exists from dashboard work
-- Need a Prisma query to fetch items by type name for the authenticated user
 
 ## History
 
@@ -41,3 +32,4 @@ In Progress
 - **2026-03-24** — Auth Security Audit completed. Ran full auth security audit (2 high, 2 medium, 1 low findings). Fixed HIGH: replaced `allowDangerousEmailAccountLinking` with safe `signIn` callback that checks `profile.email_verified` before linking GitHub accounts. Added missing env vars to `.env.production`. Audit report saved to `docs/audit-results/AUTH_SECURITY_REVIEW.md`.
 - **2026-03-25** — Rate Limiting for Auth completed. Replaced in-memory rate limiter with Upstash Redis (`@upstash/ratelimit`) using sliding window algorithm. Rate limited: login (5/15min per IP), register (3/hour per IP), forgot-password (3/hour per IP), reset-password (5/15min per IP). Wrapped NextAuth `[...nextauth]` POST handler for login rate limiting with NextAuth-compatible 429 response format (includes `url` field required by `signIn()` client). Fail-open if Redis unavailable. `Retry-After` header on all 429 responses. Frontend displays rate limit errors on sign-in form.
 - **2026-03-25** — Fix GitHub OAuth Redirect completed. Replaced client-side `signIn("github")` from `next-auth/react` with server-side `signIn` via Server Action (`src/actions/auth.ts`). Uses `redirectTo` (v5) instead of `callbackUrl` (v4). GitHub button now uses `<form action={signInWithGitHub}>` for reliable server-side redirect. Fixes double-click issue where first sign-in authenticated but failed to redirect to `/dashboard`.
+- **2026-03-25** — Items List View completed. Created dynamic route `/dashboard/items/[type]` displaying type-filtered items with grid/list view toggle. Added `getItemsByType` Prisma query in `src/lib/db/items.ts`. Created `ItemsListView` client component with `ViewToggle`. Page header shows type icon, color, and item count. Updated sidebar links from `/items/TYPE` to `/dashboard/items/TYPE`. Reuses existing `ItemCard` and `ItemCardList` components.
