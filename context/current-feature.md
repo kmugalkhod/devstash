@@ -1,10 +1,16 @@
-# Current Feature
+# Current Feature: Fix Slow Item Type Switching
 
 ## Status
+In Progress
 
 ## Goals
+- Make switching between item types in the sidebar feel instant
+- Add loading skeleton for the items/[type] route
+- Remove unnecessary `force-dynamic` from dashboard layout
 
 ## Notes
+- Root cause: `export const dynamic = "force-dynamic"` in dashboard layout forces all sidebar queries to re-run on every navigation
+- Adding `loading.tsx` provides instant visual feedback while page data loads
 
 ## History
 
