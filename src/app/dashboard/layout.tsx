@@ -2,6 +2,7 @@ import { TopBar } from "@/components/dashboard/TopBar";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { SidebarProvider } from "@/components/dashboard/SidebarContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ItemDrawerProvider } from "@/components/items/ItemDrawerProvider";
 import {
   getSystemItemTypes,
   getSidebarCollections,
@@ -36,7 +37,9 @@ export default async function DashboardLayout({
             <div className="flex flex-1 flex-col overflow-hidden">
               <TopBar />
               <main className="flex-1 overflow-y-auto">
-              <div className="mx-auto max-w-7xl px-8 py-6">{children}</div>
+              <ItemDrawerProvider>
+                <div className="mx-auto max-w-7xl px-8 py-6">{children}</div>
+              </ItemDrawerProvider>
               </main>
             </div>
           </div>

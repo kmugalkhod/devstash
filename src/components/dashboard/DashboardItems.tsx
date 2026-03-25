@@ -6,6 +6,7 @@ import { ItemCardList } from "@/components/dashboard/ItemCardList";
 import { Pin, Clock, LayoutGrid, List } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { DashboardItem } from "@/lib/db/items";
+import { useItemDrawer } from "@/components/items/ItemDrawerProvider";
 
 type ViewMode = "grid" | "list";
 
@@ -52,12 +53,14 @@ function ItemSection({
   items,
   view,
   onViewChange,
+  onItemClick,
 }: {
   title: string;
   icon?: React.ComponentType<{ className?: string }>;
   items: DashboardItem[];
   view: ViewMode;
   onViewChange: (v: ViewMode) => void;
+  onItemClick: (id: string) => void;
 }) {
   return (
     <section>
@@ -89,6 +92,7 @@ function ItemSection({
               isFavorite={item.isFavorite}
               tags={item.tags}
               createdAt={item.createdAt}
+              onClick={() => onItemClick(item.id)}
             />
           ))}
         </div>
@@ -105,6 +109,7 @@ function ItemSection({
               isFavorite={item.isFavorite}
               tags={item.tags}
               createdAt={item.createdAt}
+              onClick={() => onItemClick(item.id)}
             />
           ))}
         </div>
@@ -124,6 +129,7 @@ export function DashboardItems({
 }: DashboardItemsProps) {
   const [pinnedView, setPinnedView] = useState<ViewMode>("grid");
   const [recentView, setRecentView] = useState<ViewMode>("grid");
+  const { openDrawer } = useItemDrawer();
 
   return (
     <>
@@ -134,6 +140,7 @@ export function DashboardItems({
           items={pinnedItems}
           view={pinnedView}
           onViewChange={setPinnedView}
+          onItemClick={openDrawer}
         />
       )}
 
@@ -143,6 +150,7 @@ export function DashboardItems({
         items={recentItems}
         view={recentView}
         onViewChange={setRecentView}
+        onItemClick={openDrawer}
       />
     </>
   );

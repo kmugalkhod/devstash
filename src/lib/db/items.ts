@@ -181,6 +181,68 @@ export async function getSidebarUser(userId: string): Promise<SidebarUser> {
   };
 }
 
+export interface ItemDetail {
+  id: string;
+  title: string;
+  contentType: string;
+  content: string | null;
+  fileUrl: string | null;
+  fileName: string | null;
+  fileSize: number | null;
+  url: string | null;
+  description: string | null;
+  language: string | null;
+  isFavorite: boolean;
+  isPinned: boolean;
+  createdAt: string;
+  updatedAt: string;
+  type: ItemTypeInfo;
+  tags: string[];
+  collections: { id: string; name: string }[];
+}
+
+/**
+ * Fetch a single item by ID with full detail (type, tags, collections).
+ * Returns null if not found or doesn't belong to the user.
+ */
+export async function getItemById(
+  itemId: string,
+  userId: string
+): Promise<ItemDetail | null> {
+  const item = await prisma.item.findUnique({
+    where: { id: itemId },
+    include: {
+      itemType: { select: { id: true, name: true, icon: true, color: true } },
+      tags: { include: { tag: { select: { name: true } } } },
+      collections: {
+        include: { collection: { select: { id: true, name: true } } },
+      },
+    },
+  });
+
+  if (!item || item.userId !== userId) return null;
+
+  return {
+    id: item.id,
+    title: item.title,
+    contentType: item.contentType,
+    content: item.content,
+    fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
+    url: item.url,
+    description: item.description,
+    language: item.language,
+    isFavorite: item.isFavorite,
+    isPinned: item.isPinned,
+    createdAt: item.createdAt.toISOString(),
+    updatedAt: item.updatedAt.toISOString(),
+    type: item.itemType,
+    tags: item.tags.map((t) => t.tag.name),
+    collections: item.collections.map((c) => c.collection),
+  };
+}
+
 function mapItem(item: {
   id: string;
   title: string;

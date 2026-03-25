@@ -6,6 +6,7 @@ import { ItemCardList } from "@/components/dashboard/ItemCardList";
 import { LayoutGrid, List } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { DashboardItem } from "@/lib/db/items";
+import { useItemDrawer } from "@/components/items/ItemDrawerProvider";
 
 type ViewMode = "grid" | "list";
 
@@ -53,6 +54,7 @@ interface ItemsListViewProps {
 
 export function ItemsListView({ items, typeName }: ItemsListViewProps) {
   const [view, setView] = useState<ViewMode>("grid");
+  const { openDrawer } = useItemDrawer();
 
   return (
     <section>
@@ -73,7 +75,7 @@ export function ItemsListView({ items, typeName }: ItemsListViewProps) {
           </p>
         </div>
       ) : view === "grid" ? (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
             <ItemCard
               key={item.id}
@@ -85,6 +87,7 @@ export function ItemsListView({ items, typeName }: ItemsListViewProps) {
               isFavorite={item.isFavorite}
               tags={item.tags}
               createdAt={item.createdAt}
+              onClick={() => openDrawer(item.id)}
             />
           ))}
         </div>
@@ -101,6 +104,7 @@ export function ItemsListView({ items, typeName }: ItemsListViewProps) {
               isFavorite={item.isFavorite}
               tags={item.tags}
               createdAt={item.createdAt}
+              onClick={() => openDrawer(item.id)}
             />
           ))}
         </div>

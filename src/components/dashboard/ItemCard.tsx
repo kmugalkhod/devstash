@@ -11,6 +11,7 @@ interface ItemCardProps {
   isFavorite: boolean;
   tags: string[];
   createdAt: string;
+  onClick?: () => void;
 }
 
 export function ItemCard({
@@ -22,11 +23,13 @@ export function ItemCard({
   isFavorite,
   tags,
   createdAt,
+  onClick,
 }: ItemCardProps) {
   const Icon = iconMap[typeIcon];
 
   return (
     <div
+      onClick={onClick}
       className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-muted-foreground/20 hover:shadow-md hover:shadow-white/3"
       style={{
         borderLeftWidth: "3px",
