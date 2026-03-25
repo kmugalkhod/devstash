@@ -1,16 +1,11 @@
-# Current Feature: Fix Slow Item Type Switching
+# Current Feature
 
 ## Status
-In Progress
+Not Started
 
 ## Goals
-- Make switching between item types in the sidebar feel instant
-- Add loading skeleton for the items/[type] route
-- Remove unnecessary `force-dynamic` from dashboard layout
 
 ## Notes
-- Root cause: `export const dynamic = "force-dynamic"` in dashboard layout forces all sidebar queries to re-run on every navigation
-- Adding `loading.tsx` provides instant visual feedback while page data loads
 
 ## History
 
@@ -39,3 +34,4 @@ In Progress
 - **2026-03-25** — Rate Limiting for Auth completed. Replaced in-memory rate limiter with Upstash Redis (`@upstash/ratelimit`) using sliding window algorithm. Rate limited: login (5/15min per IP), register (3/hour per IP), forgot-password (3/hour per IP), reset-password (5/15min per IP). Wrapped NextAuth `[...nextauth]` POST handler for login rate limiting with NextAuth-compatible 429 response format (includes `url` field required by `signIn()` client). Fail-open if Redis unavailable. `Retry-After` header on all 429 responses. Frontend displays rate limit errors on sign-in form.
 - **2026-03-25** — Fix GitHub OAuth Redirect completed. Replaced client-side `signIn("github")` from `next-auth/react` with server-side `signIn` via Server Action (`src/actions/auth.ts`). Uses `redirectTo` (v5) instead of `callbackUrl` (v4). GitHub button now uses `<form action={signInWithGitHub}>` for reliable server-side redirect. Fixes double-click issue where first sign-in authenticated but failed to redirect to `/dashboard`.
 - **2026-03-25** — Items List View completed. Created dynamic route `/dashboard/items/[type]` displaying type-filtered items with grid/list view toggle. Added `getItemsByType` Prisma query in `src/lib/db/items.ts`. Created `ItemsListView` client component with `ViewToggle`. Page header shows type icon, color, and item count. Updated sidebar links from `/items/TYPE` to `/dashboard/items/TYPE`. Reuses existing `ItemCard` and `ItemCardList` components.
+- **2026-03-26** — Fix Slow Item Type Switching completed. Removed `force-dynamic` from dashboard layout so sidebar queries don't re-run on every navigation. Added `loading.tsx` skeleton for `/dashboard/items/[type]` route for instant visual feedback.
