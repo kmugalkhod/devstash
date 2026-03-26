@@ -2,8 +2,51 @@
 
 import { z } from "zod";
 import { auth } from "@/auth";
-import { updateItem as updateItemDb, deleteItem as deleteItemDb } from "@/lib/db/items";
+import {
+  createItem as createItemDb,
+  updateItem as updateItemDb,
+  deleteItem as deleteItemDb,
+} from "@/lib/db/items";
 import { revalidatePath } from "next/cache";
+
+const createItemSchema = z.object({
+  title: z.string().trim().min(1, "Title is required"),
+  description: z.string().trim().nullable().optional().transform((v) => v || null),
+  content: z.string().nullable().optional().transform((v) => v || null),
+  url: z
+    .string()
+    .trim()
+    .url("Must be a valid URL")
+    .nullable()
+    .optional()
+    .transform((v) => v || null),
+  language: z.string().trim().nullable().optional().transform((v) => v || null),
+  itemTypeId: z.string().min(1, "Item type is required"),
+  tags: z.array(z.string().trim().min(1)).default([]),
+});
+
+export async function createItem(formData: z.input<typeof createItemSchema>) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false as const, error: "Unauthorized" };
+  }
+
+  const parsed = createItemSchema.safeParse(formData);
+  if (!parsed.success) {
+    return {
+      success: false as const,
+      error: parsed.error.issues[0]?.message ?? "Validation failed",
+    };
+  }
+
+  try {
+    const id = await createItemDb(session.user.id, parsed.data);
+    revalidatePath("/dashboard");
+    return { success: true as const, data: { id } };
+  } catch {
+    return { success: false as const, error: "Failed to create item" };
+  }
+}
 
 const updateItemSchema = z.object({
   title: z.string().trim().min(1, "Title is required"),

@@ -35,7 +35,7 @@ export default async function DashboardLayout({
               user={user}
             />
             <div className="flex flex-1 flex-col overflow-hidden">
-              <TopBar />
+              <TopBar itemTypes={itemTypes} />
               <main className="flex-1 overflow-y-auto">
               <ItemDrawerProvider>
                 <div className="mx-auto max-w-7xl px-8 py-6">{children}</div>

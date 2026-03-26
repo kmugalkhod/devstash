@@ -1,12 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Plus, FolderPlus, PanelLeft, Settings } from "lucide-react";
+import { Search, FolderPlus, PanelLeft, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSidebar } from "./SidebarContext";
+import { NewItemDialog } from "@/components/items/NewItemDialog";
+import type { ItemTypeInfo } from "@/lib/db/items";
 
-export function TopBar() {
+interface TopBarProps {
+  itemTypes: ItemTypeInfo[];
+}
+
+export function TopBar({ itemTypes }: TopBarProps) {
   const { toggleMobile } = useSidebar();
 
   return (
@@ -50,11 +56,7 @@ export function TopBar() {
           <FolderPlus className="size-4" />
           New Collection
         </Button>
-        <Button>
-          <Plus className="size-4" />
-          <span className="sm:hidden">New</span>
-          <span className="hidden sm:inline">New Item</span>
-        </Button>
+        <NewItemDialog itemTypes={itemTypes} />
       </div>
     </header>
   );

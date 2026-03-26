@@ -317,6 +317,56 @@ export async function updateItem(
 }
 
 /**
+ * Create a new item with tags. Returns the created item's ID.
+ */
+export async function createItem(
+  userId: string,
+  data: {
+    title: string;
+    description: string | null;
+    content: string | null;
+    url: string | null;
+    language: string | null;
+    itemTypeId: string;
+    tags: string[];
+  }
+): Promise<string> {
+  const itemType = await prisma.itemType.findUnique({
+    where: { id: data.itemTypeId },
+    select: { name: true },
+  });
+
+  const contentType =
+    itemType?.name === "link" ? "url" : itemType?.name === "file" || itemType?.name === "image" ? "file" : "text";
+
+  const item = await prisma.item.create({
+    data: {
+      title: data.title,
+      description: data.description,
+      content: data.content,
+      url: data.url,
+      language: data.language,
+      contentType,
+      userId,
+      itemTypeId: data.itemTypeId,
+      tags: {
+        create: data.tags.map((tagName) => ({
+          tag: {
+            connectOrCreate: {
+              where: { name: tagName },
+              create: { name: tagName },
+            },
+          },
+        })),
+      },
+    },
+    select: { id: true },
+  });
+
+  return item.id;
+}
+
+/**
  * Delete an item by ID. Returns true if deleted, false if not found/unauthorized.
  */
 export async function deleteItem(
