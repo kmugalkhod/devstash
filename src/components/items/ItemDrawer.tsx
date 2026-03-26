@@ -10,6 +10,17 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Star,
   Pin,
   Copy,
@@ -23,6 +34,8 @@ import { cn, getRelativeTime } from "@/lib/utils";
 import { iconMap } from "@/lib/icons";
 import type { ItemDetail } from "@/lib/db/items";
 import { ItemDrawerEdit } from "./ItemDrawerEdit";
+import { deleteItem } from "@/actions/items";
+import { toast } from "sonner";
 
 interface ItemDrawerProps {
   item: ItemDetail | null;
@@ -30,11 +43,13 @@ interface ItemDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onItemUpdated: (updated: ItemDetail) => void;
+  onItemDeleted: () => void;
 }
 
-export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated }: ItemDrawerProps) {
+export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, onItemDeleted }: ItemDrawerProps) {
   const [copied, setCopied] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   async function handleCopy() {
     if (!item?.content) return;
@@ -53,6 +68,19 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated }:
   function handleSaved(updated: ItemDetail) {
     setEditing(false);
     onItemUpdated(updated);
+  }
+
+  async function handleDelete() {
+    if (!item) return;
+    setDeleting(true);
+    const result = await deleteItem(item.id);
+    setDeleting(false);
+    if (result.success) {
+      toast.success("Item deleted");
+      onItemDeleted();
+    } else {
+      toast.error(result.error ?? "Failed to delete item");
+    }
   }
 
   return (
@@ -98,11 +126,32 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated }:
                 onClick={() => setEditing(true)}
               />
               <div className="flex-1" />
-              <ActionButton
-                icon={Trash2}
-                label="Delete"
-                className="text-red-400 hover:bg-red-500/10 hover:text-red-400"
-              />
+              <AlertDialog>
+                <AlertDialogTrigger
+                  className="rounded-md p-2 text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
+                  render={<button title="Delete" />}
+                >
+                  <Trash2 className="size-4" />
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete item</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to delete &quot;{item.title}&quot;? This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDelete}
+                      disabled={deleting}
+                      className="bg-red-600 text-white hover:bg-red-700"
+                    >
+                      {deleting ? "Deleting..." : "Delete"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
               <SheetClose
                 className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               >

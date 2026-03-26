@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { ItemDrawer } from "./ItemDrawer";
 import type { ItemDetail } from "@/lib/db/items";
 
@@ -23,6 +24,7 @@ export function ItemDrawerProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [item, setItem] = useState<ItemDetail | null>(null);
   const [loading, setLoading] = useState(false);
@@ -53,6 +55,12 @@ export function ItemDrawerProvider({
     setItem(updated);
   }, []);
 
+  const handleItemDeleted = useCallback(() => {
+    setOpen(false);
+    setItem(null);
+    router.refresh();
+  }, [router]);
+
   return (
     <ItemDrawerContext.Provider value={{ openDrawer }}>
       {children}
@@ -62,6 +70,7 @@ export function ItemDrawerProvider({
         open={open}
         onOpenChange={handleOpenChange}
         onItemUpdated={handleItemUpdated}
+        onItemDeleted={handleItemDeleted}
       />
     </ItemDrawerContext.Provider>
   );

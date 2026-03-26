@@ -316,6 +316,24 @@ export async function updateItem(
   };
 }
 
+/**
+ * Delete an item by ID. Returns true if deleted, false if not found/unauthorized.
+ */
+export async function deleteItem(
+  itemId: string,
+  userId: string
+): Promise<boolean> {
+  const item = await prisma.item.findUnique({
+    where: { id: itemId },
+    select: { userId: true },
+  });
+
+  if (!item || item.userId !== userId) return false;
+
+  await prisma.item.delete({ where: { id: itemId } });
+  return true;
+}
+
 function mapItem(item: {
   id: string;
   title: string;
