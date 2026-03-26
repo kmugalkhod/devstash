@@ -22,16 +22,19 @@ import {
 import { cn, getRelativeTime } from "@/lib/utils";
 import { iconMap } from "@/lib/icons";
 import type { ItemDetail } from "@/lib/db/items";
+import { ItemDrawerEdit } from "./ItemDrawerEdit";
 
 interface ItemDrawerProps {
   item: ItemDetail | null;
   loading: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onItemUpdated: (updated: ItemDetail) => void;
 }
 
-export function ItemDrawer({ item, loading, open, onOpenChange }: ItemDrawerProps) {
+export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated }: ItemDrawerProps) {
   const [copied, setCopied] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   async function handleCopy() {
     if (!item?.content) return;
@@ -42,8 +45,18 @@ export function ItemDrawer({ item, loading, open, onOpenChange }: ItemDrawerProp
 
   const TypeIcon = item?.type ? iconMap[item.type.icon] : null;
 
+  function handleOpenChange(isOpen: boolean) {
+    if (!isOpen) setEditing(false);
+    onOpenChange(isOpen);
+  }
+
+  function handleSaved(updated: ItemDetail) {
+    setEditing(false);
+    onItemUpdated(updated);
+  }
+
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent
         side="right"
         className="flex w-full flex-col overflow-y-auto sm:max-w-2xl"
@@ -51,6 +64,12 @@ export function ItemDrawer({ item, loading, open, onOpenChange }: ItemDrawerProp
       >
         {loading ? (
           <DrawerSkeleton />
+        ) : item && editing ? (
+          <ItemDrawerEdit
+            item={item}
+            onCancel={() => setEditing(false)}
+            onSaved={handleSaved}
+          />
         ) : item ? (
           <>
             {/* Action bar */}
@@ -73,7 +92,11 @@ export function ItemDrawer({ item, loading, open, onOpenChange }: ItemDrawerProp
                 onClick={handleCopy}
                 disabled={!item.content}
               />
-              <ActionButton icon={Pencil} label="Edit" />
+              <ActionButton
+                icon={Pencil}
+                label="Edit"
+                onClick={() => setEditing(true)}
+              />
               <div className="flex-1" />
               <ActionButton
                 icon={Trash2}

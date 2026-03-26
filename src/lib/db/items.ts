@@ -243,6 +243,79 @@ export async function getItemById(
   };
 }
 
+/**
+ * Update an item's editable fields and replace its tags.
+ * Returns the full ItemDetail so the drawer can refresh without a second fetch.
+ */
+export async function updateItem(
+  itemId: string,
+  userId: string,
+  data: {
+    title: string;
+    description: string | null;
+    content: string | null;
+    url: string | null;
+    language: string | null;
+    tags: string[];
+  }
+): Promise<ItemDetail | null> {
+  const existing = await prisma.item.findUnique({
+    where: { id: itemId },
+    select: { userId: true },
+  });
+
+  if (!existing || existing.userId !== userId) return null;
+
+  const item = await prisma.item.update({
+    where: { id: itemId },
+    data: {
+      title: data.title,
+      description: data.description,
+      content: data.content,
+      url: data.url,
+      language: data.language,
+      tags: {
+        deleteMany: {},
+        create: data.tags.map((tagName) => ({
+          tag: {
+            connectOrCreate: {
+              where: { name: tagName },
+              create: { name: tagName },
+            },
+          },
+        })),
+      },
+    },
+    include: {
+      itemType: { select: { id: true, name: true, icon: true, color: true } },
+      tags: { include: { tag: { select: { name: true } } } },
+      collections: {
+        include: { collection: { select: { id: true, name: true } } },
+      },
+    },
+  });
+
+  return {
+    id: item.id,
+    title: item.title,
+    contentType: item.contentType,
+    content: item.content,
+    fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
+    url: item.url,
+    description: item.description,
+    language: item.language,
+    isFavorite: item.isFavorite,
+    isPinned: item.isPinned,
+    createdAt: item.createdAt.toISOString(),
+    updatedAt: item.updatedAt.toISOString(),
+    type: item.itemType,
+    tags: item.tags.map((t) => t.tag.name),
+    collections: item.collections.map((c) => c.collection),
+  };
+}
+
 function mapItem(item: {
   id: string;
   title: string;

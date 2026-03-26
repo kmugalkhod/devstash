@@ -49,6 +49,10 @@ export function ItemDrawerProvider({
     }
   }, []);
 
+  const handleItemUpdated = useCallback((updated: ItemDetail) => {
+    setItem(updated);
+  }, []);
+
   return (
     <ItemDrawerContext.Provider value={{ openDrawer }}>
       {children}
@@ -57,6 +61,7 @@ export function ItemDrawerProvider({
         loading={loading}
         open={open}
         onOpenChange={handleOpenChange}
+        onItemUpdated={handleItemUpdated}
       />
     </ItemDrawerContext.Provider>
   );
