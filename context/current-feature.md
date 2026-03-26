@@ -1,24 +1,11 @@
-# Current Feature: Item Drawer Edit Mode
+# Current Feature
 
 ## Status
-In Progress
+Not Started
 
 ## Goals
-- Edit button in drawer action bar toggles inline edit mode (no separate page)
-- Action bar replaced with Save and Cancel buttons in edit mode
-- Editable fields: title (required), description, tags (comma-separated), plus type-specific fields (content, language, url)
-- Non-editable display: item type, collections, dates
-- Zod validation in server action with `{ success, data, error }` pattern
-- `updateItem` server action in `src/actions/items.ts`
-- `updateItem` query function in `src/lib/db/items.ts` with tag disconnect/reconnect
-- Toast on save success/error, `router.refresh()` after save
-- Disable Save when title is empty
 
 ## Notes
-- No form library — controlled inputs with local state
-- Content textarea is plain text (no code editor yet)
-- Collections managed separately (not editable here)
-- Spec file: `context/features/item-drawer-edit-spec.md`
 
 ## History
 
@@ -50,3 +37,4 @@ In Progress
 - **2026-03-26** — Fix Slow Item Type Switching completed. Removed `force-dynamic` from dashboard layout so sidebar queries don't re-run on every navigation. Added `loading.tsx` skeleton for `/dashboard/items/[type]` route for instant visual feedback.
 - **2026-03-26** — Item Drawer completed. Right-side slide-in Sheet drawer opens on item card click. Fetches full item detail via `GET /api/items/[id]` with auth check. Action bar with favorite, pin, copy, edit, delete buttons and close. Shows content preview, tags, collections, metadata. `ItemDrawerProvider` context manages drawer state and fetch logic. Works on both dashboard and items list pages. Added `getItemById` query in `src/lib/db/items.ts`.
 - **2026-03-26** — Performance Fix completed. Replaced `@prisma/adapter-neon` (HTTP/WebSocket) with `@prisma/adapter-pg` (native TCP connection pool) for 2-3x faster DB queries. Narrowed middleware matcher to `/dashboard/:path*` only. Enabled React Compiler (`reactCompiler: true`). Removed `channel_binding=require` from DATABASE_URL. Excluded `prisma/` from tsconfig to fix pre-existing build type error.
+- **2026-03-27** — Item Drawer Edit Mode completed. Pencil icon toggles inline edit mode with Save/Cancel action bar. Editable fields: title, description, tags (comma-separated), plus type-specific (content, language, url). Server action `updateItem` in `src/actions/items.ts` with Zod validation. Query function `updateItem` in `src/lib/db/items.ts` with tag disconnect/reconnect. Installed sonner for toast notifications. `router.refresh()` syncs card lists after save.
