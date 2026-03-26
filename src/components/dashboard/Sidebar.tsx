@@ -295,7 +295,7 @@ export function Sidebar({ itemTypes, favoriteCollections, recentCollections, use
       <aside
         className={cn(
           "hidden flex-col border-r border-sidebar-border bg-sidebar transition-all duration-200 md:flex",
-          isCollapsed ? "w-14" : "w-56"
+          isCollapsed ? "w-14" : "w-64"
         )}
       >
         {/* Sidebar Header */}

@@ -46,7 +46,7 @@ export function ItemDrawer({ item, loading, open, onOpenChange }: ItemDrawerProp
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="flex w-full flex-col overflow-y-auto sm:max-w-lg"
+        className="flex w-full flex-col overflow-y-auto sm:max-w-2xl"
         showCloseButton={false}
       >
         {loading ? (

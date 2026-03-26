@@ -26,7 +26,7 @@ export default async function DashboardLayout({
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <div className="flex h-screen flex-col">
+        <div className="flex h-screen flex-col" suppressHydrationWarning>
           <div className="flex flex-1 overflow-hidden">
             <Sidebar
               itemTypes={itemTypes}
