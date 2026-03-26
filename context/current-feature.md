@@ -1,26 +1,11 @@
-# Current Feature: Item Create
+# Current Feature
 
 ## Status
-In Progress
+Not Started
 
 ## Goals
 
-- Add "New Item" modal dialog (shadcn Dialog) triggered from top bar button
-- Type selector for snippet, prompt, command, note, link
-- Dynamic fields based on selected type:
-  - All types: title (required), description, tags
-  - snippet/command: content, language
-  - prompt/note: content
-  - link: URL (required)
-- Server action `createItem` with Zod validation
-- Query function `createItem` in `lib/db/items.ts`
-- Toast on success, close modal, and refresh page
-
 ## Notes
-
-- Reuse existing patterns from `updateItem` server action and Zod validation in `src/actions/items.ts`
-- Tags should use comma-separated input like edit mode
-- Only free-tier types (no file/image) since those require uploads
 
 ## History
 
@@ -54,3 +39,4 @@ In Progress
 - **2026-03-26** — Performance Fix completed. Replaced `@prisma/adapter-neon` (HTTP/WebSocket) with `@prisma/adapter-pg` (native TCP connection pool) for 2-3x faster DB queries. Narrowed middleware matcher to `/dashboard/:path*` only. Enabled React Compiler (`reactCompiler: true`). Removed `channel_binding=require` from DATABASE_URL. Excluded `prisma/` from tsconfig to fix pre-existing build type error.
 - **2026-03-27** — Item Drawer Edit Mode completed. Pencil icon toggles inline edit mode with Save/Cancel action bar. Editable fields: title, description, tags (comma-separated), plus type-specific (content, language, url). Server action `updateItem` in `src/actions/items.ts` with Zod validation. Query function `updateItem` in `src/lib/db/items.ts` with tag disconnect/reconnect. Installed sonner for toast notifications. `router.refresh()` syncs card lists after save.
 - **2026-03-27** — Item Delete with Confirmation completed. Wired Trash2 button in item drawer to shadcn AlertDialog confirmation dialog. Server action `deleteItem` in `src/actions/items.ts` with auth check and `revalidatePath`. Prisma `deleteItem` query in `src/lib/db/items.ts` with ownership verification. Sonner toast for success/error feedback. Drawer closes and card lists refresh after deletion.
+- **2026-03-27** — Item Create completed. New Item modal dialog triggered from top bar "New Item" button. Type selector as colored pill buttons (snippet, prompt, command, note, link). Dynamic fields per type: title/description/tags for all; content + language for snippet/command; content for prompt/note; URL for link. Server action `createItem` with Zod validation. Prisma `createItem` query in `lib/db/items.ts`. Toast on success, modal closes, page refreshes. Installed shadcn Select and Textarea components. Polished dialog design with dark inputs, separated footer, type-colored Create button.
