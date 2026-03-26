@@ -31,5 +31,15 @@ npm run dev      # Start dev server (localhost:3000)
 npm run build    # Production build
 npm start        # Start production server
 npm run lint     # Run ESLint
+npm run test     # Run unit tests (single run)
+npm run test:watch  # Run tests in watch mode
 ```
+
+## Neon Database (MCP)
+
+- **Project ID:** `sparkling-bonus-45695065`
+- **Development Branch ID:** `br-autumn-morning-amvjyhev` (named "development" in Neon dashboard)
+- **ALWAYS** use the development branch for all Neon MCP operations (pass `branchId: "br-autumn-morning-amvjyhev"`)
+- **NEVER** query or modify the production/main branch unless explicitly instructed by the user
+- This applies to all MCP tools: `run_sql`, `describe_branch`, `get_database_tables`, etc.
 
