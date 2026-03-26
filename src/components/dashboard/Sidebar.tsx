@@ -236,6 +236,7 @@ function SidebarContent({
       <div className="border-t border-sidebar-border p-3">
         <DropdownMenu>
           <DropdownMenuTrigger
+            id="sidebar-user-menu"
             className={cn(
               "flex w-full cursor-pointer items-center rounded-md p-1 transition-colors hover:bg-sidebar-accent",
               collapsed ? "justify-center" : "gap-3"

@@ -5,11 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { iconMap } from "@/lib/icons";
 import { createItem } from "@/actions/items";
 import type { ItemTypeInfo } from "@/lib/db/items";
@@ -84,16 +80,13 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger
-        render={
-          <Button>
-            <Plus className="size-4" />
-            <span className="sm:hidden">New</span>
-            <span className="hidden sm:inline">New Item</span>
-          </Button>
-        }
-      />
+    <>
+      <Button onClick={() => setOpen(true)}>
+        <Plus className="size-4" />
+        <span className="sm:hidden">New</span>
+        <span className="hidden sm:inline">New Item</span>
+      </Button>
+      {open && <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="gap-0 p-0 sm:max-w-[520px]">
         {/* Header */}
         <div className="px-6 pb-4 pt-6">
@@ -288,6 +281,7 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
           </div>
         </form>
       </DialogContent>
-    </Dialog>
+      </Dialog>}
+    </>
   );
 }

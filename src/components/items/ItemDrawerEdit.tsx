@@ -4,9 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Save, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { updateItem } from "@/actions/items";
 import type { ItemDetail } from "@/lib/db/items";
 
@@ -15,6 +12,9 @@ interface ItemDrawerEditProps {
   onCancel: () => void;
   onSaved: (updated: ItemDetail) => void;
 }
+
+const fieldClass =
+  "w-full rounded-lg border border-neutral-800 bg-[#121212] px-3 py-2.5 text-sm text-neutral-200 placeholder:text-neutral-600 outline-none transition-all focus:ring-1 focus:ring-neutral-600";
 
 export function ItemDrawerEdit({ item, onCancel, onSaved }: ItemDrawerEditProps) {
   const router = useRouter();
@@ -62,134 +62,161 @@ export function ItemDrawerEdit({ item, onCancel, onSaved }: ItemDrawerEditProps)
 
   return (
     <>
-      {/* Edit action bar */}
-      <div className="flex items-center gap-2 border-b border-border px-4 pb-3 pt-4">
-        <Button
-          size="sm"
+      {/* Sticky action bar */}
+      <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-neutral-800/60 bg-[#0a0a0a] px-4 py-3">
+        <button
           onClick={handleSave}
           disabled={saving || !title.trim()}
+          className="flex items-center gap-1.5 rounded-md bg-neutral-100 px-4 py-1.5 text-sm font-medium text-neutral-900 transition-colors hover:bg-white disabled:opacity-40"
         >
-          <Save className="mr-1.5 size-4" />
+          <Save className="size-4" />
           {saving ? "Saving..." : "Save"}
-        </Button>
-        <Button size="sm" variant="ghost" onClick={onCancel} disabled={saving}>
-          <X className="mr-1.5 size-4" />
+        </button>
+        <button
+          onClick={onCancel}
+          disabled={saving}
+          className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-300 transition-colors hover:text-white disabled:opacity-40"
+        >
+          <X className="size-4" />
           Cancel
-        </Button>
+        </button>
       </div>
 
-      {/* Edit form */}
-      <div className="flex-1 space-y-5 overflow-y-auto px-4 pb-6 pt-4">
-        {/* Type badge (non-editable) */}
-        <div className="flex items-center gap-2">
-          <span
-            className="text-xs font-bold uppercase tracking-wide"
-            style={{ color: item.type.color }}
-          >
-            {item.type.name}
-          </span>
-          <span className="text-xs text-muted-foreground">(cannot be changed)</span>
-        </div>
+      {/* Scrollable form body */}
+      <div className="flex-1 overflow-y-auto p-6">
+        <div className="space-y-5">
+          {/* Type badge */}
+          <div className="flex items-center gap-2">
+            <span
+              className="text-xs font-bold uppercase tracking-widest"
+              style={{ color: item.type.color }}
+            >
+              {item.type.name}
+            </span>
+            <span className="text-sm text-neutral-500">(cannot be changed)</span>
+          </div>
 
-        {/* Title */}
-        <div className="space-y-1.5">
-          <Label htmlFor="edit-title">Title *</Label>
-          <Input
-            id="edit-title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Item title"
-          />
-        </div>
+          {/* Title */}
+          <div className="space-y-2">
+            <label htmlFor="edit-title" className="block text-sm font-medium text-neutral-200">
+              Title <span className="text-neutral-500">*</span>
+            </label>
+            <input
+              id="edit-title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Item title"
+              className={fieldClass}
+            />
+          </div>
 
-        {/* Description */}
-        <div className="space-y-1.5">
-          <Label htmlFor="edit-description">Description</Label>
-          <textarea
-            id="edit-description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Optional description"
-            rows={2}
-            className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          />
-        </div>
-
-        {/* Content (text-based types) */}
-        {showContent && (
-          <div className="space-y-1.5">
-            <Label htmlFor="edit-content">Content</Label>
+          {/* Description */}
+          <div className="space-y-2">
+            <label htmlFor="edit-description" className="block text-sm font-medium text-neutral-200">
+              Description
+            </label>
             <textarea
-              id="edit-content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Paste your code, prompt, command, or note..."
-              rows={10}
-              className="flex w-full rounded-md border border-input bg-black/40 px-3 py-2 font-mono text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              id="edit-description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Optional description"
+              className={`${fieldClass} min-h-[80px] resize-y`}
             />
           </div>
-        )}
 
-        {/* Language (snippet, command) */}
-        {showLanguage && (
-          <div className="space-y-1.5">
-            <Label htmlFor="edit-language">Language</Label>
-            <Input
-              id="edit-language"
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              placeholder="e.g. javascript, python, bash"
-            />
-          </div>
-        )}
-
-        {/* URL (link type) */}
-        {showUrl && (
-          <div className="space-y-1.5">
-            <Label htmlFor="edit-url">URL</Label>
-            <Input
-              id="edit-url"
-              type="url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://..."
-            />
-          </div>
-        )}
-
-        {/* Tags */}
-        <div className="space-y-1.5">
-          <Label htmlFor="edit-tags">Tags</Label>
-          <Input
-            id="edit-tags"
-            value={tagsInput}
-            onChange={(e) => setTagsInput(e.target.value)}
-            placeholder="react, hooks, typescript (comma-separated)"
-          />
-          <p className="text-xs text-muted-foreground">Separate tags with commas</p>
-        </div>
-
-        {/* Non-editable: Collections */}
-        {item.collections.length > 0 && (
-          <div className="space-y-1.5">
-            <Label className="text-muted-foreground">Collections</Label>
-            <div className="flex flex-wrap gap-2">
-              {item.collections.map((col) => (
-                <span
-                  key={col.id}
-                  className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-xs text-zinc-400"
-                >
-                  {col.name}
-                </span>
-              ))}
+          {/* Content */}
+          {showContent && (
+            <div className="space-y-2">
+              <label htmlFor="edit-content" className="block text-sm font-medium text-neutral-200">
+                Content
+              </label>
+              <textarea
+                id="edit-content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Paste your code, prompt, command, or note..."
+                spellCheck={false}
+                className={`${fieldClass} min-h-[220px] resize-y font-mono leading-relaxed`}
+              />
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Non-editable: Dates */}
-        <div className="border-t border-border pt-4 text-xs text-muted-foreground">
-          <p>Created: {new Date(item.createdAt).toLocaleDateString()}</p>
-          <p>Updated: {new Date(item.updatedAt).toLocaleDateString()}</p>
+          {/* Language */}
+          {showLanguage && (
+            <div className="space-y-2">
+              <label htmlFor="edit-language" className="block text-sm font-medium text-neutral-200">
+                Language
+              </label>
+              <input
+                id="edit-language"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                placeholder="e.g. javascript, python, bash"
+                className={fieldClass}
+              />
+            </div>
+          )}
+
+          {/* URL */}
+          {showUrl && (
+            <div className="space-y-2">
+              <label htmlFor="edit-url" className="block text-sm font-medium text-neutral-200">
+                URL
+              </label>
+              <input
+                id="edit-url"
+                type="url"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="https://..."
+                className={fieldClass}
+              />
+            </div>
+          )}
+
+          {/* Tags */}
+          <div className="space-y-2">
+            <label htmlFor="edit-tags" className="block text-sm font-medium text-neutral-200">
+              Tags
+            </label>
+            <input
+              id="edit-tags"
+              value={tagsInput}
+              onChange={(e) => setTagsInput(e.target.value)}
+              placeholder="react, hooks, typescript"
+              className={fieldClass}
+            />
+            <p className="text-xs text-neutral-500">Separate tags with commas</p>
+          </div>
+
+          {/* Collections (read-only) */}
+          {item.collections.length > 0 && (
+            <div className="space-y-2.5">
+              <label className="block text-sm font-medium text-neutral-200">
+                Collections
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {item.collections.map((col) => (
+                  <span
+                    key={col.id}
+                    className="inline-flex items-center rounded-full border border-neutral-700/50 bg-neutral-800/50 px-3 py-1 text-xs font-medium text-neutral-400"
+                  >
+                    {col.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Meta dates */}
+          <div className="mt-2 space-y-1.5 border-t border-neutral-800/60 pt-6">
+            <p className="text-xs text-neutral-500">
+              Created: {new Date(item.createdAt).toLocaleDateString()}
+            </p>
+            <p className="text-xs text-neutral-500">
+              Updated: {new Date(item.updatedAt).toLocaleDateString()}
+            </p>
+          </div>
         </div>
       </div>
     </>

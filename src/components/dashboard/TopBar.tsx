@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Search, FolderPlus, PanelLeft, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useSidebar } from "./SidebarContext";
 import { NewItemDialog } from "@/components/items/NewItemDialog";
 import type { ItemTypeInfo } from "@/lib/db/items";
@@ -37,11 +36,11 @@ export function TopBar({ itemTypes }: TopBarProps) {
 
       <div className="relative flex-1 max-w-xl">
         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-        <Input
+        <input
           type="search"
           placeholder="Search snippets, prompts, notes..."
-          className="pl-9 pr-16"
           readOnly
+          className="h-8 w-full rounded-lg border border-input bg-transparent pl-9 pr-16 text-sm outline-none placeholder:text-muted-foreground"
         />
         <kbd className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-5 items-center gap-0.5 rounded border border-border bg-muted px-1.5 font-mono text-[10px] text-muted-foreground">
           <span className="text-xs">⌘</span>K
