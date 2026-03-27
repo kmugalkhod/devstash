@@ -1,11 +1,22 @@
-# Current Feature
+# Current Feature: Code Editor in New Item Modal
 
 ## Status
-Not Started
+Done
 
 ## Goals
 
+- Ensure the Monaco CodeEditor is properly visible and functional inside the New Item dialog for `snippet` and `command` types
+- Move the Language input **above** the Content editor so syntax highlighting is set before the user starts typing
+- Widen the dialog when a code type is selected (snippet/command) to give the editor comfortable space
+- Make the dialog body scrollable so form fields don't overflow the viewport
+- Show a proper loading placeholder while Monaco initializes
+
 ## Notes
+
+- Monaco Editor has known rendering issues inside modals/dialogs — `automaticLayout: true` should help but the container must be visible at mount time
+- Current dialog is `sm:max-w-[520px]` — should expand to ~680px for code types
+- Language → Content order change is a UX improvement (user sets language first, then editor highlights correctly)
+- The `@monaco-editor/react` package must be installed: `npm install @monaco-editor/react`
 
 ## History
 
@@ -23,7 +34,7 @@ Not Started
 - **2026-03-20** — UI/UX Refinement completed. Reduced stat card height (smaller padding, font, icon). Improved typography contrast: secondary text lightened to zinc-400, timestamps to zinc-500, snippet previews to zinc-400 on bg-black/40, tags brightened to zinc-300 with bg-white/8. Increased card padding (+4px). Increased section margins (space-y-10, mb-6). Added hover shadow glow (shadow-white/3) on all cards. Limited dashboard collections to 4 to fit grid.
 - **2026-03-22** — Prisma 7 compliance audit completed. Verified all v7 breaking changes already addressed: prisma.config.ts with defineConfig(), @prisma/adapter-pg driver adapter, correct PrismaClient import from generated output, no url in datasource block, no deprecated preview flags, Node.js 22.13.1, TypeScript 5.9.3. No code changes needed — project was set up with Prisma 7 from the start.
 - **2026-03-22** — Dashboard UI Improvements completed. Added Suspense boundaries with skeleton fallbacks for all dashboard sections. Restyled PRO badge with amber theme. Added Clock icon to Recent Items heading. Increased collection overlay and stats icon opacities. Widened search bar. Added mobile brand logomark and short "New" label. Tightened card spacing. Improved view toggle active state. Added sky-400 tint to sidebar Recent icon. Added keyboard accessibility to collection options button.
-- **2026-03-22** — Auth Setup (Phase 1) completed. Installed NextAuth v5 (next-auth@beta) with @auth/prisma-adapter. Split auth config pattern: edge-compatible auth.config.ts (GitHub provider) + full auth.ts (Prisma adapter, JWT strategy, user.id in session). Route protection via src/proxy.ts redirecting unauthenticated users from /dashboard/* to NextAuth default sign-in page. Created API route handler and next-auth type declarations. Fixed malformed AUTH_SECRET in .env.
+- **2026-03-22** — Auth Setup (Phase 1) completed. Installed NextAuth v5 (next-auth@beta) with @auth/prisma-adapter. Split auth config pattern: edge-compatible auth.config.ts (GitHub provider) + full auth.ts (Prisma adapter, JWT strategy, user.id in session). Route protection via src/proxy.ts redirecting unauthenticated users from /dashboard/\* to NextAuth default sign-in page. Created API route handler and next-auth type declarations. Fixed malformed AUTH_SECRET in .env.
 - **2026-03-22** — Auth Credentials (Phase 2) completed. Added Credentials provider to split auth config pattern. Added password field to User model via migration. Created registration API route (POST /api/auth/register) with validation (required fields, password match, min 8 chars, duplicate check, bcrypt hashing). Credentials sign-in with bcrypt verification in auth.ts. GitHub OAuth still works alongside credentials.
 - **2026-03-22** — Auth UI (Phase 3) completed. Custom sign-in page (`/sign-in`) with email/password form, GitHub OAuth button, registration success banner, and OAuth error handling. Custom register page (`/register`) with Zod-validated form. Sidebar avatar dropdown with profile link and sign-out. Replaced `getDemoUserId()` with real NextAuth session (`getAuthUserId`). Added rate limiting, Zod validation to register API. Extended middleware matcher for static assets. Added empty states for collections/items. Extracted shared AuthHeader component with DevStash brand wordmark. Code quality fixes: getInitials crash guard, pinned items query limit, computed saturation check for collection colors, Link-based profile navigation. Deleted dead code (mock-data.ts, demo-user.ts).
 - **2026-03-22** — Email Verification completed. Installed Resend SDK. Created `src/lib/email.ts` (branded HTML email template) and `src/lib/tokens.ts` (24-hour token generation/validation using existing VerificationToken model). Registration sends verification email via Resend, shows "check your email" screen. `/verify-email` route validates token and sets `user.emailVerified`. Unverified credential users blocked at sign-in with custom `EmailNotVerifiedError`. GitHub OAuth users skip verification. Verify-email page with success/failure states using soft icon containers.
@@ -40,3 +51,4 @@ Not Started
 - **2026-03-27** — Item Drawer Edit Mode completed. Pencil icon toggles inline edit mode with Save/Cancel action bar. Editable fields: title, description, tags (comma-separated), plus type-specific (content, language, url). Server action `updateItem` in `src/actions/items.ts` with Zod validation. Query function `updateItem` in `src/lib/db/items.ts` with tag disconnect/reconnect. Installed sonner for toast notifications. `router.refresh()` syncs card lists after save.
 - **2026-03-27** — Item Delete with Confirmation completed. Wired Trash2 button in item drawer to shadcn AlertDialog confirmation dialog. Server action `deleteItem` in `src/actions/items.ts` with auth check and `revalidatePath`. Prisma `deleteItem` query in `src/lib/db/items.ts` with ownership verification. Sonner toast for success/error feedback. Drawer closes and card lists refresh after deletion.
 - **2026-03-27** — Item Create completed. New Item modal dialog triggered from top bar "New Item" button. Type selector as colored pill buttons (snippet, prompt, command, note, link). Dynamic fields per type: title/description/tags for all; content + language for snippet/command; content for prompt/note; URL for link. Server action `createItem` with Zod validation. Prisma `createItem` query in `lib/db/items.ts`. Toast on success, modal closes, page refreshes. Installed shadcn Select and Textarea components. Polished dialog design with dark inputs, separated footer, type-colored Create button.
+- **2026-03-27** — Code Editor in New Item Modal completed. Fixed Monaco editor visibility in New Item dialog: widened dialog to 700px for snippet/command types (520px otherwise), moved Language field above Content so syntax highlighting is applied on editor mount, wrapped form body in `max-h-[70vh] overflow-y-auto` to prevent viewport overflow, added `min-h-[160px]` container around CodeEditor, added Monaco loading placeholder, and reset `codeContent`/`codeLanguage` state when switching between item types.

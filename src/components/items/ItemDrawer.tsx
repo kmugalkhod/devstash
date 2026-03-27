@@ -36,6 +36,7 @@ import type { ItemDetail } from "@/lib/db/items";
 import { ItemDrawerEdit } from "./ItemDrawerEdit";
 import { deleteItem } from "@/actions/items";
 import { toast } from "sonner";
+import { CodeEditor } from "./CodeEditor";
 
 interface ItemDrawerProps {
   item: ItemDetail | null;
@@ -101,7 +102,7 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
         ) : item ? (
           <>
             {/* Action bar */}
-            <div className="flex items-center gap-1 border-b border-border px-4 pb-3 pt-4">
+            <div className="flex items-center gap-1 border-b border-border/70 px-4 pb-3 pt-4">
               <ActionButton
                 icon={Star}
                 label="Favorite"
@@ -128,7 +129,7 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
               <div className="flex-1" />
               <AlertDialog>
                 <AlertDialogTrigger
-                  className="rounded-md p-2 text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
+                  className="rounded-md p-2 text-red-400/90 transition-colors hover:bg-red-500/10 hover:text-red-300"
                   render={<button title="Delete" />}
                 >
                   <Trash2 className="size-4" />
@@ -152,16 +153,16 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
-              <SheetClose
-                className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              >
+                <SheetClose
+                  className="rounded-md p-2 text-zinc-400 transition-colors hover:bg-zinc-800/70 hover:text-zinc-100"
+                >
                 <X className="size-4" />
                 <span className="sr-only">Close</span>
               </SheetClose>
             </div>
 
             {/* Header */}
-            <SheetHeader className="px-4 pt-2">
+            <SheetHeader className="space-y-2 px-4 pt-3">
               <div className="flex items-center gap-2">
                 {TypeIcon && (
                   <TypeIcon
@@ -185,7 +186,7 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
             </SheetHeader>
 
             {/* Content */}
-            <div className="flex-1 space-y-6 px-4 pb-6">
+            <div className="flex-1 space-y-7 px-4 pb-6 pt-1">
               {/* URL for link types */}
               {item.url && (
                 <div>
@@ -205,14 +206,24 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
               {/* Text content */}
               {item.content && (
                 <div>
-                  <SectionLabel>
-                    {item.language ? `Content (${item.language})` : "Content"}
-                  </SectionLabel>
-                  <div className="rounded-lg bg-black/40 p-4">
-                    <pre className="whitespace-pre-wrap font-mono text-xs leading-relaxed text-zinc-300">
-                      {item.content}
-                    </pre>
-                  </div>
+                  {["snippet", "command"].includes(item.type.name) ? (
+                    <CodeEditor
+                      value={item.content}
+                      language={item.language ?? undefined}
+                      readOnly
+                    />
+                  ) : (
+                    <>
+                      <SectionLabel>
+                        {item.language ? `Content (${item.language})` : "Content"}
+                      </SectionLabel>
+                      <div className="rounded-lg bg-black/35 p-4">
+                        <pre className="whitespace-pre-wrap font-mono text-xs leading-relaxed text-zinc-300">
+                          {item.content}
+                        </pre>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 
@@ -265,8 +276,8 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
               )}
 
               {/* Metadata */}
-              <div className="border-t border-border pt-4">
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <div className="border-t border-border/60 pt-4">
+                <div className="flex items-center justify-between text-xs text-zinc-500">
                   <span suppressHydrationWarning>
                     Created {getRelativeTime(item.createdAt)}
                   </span>
@@ -309,7 +320,7 @@ function ActionButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50",
+        "rounded-md p-2 text-zinc-400 transition-colors hover:bg-zinc-800/70 hover:text-zinc-100 disabled:opacity-50",
         active && activeClassName,
         className
       )}

@@ -9,6 +9,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { iconMap } from "@/lib/icons";
 import { createItem } from "@/actions/items";
 import type { ItemTypeInfo } from "@/lib/db/items";
+import { CodeEditor } from "./CodeEditor";
 
 const FREE_TYPES = ["snippet", "prompt", "command", "note", "link"];
 
@@ -31,6 +32,8 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [selectedTypeName, setSelectedTypeName] = useState("");
+  const [codeContent, setCodeContent] = useState("");
+  const [codeLanguage, setCodeLanguage] = useState("");
 
   const availableTypes = itemTypes.filter((t) => FREE_TYPES.includes(t.name));
   const selectedType = availableTypes.find((t) => t.name === selectedTypeName);
@@ -41,6 +44,17 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
   const showLanguage =
     selectedType && ["snippet", "command"].includes(selectedType.name);
   const showUrl = selectedType?.name === "link";
+
+  const showCodeEditor =
+    selectedType && ["snippet", "command"].includes(selectedType.name);
+
+  function handleTypeSelect(typeName: string) {
+    if (typeName !== selectedTypeName) {
+      setCodeContent("");
+      setCodeLanguage("");
+    }
+    setSelectedTypeName(typeName);
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -53,13 +67,21 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
       .map((t) => t.trim())
       .filter(Boolean);
 
+    // Use controlled state for code editor types, FormData for others
+    const content = showCodeEditor
+      ? codeContent || null
+      : (form.get("content") as string) || null;
+    const language = showCodeEditor
+      ? codeLanguage || null
+      : (form.get("language") as string) || null;
+
     setSaving(true);
     const result = await createItem({
       title: form.get("title") as string,
       description: (form.get("description") as string) || null,
-      content: (form.get("content") as string) || null,
+      content,
       url: (form.get("url") as string) || null,
-      language: (form.get("language") as string) || null,
+      language,
       itemTypeId: selectedType.id,
       tags,
     });
@@ -76,7 +98,11 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
 
   function handleOpenChange(nextOpen: boolean) {
     setOpen(nextOpen);
-    if (!nextOpen) setSelectedTypeName("");
+    if (!nextOpen) {
+      setSelectedTypeName("");
+      setCodeContent("");
+      setCodeLanguage("");
+    }
   }
 
   return (
@@ -87,7 +113,7 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
         <span className="hidden sm:inline">New Item</span>
       </Button>
       {open && <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="gap-0 p-0 sm:max-w-[520px]">
+      <DialogContent className={`gap-0 p-0 transition-all duration-200 ${showCodeEditor ? "sm:max-w-[700px]" : "sm:max-w-[520px]"}`}>
         {/* Header */}
         <div className="px-6 pb-4 pt-6">
           <h2 className="text-base font-semibold text-zinc-100">New Item</h2>
@@ -97,8 +123,8 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
         </div>
 
         {/* Form body */}
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-4 px-6 pb-6">
+        <form onSubmit={handleSubmit} className="flex flex-col overflow-hidden">
+          <div className="max-h-[70vh] overflow-y-auto space-y-4 px-6 pb-6">
             {/* Type pills */}
             <div className="space-y-2.5">
               <label className="block text-sm font-semibold text-zinc-200">
@@ -112,7 +138,7 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
                     <button
                       key={type.id}
                       type="button"
-                      onClick={() => setSelectedTypeName(type.name)}
+                      onClick={() => handleTypeSelect(type.name)}
                       className="flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-all"
                       style={{
                         borderColor: isSelected
@@ -173,28 +199,7 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
               />
             </div>
 
-            {/* Content */}
-            {showContent && (
-              <div className="space-y-2">
-                <label
-                  htmlFor="content"
-                  className="block text-sm font-semibold text-zinc-200"
-                >
-                  Content
-                </label>
-                <textarea
-                  id="content"
-                  name="content"
-                  placeholder={
-                    CONTENT_PLACEHOLDER[selectedType.name] ?? "Enter content..."
-                  }
-                  rows={6}
-                  className={`${inputClass} resize-y font-mono`}
-                />
-              </div>
-            )}
-
-            {/* Language */}
+            {/* Language — shown BEFORE content so highlighting applies on mount */}
             {showLanguage && (
               <div className="space-y-2">
                 <div className="flex items-baseline gap-2">
@@ -208,10 +213,42 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
                 </div>
                 <input
                   id="language"
-                  name="language"
+                  value={codeLanguage}
+                  onChange={(e) => setCodeLanguage(e.target.value)}
                   placeholder="e.g. javascript, python, bash"
                   className={inputClass}
                 />
+              </div>
+            )}
+
+            {/* Content - Code Editor for snippet/command, textarea for others */}
+            {showContent && (
+              <div className="space-y-2">
+                <label
+                  htmlFor={showCodeEditor ? undefined : "content"}
+                  className="block text-sm font-semibold text-zinc-200"
+                >
+                  Content
+                </label>
+                {showCodeEditor ? (
+                  <div className="min-h-[160px]">
+                    <CodeEditor
+                      value={codeContent}
+                      onChange={setCodeContent}
+                      language={codeLanguage}
+                    />
+                  </div>
+                ) : (
+                  <textarea
+                    id="content"
+                    name="content"
+                    placeholder={
+                      CONTENT_PLACEHOLDER[selectedType.name] ?? "Enter content..."
+                    }
+                    rows={6}
+                    className={`${inputClass} resize-y font-mono`}
+                  />
+                )}
               </div>
             )}
 

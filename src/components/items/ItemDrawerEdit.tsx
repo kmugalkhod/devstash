@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Save, X } from "lucide-react";
 import { updateItem } from "@/actions/items";
 import type { ItemDetail } from "@/lib/db/items";
+import { CodeEditor } from "./CodeEditor";
 
 interface ItemDrawerEditProps {
   item: ItemDetail;
@@ -127,17 +128,25 @@ export function ItemDrawerEdit({ item, onCancel, onSaved }: ItemDrawerEditProps)
           {/* Content */}
           {showContent && (
             <div className="space-y-2">
-              <label htmlFor="edit-content" className="block text-sm font-medium text-neutral-200">
+              <label className="block text-sm font-medium text-neutral-200">
                 Content
               </label>
-              <textarea
-                id="edit-content"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Paste your code, prompt, command, or note..."
-                spellCheck={false}
-                className={`${fieldClass} min-h-[220px] resize-y font-mono leading-relaxed`}
-              />
+              {showLanguage ? (
+                <CodeEditor
+                  value={content}
+                  onChange={setContent}
+                  language={language}
+                />
+              ) : (
+                <textarea
+                  id="edit-content"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="Paste your code, prompt, command, or note..."
+                  spellCheck={false}
+                  className={`${fieldClass} min-h-[220px] resize-y font-mono leading-relaxed`}
+                />
+              )}
             </div>
           )}
 

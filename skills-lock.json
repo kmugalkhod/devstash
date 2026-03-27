@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "skills": {
+    "neon-postgres": {
+      "source": "neondatabase/agent-skills",
+      "sourceType": "github",
+      "computedHash": "574cf4b7c901ebc7d88d34e2c3e3d08fdec127bd0047f888de148ff0af787d4e"
+    },
+    "writing-x-posts": {
+      "source": "jamesgray007/hoai-course",
+      "sourceType": "github",
+      "computedHash": "4d0bf949585833e938934011dfe991ea5f0e30d2d8ef7b0a9f2ff099da9a059c"
+    }
+  }
+}
