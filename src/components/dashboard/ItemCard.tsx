@@ -30,7 +30,7 @@ export function ItemCard({
   return (
     <div
       onClick={onClick}
-      className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-muted-foreground/20 hover:shadow-md hover:shadow-white/3"
+      className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-6 transition-all duration-200 hover:-translate-y-1 hover:border-white/10 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-white/5"
       style={{
         borderLeftWidth: "3px",
         borderLeftColor: typeColor,
@@ -55,7 +55,7 @@ export function ItemCard({
               <Star className="size-3.5 fill-yellow-500 text-yellow-500" />
             )}
             <span
-              className="text-xs text-zinc-500"
+              className="text-xs text-zinc-400"
               suppressHydrationWarning
             >
               {getRelativeTime(createdAt)}
@@ -68,8 +68,8 @@ export function ItemCard({
 
         {/* Content preview */}
         {content && (
-          <div className="mt-4 rounded-lg bg-black/40 px-4 py-3">
-            <p className="line-clamp-3 font-mono text-xs leading-relaxed text-zinc-400">
+          <div className="mt-4 rounded-lg bg-zinc-900/50 px-4 py-3">
+            <p className="line-clamp-3 font-mono text-xs leading-relaxed text-zinc-300">
               {content}
             </p>
           </div>
@@ -82,7 +82,7 @@ export function ItemCard({
           {tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full border border-white/10 bg-white/8 px-2.5 py-0.5 text-xs text-zinc-300"
+              className="rounded-full border border-white/5 bg-white/10 px-2.5 py-0.5 text-xs font-medium text-zinc-200"
             >
               {tag}
             </span>

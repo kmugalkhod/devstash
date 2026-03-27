@@ -132,7 +132,7 @@ export function DashboardItems({
   const { openDrawer } = useItemDrawer();
 
   return (
-    <>
+    <div className="space-y-10">
       {pinnedItems.length > 0 && (
         <ItemSection
           title="Pinned Items"
@@ -152,6 +152,6 @@ export function DashboardItems({
         onViewChange={setRecentView}
         onItemClick={openDrawer}
       />
-    </>
+    </div>
   );
 }
