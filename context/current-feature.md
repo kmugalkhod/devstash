@@ -1,30 +1,16 @@
-# Current Feature: Markdown Editor
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create a reusable Markdown editor component with a tabbed Write/Preview interface.
-- Replace plain textarea inputs with the Markdown editor for note and prompt item content only.
-- Preserve existing CodeEditor usage for snippet and command types with no behavioral changes.
-- Support GitHub Flavored Markdown rendering using `react-markdown` with `remark-gfm`.
-- Match the existing dark UI style, including a code-editor-like header and copy action.
-- Support both editable and readonly behavior with correct tab visibility/defaults.
-- Ensure markdown preview typography and elements are consistently styled in dark mode.
-- Integrate into New Item dialog and Item Drawer (view + edit paths) for notes/prompts.
+<!-- Add goals for the active feature -->
 
 ## Notes
 
-- Source spec: `context/features/markdown-editor-spec.md`.
-- Styling requirements: dark container (`bg-[#1e1e1e]`), dark header (`bg-[#2d2d2d]`), fluid height with max `400px`.
-- Preview styling should be implemented via a dedicated class (for example, `.markdown-preview`) to reliably style headings, lists, code, links, tables, and blockquotes in dark theme.
-- Readonly mode should only expose Preview; edit mode should default to Write and allow switching to Preview.
-- Integration points:
-  - New item creation form for `note` and `prompt` content.
-  - Item drawer edit mode for `note` and `prompt` content.
-  - Item drawer readonly view for `note` and `prompt` content rendering.
+<!-- Add notes and constraints for the active feature -->
 
 ## History
 
@@ -60,3 +46,4 @@ In Progress
 - **2026-03-27** — Item Delete with Confirmation completed. Wired Trash2 button in item drawer to shadcn AlertDialog confirmation dialog. Server action `deleteItem` in `src/actions/items.ts` with auth check and `revalidatePath`. Prisma `deleteItem` query in `src/lib/db/items.ts` with ownership verification. Sonner toast for success/error feedback. Drawer closes and card lists refresh after deletion.
 - **2026-03-27** — Item Create completed. New Item modal dialog triggered from top bar "New Item" button. Type selector as colored pill buttons (snippet, prompt, command, note, link). Dynamic fields per type: title/description/tags for all; content + language for snippet/command; content for prompt/note; URL for link. Server action `createItem` with Zod validation. Prisma `createItem` query in `lib/db/items.ts`. Toast on success, modal closes, page refreshes. Installed shadcn Select and Textarea components. Polished dialog design with dark inputs, separated footer, type-colored Create button.
 - **2026-03-27** — Code Editor in New Item Modal completed. Fixed Monaco editor visibility in New Item dialog: widened dialog to 700px for snippet/command types (520px otherwise), moved Language field above Content so syntax highlighting is applied on editor mount, wrapped form body in `max-h-[70vh] overflow-y-auto` to prevent viewport overflow, added `min-h-[160px]` container around CodeEditor, added Monaco loading placeholder, and reset `codeContent`/`codeLanguage` state when switching between item types.
+- **2026-03-28** — Markdown Editor completed. Added reusable `MarkdownEditor` component with Write/Preview tabs, copy action, and GFM rendering via `react-markdown` + `remark-gfm`. Replaced textarea content inputs with Markdown editor for `note` and `prompt` in New Item dialog and Item Drawer edit mode. Added readonly markdown rendering in Item Drawer view mode for notes/prompts. Added `.markdown-preview` dark-theme typography/styles for headings, code, lists, blockquotes, links, tables, and fluid max-height behavior.
