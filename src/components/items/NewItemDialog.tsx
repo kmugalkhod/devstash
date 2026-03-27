@@ -10,6 +10,7 @@ import { iconMap } from "@/lib/icons";
 import { createItem } from "@/actions/items";
 import type { ItemTypeInfo } from "@/lib/db/items";
 import { CodeEditor } from "./CodeEditor";
+import { MarkdownEditor } from "./MarkdownEditor";
 
 const FREE_TYPES = ["snippet", "prompt", "command", "note", "link"];
 
@@ -34,6 +35,7 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
   const [selectedTypeName, setSelectedTypeName] = useState("");
   const [codeContent, setCodeContent] = useState("");
   const [codeLanguage, setCodeLanguage] = useState("");
+  const [markdownContent, setMarkdownContent] = useState("");
 
   const availableTypes = itemTypes.filter((t) => FREE_TYPES.includes(t.name));
   const selectedType = availableTypes.find((t) => t.name === selectedTypeName);
@@ -47,11 +49,14 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
 
   const showCodeEditor =
     selectedType && ["snippet", "command"].includes(selectedType.name);
+  const showMarkdownEditor =
+    selectedType && ["prompt", "note"].includes(selectedType.name);
 
   function handleTypeSelect(typeName: string) {
     if (typeName !== selectedTypeName) {
       setCodeContent("");
       setCodeLanguage("");
+      setMarkdownContent("");
     }
     setSelectedTypeName(typeName);
   }
@@ -70,6 +75,8 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
     // Use controlled state for code editor types, FormData for others
     const content = showCodeEditor
       ? codeContent || null
+      : showMarkdownEditor
+        ? markdownContent || null
       : (form.get("content") as string) || null;
     const language = showCodeEditor
       ? codeLanguage || null
@@ -102,6 +109,7 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
       setSelectedTypeName("");
       setCodeContent("");
       setCodeLanguage("");
+      setMarkdownContent("");
     }
   }
 
@@ -113,7 +121,7 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
         <span className="hidden sm:inline">New Item</span>
       </Button>
       {open && <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className={`gap-0 p-0 transition-all duration-200 ${showCodeEditor ? "sm:max-w-[700px]" : "sm:max-w-[520px]"}`}>
+      <DialogContent className={`gap-0 p-0 transition-all duration-200 ${showCodeEditor ? "sm:max-w-175" : "sm:max-w-130"}`}>
         {/* Header */}
         <div className="px-6 pb-4 pt-6">
           <h2 className="text-base font-semibold text-zinc-100">New Item</h2>
@@ -231,13 +239,21 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
                   Content
                 </label>
                 {showCodeEditor ? (
-                  <div className="min-h-[160px]">
+                  <div className="min-h-40">
                     <CodeEditor
                       value={codeContent}
                       onChange={setCodeContent}
                       language={codeLanguage}
                     />
                   </div>
+                ) : showMarkdownEditor ? (
+                  <MarkdownEditor
+                    value={markdownContent}
+                    onChange={setMarkdownContent}
+                    placeholder={
+                      CONTENT_PLACEHOLDER[selectedType.name] ?? "Write markdown..."
+                    }
+                  />
                 ) : (
                   <textarea
                     id="content"

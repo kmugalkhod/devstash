@@ -1,15 +1,30 @@
-# Current Feature
+# Current Feature: Markdown Editor
 
 ## Status
-Not Started
+
+In Progress
 
 ## Goals
 
-<!-- Add goals for the active feature -->
+- Create a reusable Markdown editor component with a tabbed Write/Preview interface.
+- Replace plain textarea inputs with the Markdown editor for note and prompt item content only.
+- Preserve existing CodeEditor usage for snippet and command types with no behavioral changes.
+- Support GitHub Flavored Markdown rendering using `react-markdown` with `remark-gfm`.
+- Match the existing dark UI style, including a code-editor-like header and copy action.
+- Support both editable and readonly behavior with correct tab visibility/defaults.
+- Ensure markdown preview typography and elements are consistently styled in dark mode.
+- Integrate into New Item dialog and Item Drawer (view + edit paths) for notes/prompts.
 
 ## Notes
 
-<!-- Add notes and constraints for the active feature -->
+- Source spec: `context/features/markdown-editor-spec.md`.
+- Styling requirements: dark container (`bg-[#1e1e1e]`), dark header (`bg-[#2d2d2d]`), fluid height with max `400px`.
+- Preview styling should be implemented via a dedicated class (for example, `.markdown-preview`) to reliably style headings, lists, code, links, tables, and blockquotes in dark theme.
+- Readonly mode should only expose Preview; edit mode should default to Write and allow switching to Preview.
+- Integration points:
+  - New item creation form for `note` and `prompt` content.
+  - Item drawer edit mode for `note` and `prompt` content.
+  - Item drawer readonly view for `note` and `prompt` content rendering.
 
 ## History
 

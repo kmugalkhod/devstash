@@ -37,6 +37,7 @@ import { ItemDrawerEdit } from "./ItemDrawerEdit";
 import { deleteItem } from "@/actions/items";
 import { toast } from "sonner";
 import { CodeEditor } from "./CodeEditor";
+import { MarkdownEditor } from "./MarkdownEditor";
 
 interface ItemDrawerProps {
   item: ItemDetail | null;
@@ -212,6 +213,8 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
                       language={item.language ?? undefined}
                       readOnly
                     />
+                  ) : ["prompt", "note"].includes(item.type.name) ? (
+                    <MarkdownEditor value={item.content} readOnly />
                   ) : (
                     <>
                       <SectionLabel>

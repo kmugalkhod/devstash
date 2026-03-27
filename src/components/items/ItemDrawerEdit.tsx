@@ -7,6 +7,7 @@ import { Save, X } from "lucide-react";
 import { updateItem } from "@/actions/items";
 import type { ItemDetail } from "@/lib/db/items";
 import { CodeEditor } from "./CodeEditor";
+import { MarkdownEditor } from "./MarkdownEditor";
 
 interface ItemDrawerEditProps {
   item: ItemDetail;
@@ -30,6 +31,7 @@ export function ItemDrawerEdit({ item, onCancel, onSaved }: ItemDrawerEditProps)
   const typeName = item.type.name;
   const showContent = ["snippet", "prompt", "command", "note"].includes(typeName);
   const showLanguage = ["snippet", "command"].includes(typeName);
+  const showMarkdownEditor = ["prompt", "note"].includes(typeName);
   const showUrl = typeName === "link";
 
   async function handleSave() {
@@ -121,7 +123,7 @@ export function ItemDrawerEdit({ item, onCancel, onSaved }: ItemDrawerEditProps)
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Optional description"
-              className={`${fieldClass} min-h-[80px] resize-y`}
+              className={`${fieldClass} min-h-20 resize-y`}
             />
           </div>
 
@@ -137,6 +139,12 @@ export function ItemDrawerEdit({ item, onCancel, onSaved }: ItemDrawerEditProps)
                   onChange={setContent}
                   language={language}
                 />
+              ) : showMarkdownEditor ? (
+                <MarkdownEditor
+                  value={content}
+                  onChange={setContent}
+                  placeholder="Write markdown..."
+                />
               ) : (
                 <textarea
                   id="edit-content"
@@ -144,7 +152,7 @@ export function ItemDrawerEdit({ item, onCancel, onSaved }: ItemDrawerEditProps)
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="Paste your code, prompt, command, or note..."
                   spellCheck={false}
-                  className={`${fieldClass} min-h-[220px] resize-y font-mono leading-relaxed`}
+                  className={`${fieldClass} min-h-55 resize-y font-mono leading-relaxed`}
                 />
               )}
             </div>
