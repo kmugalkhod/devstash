@@ -1,22 +1,15 @@
-# Current Feature: Code Editor in New Item Modal
+# Current Feature
 
 ## Status
-Done
+Not Started
 
 ## Goals
 
-- Ensure the Monaco CodeEditor is properly visible and functional inside the New Item dialog for `snippet` and `command` types
-- Move the Language input **above** the Content editor so syntax highlighting is set before the user starts typing
-- Widen the dialog when a code type is selected (snippet/command) to give the editor comfortable space
-- Make the dialog body scrollable so form fields don't overflow the viewport
-- Show a proper loading placeholder while Monaco initializes
+<!-- Add goals for the active feature -->
 
 ## Notes
 
-- Monaco Editor has known rendering issues inside modals/dialogs — `automaticLayout: true` should help but the container must be visible at mount time
-- Current dialog is `sm:max-w-[520px]` — should expand to ~680px for code types
-- Language → Content order change is a UX improvement (user sets language first, then editor highlights correctly)
-- The `@monaco-editor/react` package must be installed: `npm install @monaco-editor/react`
+<!-- Add notes and constraints for the active feature -->
 
 ## History
 
