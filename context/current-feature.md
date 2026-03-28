@@ -1,23 +1,16 @@
-# Current Feature: Add Item to Collections from Item Forms
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add a collections selection input to the New Item form.
-- Add the same collections selection input to the Edit Item form.
-- Support assigning an item to one or multiple collections from both forms.
-- Persist collection associations correctly when creating and updating items.
-- Keep scope limited to form integration only (no collection page UI changes).
+<!-- Add goals for the active feature -->
 
 ## Notes
 
-- Source request: "Add functionality to add an item to a single or multiple collections."
-- The collections input should use available user collections as selectable options.
-- Apply to both new-item creation flow and item edit flow.
-- Out of scope for this feature load: displaying or changing collection pages.
+<!-- Add notes and constraints for the active feature -->
 
 ## History
 
@@ -60,3 +53,4 @@ In Progress
 - **2026-03-28** — Security and robustness hardening completed. Fixed hashed verification token storage/validation, hardened auth rate-limit keying with degraded-closed fallback and stricter client IP parsing, added registration rollback when verification email delivery fails, enforced server-side R2 key ownership checks for create/download/delete flows, replaced profile in-memory type counting with DB aggregation, fixed item drawer request race with cancellation/last-request guards, and deduplicated shared UI helpers (`ViewToggle`, initials, byte formatting).
 - **2026-03-28** — Refactor Large Components and Utilities completed. Loaded and started a maintainability-focused refactor plan with prioritized split targets for oversized components and utilities, then completed the workflow cycle by finalizing feature context and resetting `current-feature.md` for the next feature.
 - **2026-03-28** — Collection Create completed. Implemented a working top-bar New Collection flow with modal UX, authenticated `POST /api/collections`, user-scoped database creation with case-insensitive duplicate-name protection, toast feedback for success/failure, and dashboard refresh so new collections appear immediately.
+- **2026-03-28** — Add Item to Collections from Item Forms completed. Added multi-select collection inputs to New Item and Item Drawer edit forms, wired available collections into the dashboard top bar flow, and persisted item-to-collection assignments on create/update with server-side ownership validation.
