@@ -1,22 +1,16 @@
-# Current Feature: File List View
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Update `/items/files` to render as a single-column file list instead of grid cards.
-- Show each file row with extension-based icon, file name, file size, upload date, and a download action.
-- Open ItemDrawer when a row is clicked.
-- Ensure the download button triggers direct download without opening ItemDrawer.
-- Add responsive behavior so file metadata stacks vertically on mobile.
+<!-- Add goals for the active feature -->
 
 ## Notes
 
-- Source spec: `context/features/file-display-spec.md`.
-- Visual direction should feel like a cloud file browser (Google Drive/Dropbox style list rows).
-- Include row hover highlight for list interaction feedback.
+<!-- Add notes and constraints for the active feature -->
 
 ## History
 
@@ -55,3 +49,4 @@ In Progress
 - **2026-03-28** — Markdown Editor completed. Added reusable `MarkdownEditor` component with Write/Preview tabs, copy action, and GFM rendering via `react-markdown` + `remark-gfm`. Replaced textarea content inputs with Markdown editor for `note` and `prompt` in New Item dialog and Item Drawer edit mode. Added readonly markdown rendering in Item Drawer view mode for notes/prompts. Added `.markdown-preview` dark-theme typography/styles for headings, code, lists, blockquotes, links, tables, and fluid max-height behavior.
 - **2026-03-28** — File Upload with Cloudflare R2 completed. Added Cloudflare R2-backed upload and download proxy API routes, reusable drag-and-drop `FileUpload` component with validation and progress, file/image integration in New Item modal, image preview and download action in Item Drawer, item persistence updates for file metadata, and R2 cleanup on item deletion. Added upload env vars to `.env.example` and created feature specs for file/image upload and image display.
 - **2026-03-28** — Image Gallery View completed. Added an image-specific gallery presentation in `/dashboard/items/image` with a new `ImageThumbnailCard`, fixed 16:9 thumbnails using `object-cover`, subtle hover zoom transition, hidden list/grid toggle for image type, and retained existing list/grid behavior for all non-image item types.
+- **2026-03-28** — File List View completed. Updated `/dashboard/items/files` to use a single-column row layout with extension-based file icons, file name, size, upload date, row hover highlight, drawer-open on row click, direct-download button with click propagation guard, and mobile-stacked metadata.
