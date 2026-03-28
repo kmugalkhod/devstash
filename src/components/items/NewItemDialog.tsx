@@ -11,8 +11,10 @@ import { createItem } from "@/actions/items";
 import type { ItemTypeInfo } from "@/lib/db/items";
 import { CodeEditor } from "./CodeEditor";
 import { MarkdownEditor } from "./MarkdownEditor";
+import { FileUpload, type UploadedFileMeta } from "./FileUpload";
+import type { UploadItemType } from "@/lib/upload-constraints";
 
-const FREE_TYPES = ["snippet", "prompt", "command", "note", "link"];
+const FREE_TYPES = ["snippet", "prompt", "command", "note", "file", "image", "link"];
 
 const CONTENT_PLACEHOLDER: Record<string, string> = {
   snippet: "Paste your code here...",
@@ -36,6 +38,7 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
   const [codeContent, setCodeContent] = useState("");
   const [codeLanguage, setCodeLanguage] = useState("");
   const [markdownContent, setMarkdownContent] = useState("");
+  const [uploadedFile, setUploadedFile] = useState<UploadedFileMeta | null>(null);
 
   const availableTypes = itemTypes.filter((t) => FREE_TYPES.includes(t.name));
   const selectedType = availableTypes.find((t) => t.name === selectedTypeName);
@@ -51,12 +54,27 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
     selectedType && ["snippet", "command"].includes(selectedType.name);
   const showMarkdownEditor =
     selectedType && ["prompt", "note"].includes(selectedType.name);
+  const showFileUpload =
+    selectedType && ["file", "image"].includes(selectedType.name);
+  const selectedUploadType: UploadItemType | null =
+    selectedType?.name === "file" || selectedType?.name === "image"
+      ? selectedType.name
+      : null;
+
+  function resetDialogState() {
+    setSelectedTypeName("");
+    setCodeContent("");
+    setCodeLanguage("");
+    setMarkdownContent("");
+    setUploadedFile(null);
+  }
 
   function handleTypeSelect(typeName: string) {
     if (typeName !== selectedTypeName) {
       setCodeContent("");
       setCodeLanguage("");
       setMarkdownContent("");
+      setUploadedFile(null);
     }
     setSelectedTypeName(typeName);
   }
@@ -72,12 +90,19 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
       .map((t) => t.trim())
       .filter(Boolean);
 
+    if (showFileUpload && !uploadedFile) {
+      toast.error("Please upload a file before creating this item");
+      return;
+    }
+
     // Use controlled state for code editor types, FormData for others
-    const content = showCodeEditor
-      ? codeContent || null
-      : showMarkdownEditor
-        ? markdownContent || null
-      : (form.get("content") as string) || null;
+    const content = showFileUpload
+      ? null
+      : showCodeEditor
+        ? codeContent || null
+        : showMarkdownEditor
+          ? markdownContent || null
+          : (form.get("content") as string) || null;
     const language = showCodeEditor
       ? codeLanguage || null
       : (form.get("language") as string) || null;
@@ -87,6 +112,9 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
       title: form.get("title") as string,
       description: (form.get("description") as string) || null,
       content,
+      fileUrl: showFileUpload ? uploadedFile?.key ?? null : null,
+      fileName: showFileUpload ? uploadedFile?.fileName ?? null : null,
+      fileSize: showFileUpload ? uploadedFile?.fileSize ?? null : null,
       url: (form.get("url") as string) || null,
       language,
       itemTypeId: selectedType.id,
@@ -96,6 +124,7 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
 
     if (result.success) {
       toast.success("Item created");
+      resetDialogState();
       setOpen(false);
       router.refresh();
     } else {
@@ -106,16 +135,18 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
   function handleOpenChange(nextOpen: boolean) {
     setOpen(nextOpen);
     if (!nextOpen) {
-      setSelectedTypeName("");
-      setCodeContent("");
-      setCodeLanguage("");
-      setMarkdownContent("");
+      resetDialogState();
     }
   }
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>
+      <Button
+        onClick={() => {
+          resetDialogState();
+          setOpen(true);
+        }}
+      >
         <Plus className="size-4" />
         <span className="sm:hidden">New</span>
         <span className="hidden sm:inline">New Item</span>
@@ -288,6 +319,21 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
               </div>
             )}
 
+            {/* File upload */}
+            {showFileUpload && selectedUploadType && (
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-zinc-200">
+                  Upload
+                </label>
+                <FileUpload
+                  itemType={selectedUploadType}
+                  value={uploadedFile}
+                  onChange={setUploadedFile}
+                  disabled={saving}
+                />
+              </div>
+            )}
+
             {/* Tags */}
             <div className="space-y-2">
               <div className="flex items-baseline gap-2">
@@ -312,7 +358,7 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
           <div className="flex justify-end border-t border-zinc-800/60 px-6 py-4">
             <Button
               type="submit"
-              disabled={saving || !selectedType}
+              disabled={saving || !selectedType || (showFileUpload && !uploadedFile)}
               style={
                 selectedType && !saving
                   ? { backgroundColor: selectedType.color, color: "#fff" }

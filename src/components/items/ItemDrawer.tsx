@@ -24,6 +24,7 @@ import {
   Star,
   Pin,
   Copy,
+  Download,
   Pencil,
   Trash2,
   X,
@@ -85,6 +86,12 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
     }
   }
 
+  function handleDownload() {
+    if (!item?.fileUrl) return;
+    const url = `/api/items/download/${item.id}?download=1`;
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent
@@ -127,6 +134,13 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
                 label="Edit"
                 onClick={() => setEditing(true)}
               />
+              {item.fileUrl && ["file", "image"].includes(item.type.name) && (
+                <ActionButton
+                  icon={Download}
+                  label="Download"
+                  onClick={handleDownload}
+                />
+              )}
               <div className="flex-1" />
               <AlertDialog>
                 <AlertDialogTrigger
@@ -240,6 +254,21 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
                       {formatFileSize(item.fileSize)}
                     </p>
                   )}
+                </div>
+              )}
+
+              {/* Image preview */}
+              {item.type.name === "image" && item.fileUrl && (
+                <div>
+                  <SectionLabel>Preview</SectionLabel>
+                  <div className="overflow-hidden rounded-lg border border-border/60 bg-black/20">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/api/items/download/${item.id}?download=0`}
+                      alt={item.fileName ?? item.title}
+                      className="max-h-96 w-full object-contain"
+                    />
+                  </div>
                 </div>
               )}
 

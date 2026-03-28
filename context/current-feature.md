@@ -1,16 +1,31 @@
-# Current Feature
+# Current Feature: File Upload with Cloudflare R2
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals for the active feature -->
+- Create an upload API route that stores files in Cloudflare R2.
+- Keep Prisma and database functions in src/lib/db/items.ts.
+- Build a reusable FileUpload component with drag-and-drop support.
+- Integrate FileUpload into item creation flow for file and image item types.
+- Show upload progress and upload result feedback in the UI.
+- Add image preview for image uploads and file metadata display for file uploads.
+- Add a download proxy API route to avoid direct R2 CORS issues.
+- Add a download action/button in item drawer for file-based items.
+- Ensure R2 objects are deleted when the related items are deleted.
 
 ## Notes
 
-<!-- Add notes and constraints for the active feature -->
+- Storage provider: Cloudflare R2 (S3-compatible API).
+- File size limits:
+  - Images: max 5 MB.
+  - Files: max 10 MB.
+- Allowed image extensions: .png, .jpg, .jpeg, .gif, .webp, .svg.
+- Allowed file extensions: .pdf, .txt, .md, .json, .yaml, .yml, .xml, .csv, .toml, .ini.
+- Allowed image MIME types: image/png, image/jpeg, image/gif, image/webp, image/svg+xml.
+- Allowed file MIME types: application/pdf, text/plain, text/markdown, application/json, application/x-yaml, text/yaml, application/xml, text/xml, text/csv, application/toml.
 
 ## History
 
