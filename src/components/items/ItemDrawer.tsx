@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import {
   Sheet,
@@ -34,6 +35,7 @@ import {
 import { cn, getRelativeTime } from "@/lib/utils";
 import { iconMap } from "@/lib/icons";
 import type { ItemDetail } from "@/lib/db/items";
+import { formatBytes } from "@/lib/upload-constraints";
 import { ItemDrawerEdit } from "./ItemDrawerEdit";
 import { deleteItem } from "@/actions/items";
 import { toast } from "sonner";
@@ -251,7 +253,7 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
                   <p className="text-sm text-foreground">{item.fileName}</p>
                   {item.fileSize && (
                     <p className="text-xs text-muted-foreground">
-                      {formatFileSize(item.fileSize)}
+                      {formatBytes(item.fileSize)}
                     </p>
                   )}
                 </div>
@@ -261,12 +263,14 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
               {item.type.name === "image" && item.fileUrl && (
                 <div>
                   <SectionLabel>Preview</SectionLabel>
-                  <div className="overflow-hidden rounded-lg border border-border/60 bg-black/20">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                  <div className="relative h-96 overflow-hidden rounded-lg border border-border/60 bg-black/20">
+                    <Image
                       src={`/api/items/download/${item.id}?download=0`}
                       alt={item.fileName ?? item.title}
-                      className="max-h-96 w-full object-contain"
+                      fill
+                      unoptimized
+                      sizes="(max-width: 768px) 100vw, 672px"
+                      className="object-contain"
                     />
                   </div>
                 </div>
@@ -396,8 +400,3 @@ function DrawerSkeleton() {
   );
 }
 
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}

@@ -1,7 +1,7 @@
 import { Readable } from "node:stream";
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { getFromR2 } from "@/lib/r2";
+import { getFromR2, isR2KeyOwnedByUser } from "@/lib/r2";
 import { getItemById } from "@/lib/db/items";
 
 function toWebStream(body: unknown): ReadableStream<Uint8Array> | null {
@@ -51,6 +51,13 @@ export async function GET(
     if (!item.fileUrl || !item.fileName) {
       return NextResponse.json(
         { error: "Item has no uploaded file" },
+        { status: 400 }
+      );
+    }
+
+    if (!isR2KeyOwnedByUser(session.user.id, item.fileUrl)) {
+      return NextResponse.json(
+        { error: "Invalid file reference" },
         { status: 400 }
       );
     }

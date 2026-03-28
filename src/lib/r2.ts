@@ -28,6 +28,10 @@ const FALLBACK_REGION = "auto";
 let cachedClient: S3Client | null = null;
 let cachedBucketName: string | null = null;
 
+const R2_KEY_YEAR_REGEX = /^\d{4}$/;
+const R2_KEY_MONTH_REGEX = /^(0[1-9]|1[0-2])$/;
+const R2_KEY_FILE_REGEX = /^[0-9a-f-]{36}-[a-z0-9][a-z0-9._-]*$/;
+
 function getRequiredEnv(name: string): string {
   const value = process.env[name];
   if (!value) {
@@ -92,6 +96,21 @@ function createR2Key(userId: string, fileName: string): string {
 function removeLeadingSlash(path: string): string {
   if (path.startsWith("/")) return path.slice(1);
   return path;
+}
+
+export function isR2KeyOwnedByUser(userId: string, key: string): boolean {
+  const normalizedKey = removeLeadingSlash(key.trim());
+  const parts = normalizedKey.split("/");
+
+  if (parts.length !== 4) return false;
+
+  const [ownerId, year, month, filePart] = parts;
+  if (ownerId !== userId) return false;
+  if (!R2_KEY_YEAR_REGEX.test(year)) return false;
+  if (!R2_KEY_MONTH_REGEX.test(month)) return false;
+  if (!R2_KEY_FILE_REGEX.test(filePart)) return false;
+
+  return true;
 }
 
 export function getR2PublicUrl(key: string): string | null {

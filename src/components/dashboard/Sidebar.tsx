@@ -33,7 +33,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { useSidebar } from "./SidebarContext";
-import { cn } from "@/lib/utils";
+import { cn, getInitials } from "@/lib/utils";
 import { iconMap } from "@/lib/icons";
 import type { ItemTypeInfo, SidebarCollection, SidebarUser } from "@/lib/db/items";
 
@@ -41,17 +41,6 @@ const proTypes = new Set(["file", "image"]);
 
 function getTypeSlug(name: string): string {
   return name.toLowerCase() + "s";
-}
-
-function getInitials(name: string): string {
-  return (
-    name
-      .split(" ")
-      .map((n) => n[0] ?? "")
-      .join("")
-      .toUpperCase()
-      .slice(0, 2) || "?"
-  );
 }
 
 interface SidebarProps {

@@ -4,9 +4,25 @@ import {
   loginLimiter,
   getClientIp,
   checkRateLimit,
+  rateLimitKey,
 } from "@/lib/rate-limit";
 
 export const { GET } = handlers;
+
+async function getCredentialsIdentifier(
+  request: NextRequest
+): Promise<string | undefined> {
+  try {
+    const formData = await request.clone().formData();
+    const email = formData.get("email");
+    if (typeof email !== "string") return undefined;
+
+    const normalized = email.trim().toLowerCase();
+    return normalized.length > 0 ? normalized : undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 export async function POST(request: NextRequest) {
   const isCredentialsCallback =
@@ -14,7 +30,15 @@ export async function POST(request: NextRequest) {
 
   if (isCredentialsCallback) {
     const ip = getClientIp(request);
-    const { success, reset } = await checkRateLimit(loginLimiter, ip);
+    const identifier = await getCredentialsIdentifier(request);
+    const key = rateLimitKey(ip, identifier);
+    const { success, reset } = await checkRateLimit(loginLimiter, key, {
+      fallback: {
+        prefix: "login",
+        limit: 5,
+        windowMs: 15 * 60 * 1000,
+      },
+    });
 
     if (!success) {
       const retryAfterSeconds = Math.ceil((reset - Date.now()) / 1000);

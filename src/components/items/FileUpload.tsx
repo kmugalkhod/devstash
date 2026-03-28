@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Loader2, Upload, X, File as FileIcon, Image as ImageIcon } from "lucide-react";
 import {
@@ -199,12 +200,14 @@ export function FileUpload({ itemType, value, onChange, disabled }: FileUploadPr
           </div>
 
           {itemType === "image" && previewUrl && (
-            <div className="mt-3 overflow-hidden rounded-md border border-zinc-800/60">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+            <div className="relative mt-3 h-56 overflow-hidden rounded-md border border-zinc-800/60">
+              <Image
                 src={previewUrl}
                 alt={value.fileName}
-                className="max-h-56 w-full object-contain"
+                fill
+                unoptimized
+                sizes="(max-width: 768px) 100vw, 512px"
+                className="object-contain"
               />
             </div>
           )}

@@ -7,6 +7,7 @@ import {
   updateItem as updateItemDb,
   deleteItem as deleteItemDb,
 } from "@/lib/db/items";
+import { isR2KeyOwnedByUser } from "@/lib/r2";
 import { revalidatePath } from "next/cache";
 
 const createItemSchema = z.object({
@@ -49,7 +50,26 @@ export async function createItem(formData: z.input<typeof createItemSchema>) {
   }
 
   try {
-    const id = await createItemDb(session.user.id, parsed.data);
+    const fileUrl = parsed.data.fileUrl?.trim() ?? null;
+    const hasFileName = parsed.data.fileName !== null;
+    const hasFileSize = parsed.data.fileSize !== null;
+
+    if (fileUrl && !isR2KeyOwnedByUser(session.user.id, fileUrl)) {
+      return { success: false as const, error: "Invalid uploaded file reference" };
+    }
+
+    if (!fileUrl && (hasFileName || hasFileSize)) {
+      return { success: false as const, error: "Invalid file metadata" };
+    }
+
+    if (fileUrl && (!hasFileName || !hasFileSize)) {
+      return { success: false as const, error: "Missing file metadata" };
+    }
+
+    const id = await createItemDb(session.user.id, {
+      ...parsed.data,
+      fileUrl,
+    });
     revalidatePath("/dashboard");
     return { success: true as const, data: { id } };
   } catch {

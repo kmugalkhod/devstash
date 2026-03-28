@@ -6,6 +6,7 @@ import {
   registerLimiter,
   getClientIp,
   checkRateLimit,
+  rateLimitKey,
   rateLimitResponse,
 } from "@/lib/rate-limit";
 import { generateVerificationToken } from "@/lib/tokens";
@@ -19,13 +20,6 @@ const registerSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    const ip = getClientIp(request);
-    const { success, reset } = await checkRateLimit(registerLimiter, ip);
-
-    if (!success) {
-      return rateLimitResponse(reset);
-    }
-
     const body = await request.json();
     const result = registerSchema.safeParse(body);
 
@@ -37,6 +31,20 @@ export async function POST(request: Request) {
     }
 
     const { name, email, password } = result.data;
+
+    const ip = getClientIp(request);
+    const key = rateLimitKey(ip, email.trim().toLowerCase());
+    const { success, reset } = await checkRateLimit(registerLimiter, key, {
+      fallback: {
+        prefix: "register",
+        limit: 3,
+        windowMs: 60 * 60 * 1000,
+      },
+    });
+
+    if (!success) {
+      return rateLimitResponse(reset);
+    }
 
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -62,9 +70,27 @@ export async function POST(request: Request) {
     const emailVerificationEnabled = process.env.EMAIL_VERIFICATION_ENABLED !== "false";
 
     if (emailVerificationEnabled) {
-      // Generate verification token and send email
-      const token = await generateVerificationToken(email);
-      await sendVerificationEmail(email, token);
+      try {
+        const token = await generateVerificationToken(email);
+        await sendVerificationEmail(email, token);
+      } catch (emailError) {
+        console.error("Verification email delivery failed:", emailError);
+
+        // Compensate to avoid leaving a partially-created account on email failure.
+        try {
+          await prisma.$transaction([
+            prisma.verificationToken.deleteMany({ where: { identifier: email } }),
+            prisma.user.delete({ where: { id: user.id } }),
+          ]);
+        } catch (rollbackError) {
+          console.error("Failed to rollback registration after email error:", rollbackError);
+        }
+
+        return NextResponse.json(
+          { error: "Unable to send verification email. Please try again." },
+          { status: 503 }
+        );
+      }
     } else {
       // Auto-verify the user when email verification is disabled
       await prisma.user.update({

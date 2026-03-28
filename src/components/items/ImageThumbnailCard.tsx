@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Image as ImageIcon, Star } from "lucide-react";
 import { getRelativeTime } from "@/lib/utils";
 
@@ -29,12 +30,13 @@ export function ImageThumbnailCard({
       <div className="relative aspect-video overflow-hidden rounded-xl border border-border bg-card">
         {fileUrl ? (
           <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={`/api/items/download/${id}?download=0`}
               alt={fileName ?? title}
+              fill
+              unoptimized
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-              loading="lazy"
             />
             <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent" />
           </>

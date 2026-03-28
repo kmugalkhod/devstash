@@ -2,7 +2,7 @@
 
 ## Goal
 
-Update `/items/files` to display as a single-column list (like Google Drive/Dropbox) instead of grid cards.
+Update `/dashboard/items/files` to display as a single-column list (like Google Drive/Dropbox) instead of grid cards.
 
 ## Requirements
 
@@ -12,5 +12,3 @@ Update `/items/files` to display as a single-column list (like Google Drive/Drop
 - Click row opens ItemDrawer
 - Download button triggers direct download (stop propagation)
 - Responsive: stack info vertically on mobile
-
-

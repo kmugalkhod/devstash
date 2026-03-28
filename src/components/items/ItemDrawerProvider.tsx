@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import { useRouter } from "next/navigation";
 import { ItemDrawer } from "./ItemDrawer";
 import type { ItemDetail } from "@/lib/db/items";
@@ -28,26 +35,57 @@ export function ItemDrawerProvider({
   const [open, setOpen] = useState(false);
   const [item, setItem] = useState<ItemDetail | null>(null);
   const [loading, setLoading] = useState(false);
+  const activeRequestId = useRef(0);
+  const activeController = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => {
+      activeController.current?.abort();
+    };
+  }, []);
 
   const openDrawer = useCallback((itemId: string) => {
+    activeRequestId.current += 1;
+    const requestId = activeRequestId.current;
+
+    activeController.current?.abort();
+    const controller = new AbortController();
+    activeController.current = controller;
+
     setOpen(true);
     setLoading(true);
     setItem(null);
 
-    fetch(`/api/items/${itemId}`)
+    fetch(`/api/items/${itemId}`, { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json();
       })
-      .then((data) => setItem(data))
-      .catch(() => setItem(null))
-      .finally(() => setLoading(false));
+      .then((data) => {
+        if (activeRequestId.current === requestId) {
+          setItem(data);
+        }
+      })
+      .catch(() => {
+        if (activeRequestId.current === requestId) {
+          setItem(null);
+        }
+      })
+      .finally(() => {
+        if (activeRequestId.current === requestId) {
+          setLoading(false);
+        }
+      });
   }, []);
 
   const handleOpenChange = useCallback((isOpen: boolean) => {
     setOpen(isOpen);
     if (!isOpen) {
+      activeRequestId.current += 1;
+      activeController.current?.abort();
+      activeController.current = null;
       setItem(null);
+      setLoading(false);
     }
   }, []);
 

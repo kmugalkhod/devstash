@@ -6,7 +6,7 @@ Create the profile page with user info, stats, change password and delete accoun
 
 ## Requirements
 
-- Create profile page at `/profile` route
+- Create profile page at `/dashboard/profile` route
 - Display user info: email, name, avatar (GitHub or initials), account creation date
 - Show usage stats: total items, total collections, breakdown by item type
 - Add account actions: change password (email users only), delete account with confirmation
@@ -19,7 +19,3 @@ Create the profile page with user info, stats, change password and delete accoun
 - Delete account needs confirmation dialog to prevent accidental deletion
 - Item type breakdown should show counts for each type (snippets, prompts, notes, commands, links, files, images)
 - Route should be protected (require authentication)
-
-```
-
-```

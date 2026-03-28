@@ -22,3 +22,14 @@ export function getRelativeTime(dateString: string): string {
   if (Math.abs(diffWeek) < 5) return rtf.format(diffWeek, "week");
   return rtf.format(diffMonth, "month");
 }
+
+export function getInitials(name: string): string {
+  return (
+    name
+      .split(" ")
+      .map((part) => part[0] ?? "")
+      .join("")
+      .toUpperCase()
+      .slice(0, 2) || "?"
+  )
+}

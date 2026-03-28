@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { deleteFromR2 } from "@/lib/r2";
+import { deleteFromR2, isR2KeyOwnedByUser } from "@/lib/r2";
 
 export interface ItemTypeInfo {
   id: string;
@@ -390,7 +390,7 @@ export async function deleteItem(
 
   if (!item || item.userId !== userId) return false;
 
-  if (item.fileUrl) {
+  if (item.fileUrl && isR2KeyOwnedByUser(userId, item.fileUrl)) {
     await deleteFromR2(item.fileUrl);
   }
 

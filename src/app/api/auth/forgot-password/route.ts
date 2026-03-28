@@ -5,6 +5,7 @@ import {
   forgotPasswordLimiter,
   getClientIp,
   checkRateLimit,
+  rateLimitKey,
   rateLimitResponse,
 } from "@/lib/rate-limit";
 import { generateVerificationToken } from "@/lib/tokens";
@@ -16,13 +17,6 @@ const schema = z.object({
 
 export async function POST(request: Request) {
   try {
-    const ip = getClientIp(request);
-    const { success, reset } = await checkRateLimit(forgotPasswordLimiter, ip);
-
-    if (!success) {
-      return rateLimitResponse(reset);
-    }
-
     const body = await request.json();
     const result = schema.safeParse(body);
 
@@ -34,6 +28,20 @@ export async function POST(request: Request) {
     }
 
     const { email } = result.data;
+
+    const ip = getClientIp(request);
+    const key = rateLimitKey(ip, email.trim().toLowerCase());
+    const { success, reset } = await checkRateLimit(forgotPasswordLimiter, key, {
+      fallback: {
+        prefix: "forgot-password",
+        limit: 3,
+        windowMs: 60 * 60 * 1000,
+      },
+    });
+
+    if (!success) {
+      return rateLimitResponse(reset);
+    }
 
     // Always return success to avoid revealing whether account exists
     const user = await prisma.user.findUnique({ where: { email } });

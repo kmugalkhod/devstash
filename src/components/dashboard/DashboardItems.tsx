@@ -3,49 +3,12 @@
 import { useState } from "react";
 import { ItemCard } from "@/components/dashboard/ItemCard";
 import { ItemCardList } from "@/components/dashboard/ItemCardList";
-import { Pin, Clock, LayoutGrid, List } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Pin, Clock } from "lucide-react";
 import type { DashboardItem } from "@/lib/db/items";
 import { useItemDrawer } from "@/components/items/ItemDrawerProvider";
+import { ViewToggle } from "@/components/shared/ViewToggle";
 
 type ViewMode = "grid" | "list";
-
-function ViewToggle({
-  view,
-  onChange,
-}: {
-  view: ViewMode;
-  onChange: (v: ViewMode) => void;
-}) {
-  return (
-    <div className="flex items-center gap-0.5 rounded-lg border border-border p-0.5">
-      <button
-        onClick={() => onChange("grid")}
-        className={cn(
-          "rounded-md p-1.5 transition-colors",
-          view === "grid"
-            ? "bg-muted text-foreground shadow-sm"
-            : "text-muted-foreground hover:text-foreground"
-        )}
-        aria-label="Grid view"
-      >
-        <LayoutGrid className="size-4" />
-      </button>
-      <button
-        onClick={() => onChange("list")}
-        className={cn(
-          "rounded-md p-1.5 transition-colors",
-          view === "list"
-            ? "bg-muted text-foreground shadow-sm"
-            : "text-muted-foreground hover:text-foreground"
-        )}
-        aria-label="List view"
-      >
-        <List className="size-4" />
-      </button>
-    </div>
-  );
-}
 
 function ItemSection({
   title,

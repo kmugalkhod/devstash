@@ -2,11 +2,11 @@
 
 ## Overview
 
-Dynamic items listing page at `/items/[type]` that displays type-filtered items.
+Dynamic items listing page at `/dashboard/items/[type]` that displays type-filtered items.
 
 ## Requirements
 
-- Create dynamic route `/items/[type]` (e.g., /items/snippets, /items/notes)
+- Create dynamic route `/dashboard/items/[type]` (e.g., /dashboard/items/snippets, /dashboard/items/notes)
 - Fetch and display items filtered by type
 - Responsive grid of ItemCard components
 - Two columns on medium and up

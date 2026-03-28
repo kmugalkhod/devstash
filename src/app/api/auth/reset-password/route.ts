@@ -7,6 +7,7 @@ import {
   resetPasswordLimiter,
   getClientIp,
   checkRateLimit,
+  rateLimitKey,
   rateLimitResponse,
 } from "@/lib/rate-limit";
 
@@ -17,13 +18,6 @@ const schema = z.object({
 
 export async function POST(request: Request) {
   try {
-    const ip = getClientIp(request);
-    const { success, reset } = await checkRateLimit(resetPasswordLimiter, ip);
-
-    if (!success) {
-      return rateLimitResponse(reset);
-    }
-
     const body = await request.json();
     const result = schema.safeParse(body);
 
@@ -35,6 +29,20 @@ export async function POST(request: Request) {
     }
 
     const { token, password } = result.data;
+
+    const ip = getClientIp(request);
+    const key = rateLimitKey(ip, token.slice(0, 16));
+    const { success, reset } = await checkRateLimit(resetPasswordLimiter, key, {
+      fallback: {
+        prefix: "reset-password",
+        limit: 5,
+        windowMs: 15 * 60 * 1000,
+      },
+    });
+
+    if (!success) {
+      return rateLimitResponse(reset);
+    }
 
     const email = await validateVerificationToken(token);
 

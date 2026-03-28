@@ -1,17 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar } from "lucide-react";
 import type { ProfileUser } from "@/lib/db/profile";
-
-function getInitials(name: string): string {
-  return (
-    name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2) || "?"
-  );
-}
+import { getInitials } from "@/lib/utils";
 
 export function ProfileHeader({ user }: { user: ProfileUser }) {
   return (

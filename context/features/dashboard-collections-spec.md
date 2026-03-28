@@ -2,7 +2,7 @@
 
 ## Overview
 
-Replace the dummy collection data displayed in the main area of the dashboard (right side), with actual data from the database. It should look how it does now with the 6 cards of recent collections, but instead of using data from @src/lib/mock-data.ts, it should be from our Neon database using Prisma.
+Display collection data in the main area of the dashboard (right side) using Neon database queries via Prisma.
 
 Do not add the items underneath yet. We will do that later.
 

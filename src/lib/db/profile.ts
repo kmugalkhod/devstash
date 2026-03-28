@@ -38,12 +38,13 @@ export async function getProfileUser(userId: string): Promise<ProfileUser> {
 export async function getProfileStats(
   userId: string
 ): Promise<ProfileStats> {
-  const [totalItems, totalCollections, items] = await Promise.all([
+  const [totalItems, totalCollections, groupedCounts] = await Promise.all([
     prisma.item.count({ where: { userId } }),
     prisma.collection.count({ where: { userId } }),
-    prisma.item.findMany({
+    prisma.item.groupBy({
+      by: ["itemTypeId"],
       where: { userId },
-      select: { itemTypeId: true },
+      _count: { _all: true },
     }),
   ]);
 
@@ -53,8 +54,8 @@ export async function getProfileStats(
   });
 
   const countMap = new Map<string, number>();
-  for (const item of items) {
-    countMap.set(item.itemTypeId, (countMap.get(item.itemTypeId) ?? 0) + 1);
+  for (const group of groupedCounts) {
+    countMap.set(group.itemTypeId, group._count._all);
   }
 
   const itemsByType = itemTypes.map((t) => ({
