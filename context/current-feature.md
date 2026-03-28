@@ -1,22 +1,16 @@
-# Current Feature: Image Gallery View
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create an image thumbnail card to replace the regular item card for image items.
-- Show images in a 3-column gallery grid.
-- Render image thumbnails using a 16:9 aspect ratio (`aspect-video`).
-- Use `object-cover` so thumbnails fill the card area consistently.
-- Add a subtle hover zoom effect (`scale-105`) with a 300ms transition.
+<!-- Add goals for the active feature -->
 
 ## Notes
 
-- Loaded from spec: `context/features/image-display-spec.md`.
-- Scope is the image display/gallery UI behavior and styling.
-- Keep existing non-image item display behavior unchanged.
+<!-- Add notes and constraints for the active feature -->
 
 ## History
 
@@ -54,3 +48,4 @@ In Progress
 - **2026-03-27** — Code Editor in New Item Modal completed. Fixed Monaco editor visibility in New Item dialog: widened dialog to 700px for snippet/command types (520px otherwise), moved Language field above Content so syntax highlighting is applied on editor mount, wrapped form body in `max-h-[70vh] overflow-y-auto` to prevent viewport overflow, added `min-h-[160px]` container around CodeEditor, added Monaco loading placeholder, and reset `codeContent`/`codeLanguage` state when switching between item types.
 - **2026-03-28** — Markdown Editor completed. Added reusable `MarkdownEditor` component with Write/Preview tabs, copy action, and GFM rendering via `react-markdown` + `remark-gfm`. Replaced textarea content inputs with Markdown editor for `note` and `prompt` in New Item dialog and Item Drawer edit mode. Added readonly markdown rendering in Item Drawer view mode for notes/prompts. Added `.markdown-preview` dark-theme typography/styles for headings, code, lists, blockquotes, links, tables, and fluid max-height behavior.
 - **2026-03-28** — File Upload with Cloudflare R2 completed. Added Cloudflare R2-backed upload and download proxy API routes, reusable drag-and-drop `FileUpload` component with validation and progress, file/image integration in New Item modal, image preview and download action in Item Drawer, item persistence updates for file metadata, and R2 cleanup on item deletion. Added upload env vars to `.env.example` and created feature specs for file/image upload and image display.
+- **2026-03-28** — Image Gallery View completed. Added an image-specific gallery presentation in `/dashboard/items/image` with a new `ImageThumbnailCard`, fixed 16:9 thumbnails using `object-cover`, subtle hover zoom transition, hidden list/grid toggle for image type, and retained existing list/grid behavior for all non-image item types.
