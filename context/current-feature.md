@@ -1,24 +1,16 @@
-# Current Feature: Collection Create
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add a top bar "New Collection" create entry point that follows the existing item-create UX pattern.
-- Open a modal dialog from the create trigger with required fields to create a collection, including description.
-- Implement collection create with user-scoped persistence and auth-safe ownership checks.
-- Keep collection data flow aligned with existing patterns: server component fetching via `src/lib/db/*` query functions and API routes for client-side calls.
-- Show success and failure toast feedback for create attempts.
-- Ensure UI data refreshes after save so the new collection appears immediately in relevant dashboard views.
+<!-- Add goals for the active feature -->
 
 ## Notes
 
-- Scope is specifically collection create (not full collection CRUD).
-- Match existing item creation conventions for action wiring, validation, dialog behavior, and UX polish.
-- Prefer minimal, focused changes without refactoring unrelated dashboard code.
-- Keep implementation compatible with current dashboard collection cards and sidebar collection surfaces.
+<!-- Add notes and constraints for the active feature -->
 
 ## History
 
@@ -60,3 +52,4 @@ In Progress
 - **2026-03-28** — File List View completed. Updated `/dashboard/items/files` to use a single-column row layout with extension-based file icons, file name, size, upload date, row hover highlight, drawer-open on row click, direct-download button with click propagation guard, and mobile-stacked metadata.
 - **2026-03-28** — Security and robustness hardening completed. Fixed hashed verification token storage/validation, hardened auth rate-limit keying with degraded-closed fallback and stricter client IP parsing, added registration rollback when verification email delivery fails, enforced server-side R2 key ownership checks for create/download/delete flows, replaced profile in-memory type counting with DB aggregation, fixed item drawer request race with cancellation/last-request guards, and deduplicated shared UI helpers (`ViewToggle`, initials, byte formatting).
 - **2026-03-28** — Refactor Large Components and Utilities completed. Loaded and started a maintainability-focused refactor plan with prioritized split targets for oversized components and utilities, then completed the workflow cycle by finalizing feature context and resetting `current-feature.md` for the next feature.
+- **2026-03-28** — Collection Create completed. Implemented a working top-bar New Collection flow with modal UX, authenticated `POST /api/collections`, user-scoped database creation with case-insensitive duplicate-name protection, toast feedback for success/failure, and dashboard refresh so new collections appear immediately.
