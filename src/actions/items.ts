@@ -13,6 +13,15 @@ const createItemSchema = z.object({
   title: z.string().trim().min(1, "Title is required"),
   description: z.string().trim().nullable().optional().transform((v) => v || null),
   content: z.string().nullable().optional().transform((v) => v || null),
+  fileUrl: z.string().trim().nullable().optional().transform((v) => v || null),
+  fileName: z.string().trim().nullable().optional().transform((v) => v || null),
+  fileSize: z
+    .number()
+    .int()
+    .positive()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
   url: z
     .string()
     .trim()

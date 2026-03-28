@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { deleteFromR2 } from "@/lib/r2";
 
 export interface ItemTypeInfo {
   id: string;
@@ -325,6 +326,9 @@ export async function createItem(
     title: string;
     description: string | null;
     content: string | null;
+    fileUrl: string | null;
+    fileName: string | null;
+    fileSize: number | null;
     url: string | null;
     language: string | null;
     itemTypeId: string;
@@ -344,6 +348,9 @@ export async function createItem(
       title: data.title,
       description: data.description,
       content: data.content,
+      fileUrl: data.fileUrl,
+      fileName: data.fileName,
+      fileSize: data.fileSize,
       url: data.url,
       language: data.language,
       contentType,
@@ -375,10 +382,14 @@ export async function deleteItem(
 ): Promise<boolean> {
   const item = await prisma.item.findUnique({
     where: { id: itemId },
-    select: { userId: true },
+    select: { userId: true, fileUrl: true },
   });
 
   if (!item || item.userId !== userId) return false;
+
+  if (item.fileUrl) {
+    await deleteFromR2(item.fileUrl);
+  }
 
   await prisma.item.delete({ where: { id: itemId } });
   return true;
