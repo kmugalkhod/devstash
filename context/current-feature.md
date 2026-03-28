@@ -1,31 +1,16 @@
-# Current Feature: File Upload with Cloudflare R2
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create an upload API route that stores files in Cloudflare R2.
-- Keep Prisma and database functions in src/lib/db/items.ts.
-- Build a reusable FileUpload component with drag-and-drop support.
-- Integrate FileUpload into item creation flow for file and image item types.
-- Show upload progress and upload result feedback in the UI.
-- Add image preview for image uploads and file metadata display for file uploads.
-- Add a download proxy API route to avoid direct R2 CORS issues.
-- Add a download action/button in item drawer for file-based items.
-- Ensure R2 objects are deleted when the related items are deleted.
+<!-- Add goals for the active feature -->
 
 ## Notes
 
-- Storage provider: Cloudflare R2 (S3-compatible API).
-- File size limits:
-  - Images: max 5 MB.
-  - Files: max 10 MB.
-- Allowed image extensions: .png, .jpg, .jpeg, .gif, .webp, .svg.
-- Allowed file extensions: .pdf, .txt, .md, .json, .yaml, .yml, .xml, .csv, .toml, .ini.
-- Allowed image MIME types: image/png, image/jpeg, image/gif, image/webp, image/svg+xml.
-- Allowed file MIME types: application/pdf, text/plain, text/markdown, application/json, application/x-yaml, text/yaml, application/xml, text/xml, text/csv, application/toml.
+<!-- Add notes and constraints for the active feature -->
 
 ## History
 
@@ -62,3 +47,4 @@ In Progress
 - **2026-03-27** — Item Create completed. New Item modal dialog triggered from top bar "New Item" button. Type selector as colored pill buttons (snippet, prompt, command, note, link). Dynamic fields per type: title/description/tags for all; content + language for snippet/command; content for prompt/note; URL for link. Server action `createItem` with Zod validation. Prisma `createItem` query in `lib/db/items.ts`. Toast on success, modal closes, page refreshes. Installed shadcn Select and Textarea components. Polished dialog design with dark inputs, separated footer, type-colored Create button.
 - **2026-03-27** — Code Editor in New Item Modal completed. Fixed Monaco editor visibility in New Item dialog: widened dialog to 700px for snippet/command types (520px otherwise), moved Language field above Content so syntax highlighting is applied on editor mount, wrapped form body in `max-h-[70vh] overflow-y-auto` to prevent viewport overflow, added `min-h-[160px]` container around CodeEditor, added Monaco loading placeholder, and reset `codeContent`/`codeLanguage` state when switching between item types.
 - **2026-03-28** — Markdown Editor completed. Added reusable `MarkdownEditor` component with Write/Preview tabs, copy action, and GFM rendering via `react-markdown` + `remark-gfm`. Replaced textarea content inputs with Markdown editor for `note` and `prompt` in New Item dialog and Item Drawer edit mode. Added readonly markdown rendering in Item Drawer view mode for notes/prompts. Added `.markdown-preview` dark-theme typography/styles for headings, code, lists, blockquotes, links, tables, and fluid max-height behavior.
+- **2026-03-28** — File Upload with Cloudflare R2 completed. Added Cloudflare R2-backed upload and download proxy API routes, reusable drag-and-drop `FileUpload` component with validation and progress, file/image integration in New Item modal, image preview and download action in Item Drawer, item persistence updates for file metadata, and R2 cleanup on item deletion. Added upload env vars to `.env.example` and created feature specs for file/image upload and image display.
