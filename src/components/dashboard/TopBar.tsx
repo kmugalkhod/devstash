@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Search, FolderPlus, PanelLeft, Settings } from "lucide-react";
+import { Search, PanelLeft, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "./SidebarContext";
 import { NewItemDialog } from "@/components/items/NewItemDialog";
+import { NewCollectionDialog } from "@/components/dashboard/NewCollectionDialog";
 import type { ItemTypeInfo } from "@/lib/db/items";
 
 interface TopBarProps {
@@ -51,10 +52,7 @@ export function TopBar({ itemTypes }: TopBarProps) {
         <Button variant="ghost" size="icon" aria-label="Settings">
           <Settings className="size-4" />
         </Button>
-<Button variant="outline" className="hidden border-muted-foreground/20 sm:inline-flex">
-          <FolderPlus className="size-4" />
-          New Collection
-        </Button>
+        <NewCollectionDialog />
         <NewItemDialog itemTypes={itemTypes} />
       </div>
     </header>

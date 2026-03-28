@@ -23,6 +23,17 @@ export interface DashboardStats {
   favoriteCollections: number;
 }
 
+export interface CreateCollectionInput {
+  name: string;
+  description: string | null;
+}
+
+export interface CreatedCollection {
+  id: string;
+  name: string;
+  description: string | null;
+}
+
 /**
  * Fetch collections for a user with item counts and type info.
  * Types are ordered by frequency (most-used first) so the dominant
@@ -82,6 +93,43 @@ export async function getUserCollections(
       itemCount,
       types,
     };
+  });
+}
+
+/**
+ * Create a collection for a user. Returns null if a case-insensitive
+ * duplicate name already exists for the same user.
+ */
+export async function createCollection(
+  userId: string,
+  data: CreateCollectionInput
+): Promise<CreatedCollection | null> {
+  const existing = await prisma.collection.findFirst({
+    where: {
+      userId,
+      name: {
+        equals: data.name,
+        mode: "insensitive",
+      },
+    },
+    select: { id: true },
+  });
+
+  if (existing) {
+    return null;
+  }
+
+  return prisma.collection.create({
+    data: {
+      userId,
+      name: data.name,
+      description: data.description,
+    },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+    },
   });
 }
 

@@ -1,16 +1,24 @@
-# Current Feature
+# Current Feature: Collection Create
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals for the active feature -->
+- Add a top bar "New Collection" create entry point that follows the existing item-create UX pattern.
+- Open a modal dialog from the create trigger with required fields to create a collection, including description.
+- Implement collection create with user-scoped persistence and auth-safe ownership checks.
+- Keep collection data flow aligned with existing patterns: server component fetching via `src/lib/db/*` query functions and API routes for client-side calls.
+- Show success and failure toast feedback for create attempts.
+- Ensure UI data refreshes after save so the new collection appears immediately in relevant dashboard views.
 
 ## Notes
 
-<!-- Add notes and constraints for the active feature -->
+- Scope is specifically collection create (not full collection CRUD).
+- Match existing item creation conventions for action wiring, validation, dialog behavior, and UX polish.
+- Prefer minimal, focused changes without refactoring unrelated dashboard code.
+- Keep implementation compatible with current dashboard collection cards and sidebar collection surfaces.
 
 ## History
 
