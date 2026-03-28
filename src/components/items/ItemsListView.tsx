@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ItemCard } from "@/components/dashboard/ItemCard";
 import { ItemCardList } from "@/components/dashboard/ItemCardList";
+import { ImageThumbnailCard } from "@/components/items/ImageThumbnailCard";
 import { LayoutGrid, List } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { DashboardItem } from "@/lib/db/items";
@@ -50,19 +51,21 @@ function ViewToggle({
 interface ItemsListViewProps {
   items: DashboardItem[];
   typeName: string;
+  typeKey: string;
 }
 
-export function ItemsListView({ items, typeName }: ItemsListViewProps) {
+export function ItemsListView({ items, typeName, typeKey }: ItemsListViewProps) {
   const [view, setView] = useState<ViewMode>("grid");
   const { openDrawer } = useItemDrawer();
+  const isImageGallery = typeKey === "image";
 
   return (
     <section>
       <div className="mb-6 flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          All {typeName.toLowerCase()}
+          {isImageGallery ? "Image gallery" : `All ${typeName.toLowerCase()}`}
         </p>
-        <ViewToggle view={view} onChange={setView} />
+        {!isImageGallery && <ViewToggle view={view} onChange={setView} />}
       </div>
 
       {items.length === 0 ? (
@@ -73,6 +76,21 @@ export function ItemsListView({ items, typeName }: ItemsListViewProps) {
           <p className="mt-1 text-xs text-muted-foreground/60">
             Create your first item to get started
           </p>
+        </div>
+      ) : isImageGallery ? (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((item) => (
+            <ImageThumbnailCard
+              key={item.id}
+              id={item.id}
+              title={item.title}
+              fileUrl={item.fileUrl}
+              fileName={item.fileName}
+              isFavorite={item.isFavorite}
+              createdAt={item.createdAt}
+              onClick={() => openDrawer(item.id)}
+            />
+          ))}
         </div>
       ) : view === "grid" ? (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">

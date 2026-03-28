@@ -66,7 +66,7 @@ export default async function ItemsTypePage({
         </div>
       </div>
 
-      <ItemsListView items={items} typeName={displayName} />
+      <ItemsListView items={items} typeName={displayName} typeKey={typeName} />
     </div>
   );
 }
