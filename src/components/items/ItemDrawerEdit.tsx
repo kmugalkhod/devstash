@@ -27,12 +27,23 @@ export function ItemDrawerEdit({ item, onCancel, onSaved }: ItemDrawerEditProps)
   const [language, setLanguage] = useState(item.language ?? "");
   const [url, setUrl] = useState(item.url ?? "");
   const [tagsInput, setTagsInput] = useState(item.tags.join(", "));
+  const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>(
+    item.collections.map((collection) => collection.id)
+  );
 
   const typeName = item.type.name;
   const showContent = ["snippet", "prompt", "command", "note"].includes(typeName);
   const showLanguage = ["snippet", "command"].includes(typeName);
   const showMarkdownEditor = ["prompt", "note"].includes(typeName);
   const showUrl = typeName === "link";
+
+  function toggleCollection(collectionId: string) {
+    setSelectedCollectionIds((prev) =>
+      prev.includes(collectionId)
+        ? prev.filter((id) => id !== collectionId)
+        : [...prev, collectionId]
+    );
+  }
 
   async function handleSave() {
     if (!title.trim()) return;
@@ -50,6 +61,7 @@ export function ItemDrawerEdit({ item, onCancel, onSaved }: ItemDrawerEditProps)
       language: showLanguage ? language || null : item.language,
       url: showUrl ? url || null : item.url,
       tags,
+      collectionIds: selectedCollectionIds,
     });
 
     setSaving(false);
@@ -206,24 +218,39 @@ export function ItemDrawerEdit({ item, onCancel, onSaved }: ItemDrawerEditProps)
             <p className="text-xs text-neutral-500">Separate tags with commas</p>
           </div>
 
-          {/* Collections (read-only) */}
-          {item.collections.length > 0 && (
-            <div className="space-y-2.5">
-              <label className="block text-sm font-medium text-neutral-200">
-                Collections
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {item.collections.map((col) => (
-                  <span
-                    key={col.id}
-                    className="inline-flex items-center rounded-full border border-neutral-700/50 bg-neutral-800/50 px-3 py-1 text-xs font-medium text-neutral-400"
-                  >
-                    {col.name}
-                  </span>
-                ))}
+          {/* Collections */}
+          <div className="space-y-2.5">
+            <label className="block text-sm font-medium text-neutral-200">
+              Collections
+            </label>
+
+            {item.availableCollections.length === 0 ? (
+              <p className="rounded-lg border border-neutral-800 bg-neutral-900/60 px-3 py-2 text-sm text-neutral-500">
+                No collections available yet.
+              </p>
+            ) : (
+              <div className="max-h-40 space-y-2 overflow-y-auto rounded-lg border border-neutral-800 bg-neutral-900/60 p-2">
+                {item.availableCollections.map((collection) => {
+                  const checked = selectedCollectionIds.includes(collection.id);
+
+                  return (
+                    <label
+                      key={collection.id}
+                      className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm text-neutral-300 hover:bg-neutral-800/80"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleCollection(collection.id)}
+                        className="size-4 rounded border-neutral-700 bg-neutral-900 text-neutral-100"
+                      />
+                      <span className="truncate">{collection.name}</span>
+                    </label>
+                  );
+                })}
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Meta dates */}
           <div className="mt-2 space-y-1.5 border-t border-neutral-800/60 pt-6">

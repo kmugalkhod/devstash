@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { iconMap } from "@/lib/icons";
 import { createItem } from "@/actions/items";
-import type { ItemTypeInfo } from "@/lib/db/items";
+import type { CollectionOption, ItemTypeInfo } from "@/lib/db/items";
 import { CodeEditor } from "./CodeEditor";
 import { MarkdownEditor } from "./MarkdownEditor";
 import { FileUpload, type UploadedFileMeta } from "./FileUpload";
@@ -25,12 +25,13 @@ const CONTENT_PLACEHOLDER: Record<string, string> = {
 
 interface NewItemDialogProps {
   itemTypes: ItemTypeInfo[];
+  collections: CollectionOption[];
 }
 
 const inputClass =
   "w-full rounded-lg border border-zinc-800/80 bg-zinc-900/60 px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 outline-none transition-all focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600";
 
-export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
+export function NewItemDialog({ itemTypes, collections }: NewItemDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -39,6 +40,7 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
   const [codeLanguage, setCodeLanguage] = useState("");
   const [markdownContent, setMarkdownContent] = useState("");
   const [uploadedFile, setUploadedFile] = useState<UploadedFileMeta | null>(null);
+  const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
 
   const availableTypes = itemTypes.filter((t) => FREE_TYPES.includes(t.name));
   const selectedType = availableTypes.find((t) => t.name === selectedTypeName);
@@ -67,6 +69,15 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
     setCodeLanguage("");
     setMarkdownContent("");
     setUploadedFile(null);
+    setSelectedCollectionIds([]);
+  }
+
+  function toggleCollection(collectionId: string) {
+    setSelectedCollectionIds((prev) =>
+      prev.includes(collectionId)
+        ? prev.filter((id) => id !== collectionId)
+        : [...prev, collectionId]
+    );
   }
 
   function handleTypeSelect(typeName: string) {
@@ -119,6 +130,7 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
       language,
       itemTypeId: selectedType.id,
       tags,
+      collectionIds: selectedCollectionIds,
     });
     setSaving(false);
 
@@ -333,6 +345,43 @@ export function NewItemDialog({ itemTypes }: NewItemDialogProps) {
                 />
               </div>
             )}
+
+            {/* Collections */}
+            <div className="space-y-2">
+              <div className="flex items-baseline gap-2">
+                <label className="text-sm font-semibold text-zinc-200">
+                  Collections
+                </label>
+                <span className="text-xs text-zinc-500">optional</span>
+              </div>
+
+              {collections.length === 0 ? (
+                <p className="rounded-lg border border-zinc-800/80 bg-zinc-900/40 px-3 py-2 text-sm text-zinc-500">
+                  No collections yet. Create one to organize items.
+                </p>
+              ) : (
+                <div className="max-h-36 space-y-2 overflow-y-auto rounded-lg border border-zinc-800/80 bg-zinc-900/40 p-2">
+                  {collections.map((collection) => {
+                    const checked = selectedCollectionIds.includes(collection.id);
+
+                    return (
+                      <label
+                        key={collection.id}
+                        className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm text-zinc-300 hover:bg-zinc-800/70"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => toggleCollection(collection.id)}
+                          className="size-4 rounded border-zinc-700 bg-zinc-900 text-zinc-100"
+                        />
+                        <span className="truncate">{collection.name}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
 
             {/* Tags */}
             <div className="space-y-2">

@@ -7,6 +7,7 @@ import {
   getSystemItemTypes,
   getSidebarCollections,
   getSidebarUser,
+  getAvailableCollections,
 } from "@/lib/db/items";
 import { getAuthUserId } from "@/lib/auth-utils";
 
@@ -17,10 +18,11 @@ export default async function DashboardLayout({
 }) {
   const userId = await getAuthUserId();
 
-  const [itemTypes, sidebarCollections, user] = await Promise.all([
+  const [itemTypes, sidebarCollections, user, availableCollections] = await Promise.all([
     getSystemItemTypes(),
     getSidebarCollections(userId),
     getSidebarUser(userId),
+    getAvailableCollections(userId),
   ]);
 
   return (
@@ -35,7 +37,10 @@ export default async function DashboardLayout({
               user={user}
             />
             <div className="flex flex-1 flex-col overflow-hidden">
-              <TopBar itemTypes={itemTypes} />
+              <TopBar
+                itemTypes={itemTypes}
+                availableCollections={availableCollections}
+              />
               <main className="flex-1 overflow-y-auto">
               <ItemDrawerProvider>
                 <div className="mx-auto max-w-7xl px-8 py-6">{children}</div>

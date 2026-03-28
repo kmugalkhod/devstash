@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Add Item to Collections from Item Forms
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals for the active feature -->
+- Add a collections selection input to the New Item form.
+- Add the same collections selection input to the Edit Item form.
+- Support assigning an item to one or multiple collections from both forms.
+- Persist collection associations correctly when creating and updating items.
+- Keep scope limited to form integration only (no collection page UI changes).
 
 ## Notes
 
-<!-- Add notes and constraints for the active feature -->
+- Source request: "Add functionality to add an item to a single or multiple collections."
+- The collections input should use available user collections as selectable options.
+- Apply to both new-item creation flow and item edit flow.
+- Out of scope for this feature load: displaying or changing collection pages.
 
 ## History
 

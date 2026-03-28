@@ -15,6 +15,11 @@ export interface SidebarCollection {
   dominantColor: string | null;
 }
 
+export interface CollectionOption {
+  id: string;
+  name: string;
+}
+
 /**
  * Fetch all system item types (for sidebar navigation).
  */
@@ -85,6 +90,19 @@ export async function getSidebarCollections(
     favorites: mapped.filter((c) => c.isFavorite),
     recents: mapped.filter((c) => !c.isFavorite).slice(0, 5),
   };
+}
+
+/**
+ * Fetch all collections available for item assignment.
+ */
+export async function getAvailableCollections(
+  userId: string
+): Promise<CollectionOption[]> {
+  return prisma.collection.findMany({
+    where: { userId },
+    orderBy: { name: "asc" },
+    select: { id: true, name: true },
+  });
 }
 
 export interface DashboardItem {
@@ -203,6 +221,7 @@ export interface ItemDetail {
   type: ItemTypeInfo;
   tags: string[];
   collections: { id: string; name: string }[];
+  availableCollections: CollectionOption[];
 }
 
 /**
@@ -226,6 +245,8 @@ export async function getItemById(
 
   if (!item || item.userId !== userId) return null;
 
+  const availableCollections = await getAvailableCollections(userId);
+
   return {
     id: item.id,
     title: item.title,
@@ -244,7 +265,33 @@ export async function getItemById(
     type: item.itemType,
     tags: item.tags.map((t) => t.tag.name),
     collections: item.collections.map((c) => c.collection),
+    availableCollections,
   };
+}
+
+async function validateOwnedCollectionIds(
+  userId: string,
+  collectionIds: string[]
+): Promise<string[]> {
+  const uniqueIds = [...new Set(collectionIds.map((id) => id.trim()).filter(Boolean))];
+
+  if (uniqueIds.length === 0) {
+    return [];
+  }
+
+  const owned = await prisma.collection.findMany({
+    where: {
+      userId,
+      id: { in: uniqueIds },
+    },
+    select: { id: true },
+  });
+
+  if (owned.length !== uniqueIds.length) {
+    throw new Error("INVALID_COLLECTION_SELECTION");
+  }
+
+  return uniqueIds;
 }
 
 /**
@@ -261,6 +308,7 @@ export async function updateItem(
     url: string | null;
     language: string | null;
     tags: string[];
+    collectionIds: string[];
   }
 ): Promise<ItemDetail | null> {
   const existing = await prisma.item.findUnique({
@@ -269,6 +317,8 @@ export async function updateItem(
   });
 
   if (!existing || existing.userId !== userId) return null;
+
+  const collectionIds = await validateOwnedCollectionIds(userId, data.collectionIds);
 
   const item = await prisma.item.update({
     where: { id: itemId },
@@ -286,6 +336,14 @@ export async function updateItem(
               where: { name: tagName },
               create: { name: tagName },
             },
+          },
+        })),
+      },
+      collections: {
+        deleteMany: {},
+        create: collectionIds.map((collectionId) => ({
+          collection: {
+            connect: { id: collectionId },
           },
         })),
       },
@@ -317,6 +375,7 @@ export async function updateItem(
     type: item.itemType,
     tags: item.tags.map((t) => t.tag.name),
     collections: item.collections.map((c) => c.collection),
+    availableCollections: await getAvailableCollections(userId),
   };
 }
 
@@ -336,6 +395,7 @@ export async function createItem(
     language: string | null;
     itemTypeId: string;
     tags: string[];
+    collectionIds: string[];
   }
 ): Promise<string> {
   const itemType = await prisma.itemType.findUnique({
@@ -345,6 +405,8 @@ export async function createItem(
 
   const contentType =
     itemType?.name === "link" ? "url" : itemType?.name === "file" || itemType?.name === "image" ? "file" : "text";
+
+  const collectionIds = await validateOwnedCollectionIds(userId, data.collectionIds);
 
   const item = await prisma.item.create({
     data: {
@@ -366,6 +428,13 @@ export async function createItem(
               where: { name: tagName },
               create: { name: tagName },
             },
+          },
+        })),
+      },
+      collections: {
+        create: collectionIds.map((collectionId) => ({
+          collection: {
+            connect: { id: collectionId },
           },
         })),
       },

@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button";
 import { useSidebar } from "./SidebarContext";
 import { NewItemDialog } from "@/components/items/NewItemDialog";
 import { NewCollectionDialog } from "@/components/dashboard/NewCollectionDialog";
-import type { ItemTypeInfo } from "@/lib/db/items";
+import type { CollectionOption, ItemTypeInfo } from "@/lib/db/items";
 
 interface TopBarProps {
   itemTypes: ItemTypeInfo[];
+  availableCollections: CollectionOption[];
 }
 
-export function TopBar({ itemTypes }: TopBarProps) {
+export function TopBar({ itemTypes, availableCollections }: TopBarProps) {
   const { toggleMobile } = useSidebar();
 
   return (
@@ -53,7 +54,10 @@ export function TopBar({ itemTypes }: TopBarProps) {
           <Settings className="size-4" />
         </Button>
         <NewCollectionDialog />
-        <NewItemDialog itemTypes={itemTypes} />
+        <NewItemDialog
+          itemTypes={itemTypes}
+          collections={availableCollections}
+        />
       </div>
     </header>
   );

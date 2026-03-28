@@ -33,6 +33,7 @@ const createItemSchema = z.object({
   language: z.string().trim().nullable().optional().transform((v) => v || null),
   itemTypeId: z.string().min(1, "Item type is required"),
   tags: z.array(z.string().trim().min(1)).default([]),
+  collectionIds: z.array(z.string().min(1)).default([]),
 });
 
 export async function createItem(formData: z.input<typeof createItemSchema>) {
@@ -72,7 +73,14 @@ export async function createItem(formData: z.input<typeof createItemSchema>) {
     });
     revalidatePath("/dashboard");
     return { success: true as const, data: { id } };
-  } catch {
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "INVALID_COLLECTION_SELECTION"
+    ) {
+      return { success: false as const, error: "Invalid collection selection" };
+    }
+
     return { success: false as const, error: "Failed to create item" };
   }
 }
@@ -90,6 +98,7 @@ const updateItemSchema = z.object({
     .transform((v) => v || null),
   language: z.string().trim().nullable().optional().transform((v) => v || null),
   tags: z.array(z.string().trim().min(1)).default([]),
+  collectionIds: z.array(z.string().min(1)).default([]),
 });
 
 export async function updateItem(
@@ -115,7 +124,14 @@ export async function updateItem(
       return { success: false as const, error: "Item not found" };
     }
     return { success: true as const, data: updated };
-  } catch {
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "INVALID_COLLECTION_SELECTION"
+    ) {
+      return { success: false as const, error: "Invalid collection selection" };
+    }
+
     return { success: false as const, error: "Failed to update item" };
   }
 }
