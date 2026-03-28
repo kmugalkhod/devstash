@@ -1,4 +1,7 @@
-import { Star } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import { Check, Copy, Star } from "lucide-react";
 import { getRelativeTime } from "@/lib/utils";
 import { iconMap } from "@/lib/icons";
 
@@ -25,7 +28,16 @@ export function ItemCardList({
   createdAt,
   onClick,
 }: ItemCardListProps) {
+  const [copied, setCopied] = useState(false);
   const Icon = iconMap[typeIcon];
+
+  async function handleQuickCopy(event: React.MouseEvent<HTMLButtonElement>) {
+    event.stopPropagation();
+    if (!content) return;
+    await navigator.clipboard.writeText(content);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1200);
+  }
 
   return (
     <div
@@ -85,6 +97,22 @@ export function ItemCardList({
       )}
 
       {/* Time */}
+      {content && (
+        <button
+          type="button"
+          onClick={handleQuickCopy}
+          className="rounded-md p-1 text-zinc-400 opacity-0 transition hover:bg-zinc-800/70 hover:text-zinc-100 group-hover:opacity-100 focus-visible:opacity-100"
+          title={copied ? "Copied" : "Copy content"}
+          aria-label={copied ? "Copied" : "Copy content"}
+        >
+          {copied ? (
+            <Check className="size-3.5 text-green-400" />
+          ) : (
+            <Copy className="size-3.5" />
+          )}
+        </button>
+      )}
+
       <span
         className="shrink-0 text-xs text-zinc-400"
         suppressHydrationWarning

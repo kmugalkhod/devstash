@@ -1,4 +1,7 @@
-import { Star } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import { Check, Copy, Star } from "lucide-react";
 import { getRelativeTime } from "@/lib/utils";
 import { iconMap } from "@/lib/icons";
 
@@ -25,7 +28,16 @@ export function ItemCard({
   createdAt,
   onClick,
 }: ItemCardProps) {
+  const [copied, setCopied] = useState(false);
   const Icon = iconMap[typeIcon];
+
+  async function handleQuickCopy(event: React.MouseEvent<HTMLButtonElement>) {
+    event.stopPropagation();
+    if (!content) return;
+    await navigator.clipboard.writeText(content);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1200);
+  }
 
   return (
     <div
@@ -51,6 +63,21 @@ export function ItemCard({
             </span>
           </div>
           <div className="flex items-center gap-2">
+            {content && (
+              <button
+                type="button"
+                onClick={handleQuickCopy}
+                className="rounded-md p-1 text-zinc-400 opacity-0 transition hover:bg-zinc-800/70 hover:text-zinc-100 group-hover:opacity-100 focus-visible:opacity-100"
+                title={copied ? "Copied" : "Copy content"}
+                aria-label={copied ? "Copied" : "Copy content"}
+              >
+                {copied ? (
+                  <Check className="size-3.5 text-green-400" />
+                ) : (
+                  <Copy className="size-3.5" />
+                )}
+              </button>
+            )}
             {isFavorite && (
               <Star className="size-3.5 fill-yellow-500 text-yellow-500" />
             )}
