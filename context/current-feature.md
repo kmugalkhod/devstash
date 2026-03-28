@@ -1,16 +1,35 @@
-# Current Feature
+# Current Feature: Refactor Large Components and Utilities
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals for the active feature -->
+- Break up `ItemDrawer` into focused sections/components and a behavior hook.
+- Split `NewItemDialog` into reusable state, selector, and dynamic field units.
+- Decompose `Sidebar` into smaller navigation, collections, user menu, and header components.
+- Refactor `ItemDrawerEdit` into modular form logic and field sections.
+- Reduce conditional rendering complexity in `ItemsListView` and `DashboardItems`.
+- Extract shared card behavior from `ItemCard` and `ItemCardList`.
+- Reduce repeated auth/validation/error boilerplate in `src/actions/items.ts`.
+- Refactor register API route into composable helper steps while preserving behavior.
 
 ## Notes
 
-<!-- Add notes and constraints for the active feature -->
+- Loaded from inline refactor audit results (not from a spec file).
+- Priority order: `ItemDrawer` -> `NewItemDialog` -> `Sidebar` -> `ItemDrawerEdit` -> list/dashboard views -> card shared behavior -> actions/utilities -> register route helpers.
+- Initial split targets:
+  - `ItemDrawerActionBar`, `ItemDrawerHeader`, `ItemDrawerContentRenderer`, `ItemDrawerMetaSection`, `useItemDrawerActions`
+  - `useNewItemFormState`, `NewItemTypeSelector`, `NewItemDynamicFields`, `mapFormToCreateItemPayload`
+  - `SidebarItemTypeNav`, `SidebarCollectionsNav`, `SidebarUserMenu`, `SidebarBrandHeader`
+  - `useItemDrawerEditForm`, `ItemDrawerEditFields`, `ItemDrawerEditCollectionsReadonly`, `buildUpdateItemPayload`
+  - `ItemsEmptyState`, `ImageItemsGrid`, `FileItemsList`, `GenericItemsGridOrList`
+  - `DashboardItemsSection`, `renderItemsByView`
+  - `useQuickCopy`, `ItemTypeBadge`, `ItemTimestamp`
+  - `requireAuthUser`, `parseOrFail`, `normalizeActionError`
+  - `parseRegisterInput`, `enforceRegisterRateLimit`, `createUserWithOptionalVerification`, `rollbackUserOnEmailFailure`
+- Refactor scope is maintainability-focused: preserve existing behavior and UI output.
 
 ## History
 
