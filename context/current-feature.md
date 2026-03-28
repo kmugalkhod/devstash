@@ -1,16 +1,22 @@
-# Current Feature
+# Current Feature: File List View
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals for the active feature -->
+- Update `/items/files` to render as a single-column file list instead of grid cards.
+- Show each file row with extension-based icon, file name, file size, upload date, and a download action.
+- Open ItemDrawer when a row is clicked.
+- Ensure the download button triggers direct download without opening ItemDrawer.
+- Add responsive behavior so file metadata stacks vertically on mobile.
 
 ## Notes
 
-<!-- Add notes and constraints for the active feature -->
+- Source spec: `context/features/file-display-spec.md`.
+- Visual direction should feel like a cloud file browser (Google Drive/Dropbox style list rows).
+- Include row hover highlight for list interaction feedback.
 
 ## History
 

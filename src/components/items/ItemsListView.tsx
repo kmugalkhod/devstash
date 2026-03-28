@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ItemCard } from "@/components/dashboard/ItemCard";
 import { ItemCardList } from "@/components/dashboard/ItemCardList";
 import { ImageThumbnailCard } from "@/components/items/ImageThumbnailCard";
+import { FileListRow } from "@/components/items/FileListRow";
 import { LayoutGrid, List } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { DashboardItem } from "@/lib/db/items";
@@ -58,14 +59,21 @@ export function ItemsListView({ items, typeName, typeKey }: ItemsListViewProps) 
   const [view, setView] = useState<ViewMode>("grid");
   const { openDrawer } = useItemDrawer();
   const isImageGallery = typeKey === "image";
+  const isFileList = typeKey === "file";
 
   return (
     <section>
       <div className="mb-6 flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          {isImageGallery ? "Image gallery" : `All ${typeName.toLowerCase()}`}
+          {isImageGallery
+            ? "Image gallery"
+            : isFileList
+              ? "File list"
+              : `All ${typeName.toLowerCase()}`}
         </p>
-        {!isImageGallery && <ViewToggle view={view} onChange={setView} />}
+        {!isImageGallery && !isFileList && (
+          <ViewToggle view={view} onChange={setView} />
+        )}
       </div>
 
       {items.length === 0 ? (
@@ -89,6 +97,21 @@ export function ItemsListView({ items, typeName, typeKey }: ItemsListViewProps) 
               isFavorite={item.isFavorite}
               createdAt={item.createdAt}
               onClick={() => openDrawer(item.id)}
+            />
+          ))}
+        </div>
+      ) : isFileList ? (
+        <div className="flex flex-col gap-2">
+          {items.map((item) => (
+            <FileListRow
+              key={item.id}
+              id={item.id}
+              title={item.title}
+              fileName={item.fileName}
+              fileSize={item.fileSize}
+              createdAt={item.createdAt}
+              fileUrl={item.fileUrl}
+              onOpen={() => openDrawer(item.id)}
             />
           ))}
         </div>

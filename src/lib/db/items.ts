@@ -93,6 +93,7 @@ export interface DashboardItem {
   content: string | null;
   fileUrl: string | null;
   fileName: string | null;
+  fileSize: number | null;
   isFavorite: boolean;
   isPinned: boolean;
   createdAt: string;
@@ -403,6 +404,7 @@ function mapItem(item: {
   content: string | null;
   fileUrl: string | null;
   fileName: string | null;
+  fileSize: number | null;
   isFavorite: boolean;
   isPinned: boolean;
   createdAt: Date;
@@ -415,6 +417,7 @@ function mapItem(item: {
     content: item.content,
     fileUrl: item.fileUrl,
     fileName: item.fileName,
+    fileSize: item.fileSize,
     isFavorite: item.isFavorite,
     isPinned: item.isPinned,
     createdAt: item.createdAt.toISOString(),
