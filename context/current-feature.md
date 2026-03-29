@@ -1,4 +1,4 @@
-# Current Feature
+# Current Feature: Global Search / Command Palette
 
 ## Status
 
@@ -6,11 +6,25 @@ Not Started
 
 ## Goals
 
-<!-- Add goals for the active feature -->
+- Add a global command palette that opens with Cmd+K on Mac and Ctrl+K on Windows.
+- Implement client-side fuzzy search across all user items and collections.
+- Display grouped search results with clear sections for items and collections.
+- Support full keyboard interaction: arrow key navigation and Enter to select.
+- Show item type icons for items and item counts for collections in search results.
+- Navigate to the item drawer or collection page when a result is selected.
+- Make the top bar search input open the command palette on click.
+- Show a Cmd+K or Ctrl+K hint in the top bar search UI.
 
 ## Notes
 
-<!-- Add notes and constraints for the active feature -->
+- Source spec: context/features/global-search-spec.md.
+- Use shadcn cmdk Command component for the palette UI and interactions.
+- Keep search local in the client after initial prefetch (no per-keystroke server round-trips).
+- Prefetch searchable data on app load.
+- Search payload should include:
+  - Items: id, title, type, and a lightweight content preview.
+  - Collections: id, name, and itemCount.
+- Reuse existing data fetching functions where possible instead of introducing duplicate query logic.
 
 ## History
 

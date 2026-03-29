@@ -3,6 +3,7 @@ import { Sidebar } from "@/components/dashboard/Sidebar";
 import { SidebarProvider } from "@/components/dashboard/SidebarContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ItemDrawerProvider } from "@/components/items/ItemDrawerProvider";
+import { getGlobalSearchData } from "@/lib/db/search";
 import {
   getSystemItemTypes,
   getSidebarCollections,
@@ -18,11 +19,12 @@ export default async function CollectionsLayout({
 }) {
   const userId = await getAuthUserId();
 
-  const [itemTypes, sidebarCollections, user, availableCollections] = await Promise.all([
+  const [itemTypes, sidebarCollections, user, availableCollections, searchData] = await Promise.all([
     getSystemItemTypes(),
     getSidebarCollections(userId),
     getSidebarUser(userId),
     getAvailableCollections(userId),
+    getGlobalSearchData(userId),
   ]);
 
   return (
@@ -37,15 +39,16 @@ export default async function CollectionsLayout({
               user={user}
             />
             <div className="flex flex-1 flex-col overflow-hidden">
-              <TopBar
-                itemTypes={itemTypes}
-                availableCollections={availableCollections}
-              />
-              <main className="flex-1 overflow-y-auto">
-                <ItemDrawerProvider>
+              <ItemDrawerProvider>
+                <TopBar
+                  itemTypes={itemTypes}
+                  availableCollections={availableCollections}
+                  searchData={searchData}
+                />
+                <main className="flex-1 overflow-y-auto">
                   <div className="mx-auto max-w-7xl px-8 py-6">{children}</div>
-                </ItemDrawerProvider>
-              </main>
+                </main>
+              </ItemDrawerProvider>
             </div>
           </div>
         </div>
