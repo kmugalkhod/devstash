@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { deleteFromR2, isR2KeyOwnedByUser } from "@/lib/r2";
+import { DASHBOARD_RECENT_ITEMS_LIMIT } from "@/lib/limits";
 
 export interface ItemTypeInfo {
   id: string;
@@ -119,6 +120,11 @@ export interface DashboardItem {
   tags: string[];
 }
 
+export interface PaginatedDashboardItems {
+  items: DashboardItem[];
+  totalItems: number;
+}
+
 /**
  * Fetch items for a user filtered by type name, ordered by most recent.
  */
@@ -139,6 +145,44 @@ export async function getItemsByType(
   });
 
   return items.map(mapItem);
+}
+
+/**
+ * Fetch one page of items for a user filtered by type name.
+ */
+export async function getPaginatedItemsByType(
+  userId: string,
+  typeName: string,
+  page: number,
+  pageSize: number
+): Promise<PaginatedDashboardItems> {
+  const safePage = Math.max(1, Math.trunc(page));
+  const safePageSize = Math.max(1, Math.trunc(pageSize));
+  const skip = (safePage - 1) * safePageSize;
+
+  const where = {
+    userId,
+    itemType: { name: typeName },
+  };
+
+  const [items, totalItems] = await prisma.$transaction([
+    prisma.item.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: safePageSize,
+      include: {
+        itemType: { select: { id: true, name: true, icon: true, color: true } },
+        tags: { include: { tag: { select: { name: true } } } },
+      },
+    }),
+    prisma.item.count({ where }),
+  ]);
+
+  return {
+    items: items.map(mapItem),
+    totalItems,
+  };
 }
 
 /**
@@ -168,6 +212,48 @@ export async function getItemsByCollectionId(
 }
 
 /**
+ * Fetch one page of items for a user by collection id.
+ */
+export async function getPaginatedItemsByCollectionId(
+  userId: string,
+  collectionId: string,
+  page: number,
+  pageSize: number
+): Promise<PaginatedDashboardItems> {
+  const safePage = Math.max(1, Math.trunc(page));
+  const safePageSize = Math.max(1, Math.trunc(pageSize));
+  const skip = (safePage - 1) * safePageSize;
+
+  const where = {
+    userId,
+    collections: {
+      some: {
+        collectionId,
+      },
+    },
+  };
+
+  const [items, totalItems] = await prisma.$transaction([
+    prisma.item.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: safePageSize,
+      include: {
+        itemType: { select: { id: true, name: true, icon: true, color: true } },
+        tags: { include: { tag: { select: { name: true } } } },
+      },
+    }),
+    prisma.item.count({ where }),
+  ]);
+
+  return {
+    items: items.map(mapItem),
+    totalItems,
+  };
+}
+
+/**
  * Fetch pinned items for a user, ordered by most recently updated.
  */
 export async function getPinnedItems(userId: string, limit = 8): Promise<DashboardItem[]> {
@@ -189,7 +275,7 @@ export async function getPinnedItems(userId: string, limit = 8): Promise<Dashboa
  */
 export async function getRecentItems(
   userId: string,
-  limit = 10
+  limit = DASHBOARD_RECENT_ITEMS_LIMIT
 ): Promise<DashboardItem[]> {
   const items = await prisma.item.findMany({
     where: { userId },

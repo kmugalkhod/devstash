@@ -1,13 +1,15 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getAuthUserId } from "@/lib/auth-utils";
 import {
   getAvailableCollections,
-  getItemsByType,
+  getPaginatedItemsByType,
   getSystemItemTypes,
 } from "@/lib/db/items";
 import { ItemsListView } from "@/components/items/ItemsListView";
 import { NewItemDialog } from "@/components/items/NewItemDialog";
+import { PaginationControls } from "@/components/shared/PaginationControls";
 import { iconMap } from "@/lib/icons";
+import { ITEMS_PER_PAGE } from "@/lib/limits";
 
 const typeSlugToName: Record<string, string> = {
   snippets: "snippet",
@@ -41,22 +43,39 @@ const typeCreateLabels: Record<string, string> = {
 
 export default async function ItemsTypePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ type: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { type: slug } = await params;
+  const resolvedSearchParams = await searchParams;
   const typeName = typeSlugToName[slug];
 
   if (!typeName) {
     notFound();
   }
 
+  const requestedPage = Number.parseInt(resolvedSearchParams.page ?? "1", 10);
+  const currentPage = Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+
   const userId = await getAuthUserId();
-  const [items, itemTypes, availableCollections] = await Promise.all([
-    getItemsByType(userId, typeName),
+  const [paginatedItems, itemTypes, availableCollections] = await Promise.all([
+    getPaginatedItemsByType(userId, typeName, currentPage, ITEMS_PER_PAGE),
     getSystemItemTypes(),
     getAvailableCollections(userId),
   ]);
+
+  const totalPages = Math.max(1, Math.ceil(paginatedItems.totalItems / ITEMS_PER_PAGE));
+  if (currentPage > totalPages) {
+    if (totalPages === 1) {
+      redirect(`/dashboard/items/${slug}`);
+    }
+
+    redirect(`/dashboard/items/${slug}?page=${totalPages}`);
+  }
+
+  const items = paginatedItems.items;
 
   const displayName = typeDisplayNames[typeName] ?? typeName;
   const typeInfo = items[0]?.type ?? itemTypes.find((type) => type.name === typeName);
@@ -82,7 +101,7 @@ export default async function ItemsTypePage({
           <div>
             <h1 className="text-2xl font-bold text-foreground">{displayName}</h1>
             <p className="text-sm text-muted-foreground">
-              {items.length} {items.length === 1 ? "item" : "items"}
+              {paginatedItems.totalItems} {paginatedItems.totalItems === 1 ? "item" : "items"}
             </p>
           </div>
         </div>
@@ -97,6 +116,12 @@ export default async function ItemsTypePage({
       </div>
 
       <ItemsListView items={items} typeName={displayName} typeKey={typeName} />
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pathname={`/dashboard/items/${slug}`}
+        searchParams={resolvedSearchParams}
+      />
     </div>
   );
 }

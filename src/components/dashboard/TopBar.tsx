@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Search, PanelLeft, Settings } from "lucide-react";
+import { Search, PanelLeft, Settings, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "./SidebarContext";
 import { NewItemDialog } from "@/components/items/NewItemDialog";
@@ -111,7 +111,7 @@ export function TopBar({
         <div className="relative flex-1 max-w-[700px]">
           {paletteOpen && (
             <div 
-              className="fixed inset-0 z-[50]" 
+              className="fixed inset-0 z-[50] bg-background/40 backdrop-blur-sm animate-in fade-in duration-200" 
               onClick={() => setPaletteOpen(false)} 
             />
           )}
@@ -120,11 +120,18 @@ export function TopBar({
             className="fixed left-1/2 top-[8px] z-[60] w-[min(760px,calc(100vw-2rem))] -translate-x-1/2"
             loop
           >
-            <Search className={`pointer-events-none absolute left-3 top-[20px] -translate-y-1/2 size-4 ${paletteOpen ? "text-foreground" : "text-muted-foreground"} z-10`} />
+            <Search className={`pointer-events-none absolute left-3 top-[20px] -translate-y-1/2 size-4 ${paletteOpen ? "text-foreground" : "text-muted-foreground"} z-10 transition-colors`} />
             <Command.Input
               ref={searchInputRef}
               value={searchQuery}
               onClick={openPalette}
+              onKeyDown={(e) => {
+                if (e.key === "Escape" && paletteOpen) {
+                  e.preventDefault();
+                  handlePaletteOpenChange(false);
+                  searchInputRef.current?.blur();
+                }
+              }}
               onValueChange={(val) => {
                 if (!paletteOpen) {
                   openPalette();
@@ -136,7 +143,7 @@ export function TopBar({
               placeholder="Search snippets, prompts, notes..."
               className={`${
                 paletteOpen 
-                  ? "rounded-b-none border-border/80 bg-card/95 backdrop-blur-xl shadow-sm" 
+                  ? "rounded-b-none border-border/80 bg-popover shadow-sm" 
                   : "rounded-md border-border/40 bg-muted/50 hover:bg-muted/70 hover:border-border/60"
               } h-10 w-full border pl-10 pr-16 text-left text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground`}
             />
@@ -155,8 +162,24 @@ export function TopBar({
               </kbd>
             )}
             
+            {paletteOpen && searchQuery.length > 0 && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setSearchQuery("");
+                  searchInputRef.current?.focus();
+                }}
+                className="absolute right-3 top-[20px] -translate-y-1/2 rounded-full p-1 text-muted-foreground hover:bg-muted/80 hover:text-foreground z-10 transition-colors"
+                aria-label="Clear search"
+              >
+                <X className="size-3.5" />
+              </button>
+            )}
+
             {paletteOpen && (
-              <div className="absolute left-0 top-[40px] w-full z-[60] overflow-hidden rounded-b-xl border border-t-0 border-border/80 bg-card/95 backdrop-blur-xl p-0 text-foreground shadow-[0_24px_80px_rgba(0,0,0,0.55)]">
+              <div className="absolute left-0 top-[40px] w-full z-[60] overflow-hidden rounded-b-xl border border-t-0 border-border/80 bg-popover p-0 text-foreground shadow-[0_24px_80px_rgba(0,0,0,0.55)] animate-in fade-in slide-in-from-top-2 zoom-in-[0.98] fill-mode-forwards duration-200 ease-out">
                 <GlobalCommandPalette
                   searchData={searchData}
                   search={searchQuery}

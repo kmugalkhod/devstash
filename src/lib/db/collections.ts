@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { DASHBOARD_COLLECTIONS_LIMIT } from "@/lib/limits";
 
 export interface CollectionTypeInfo {
   id: string;
@@ -100,7 +101,7 @@ export async function getUserCollections(
   const collections = await prisma.collection.findMany({
     where: { userId },
     orderBy: { updatedAt: "desc" },
-    take: 4,
+    take: DASHBOARD_COLLECTIONS_LIMIT,
     include: {
       items: {
         include: {

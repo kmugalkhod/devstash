@@ -1,28 +1,35 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft, Folder } from "lucide-react";
 import { CollectionItemsView } from "@/components/collections/CollectionItemsView";
 import { CollectionTypeCreateButtons } from "@/components/collections/CollectionTypeCreateButtons";
 import { CollectionDetailActions } from "@/components/collections/CollectionDetailActions";
+import { PaginationControls } from "@/components/shared/PaginationControls";
 import { getCollectionById } from "@/lib/db/collections";
 import {
   getAvailableCollections,
-  getItemsByCollectionId,
+  getPaginatedItemsByCollectionId,
   getSystemItemTypes,
 } from "@/lib/db/items";
 import { getAuthUserId } from "@/lib/auth-utils";
+import { COLLECTIONS_PER_PAGE } from "@/lib/limits";
 
 export default async function CollectionDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { id } = await params;
+  const resolvedSearchParams = await searchParams;
   const userId = await getAuthUserId();
+  const requestedPage = Number.parseInt(resolvedSearchParams.page ?? "1", 10);
+  const currentPage = Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1;
 
-  const [collection, items, itemTypes, availableCollections] = await Promise.all([
+  const [collection, paginatedItems, itemTypes, availableCollections] = await Promise.all([
     getCollectionById(userId, id),
-    getItemsByCollectionId(userId, id),
+    getPaginatedItemsByCollectionId(userId, id, currentPage, COLLECTIONS_PER_PAGE),
     getSystemItemTypes(),
     getAvailableCollections(userId),
   ]);
@@ -30,6 +37,17 @@ export default async function CollectionDetailPage({
   if (!collection) {
     notFound();
   }
+
+  const totalPages = Math.max(1, Math.ceil(paginatedItems.totalItems / COLLECTIONS_PER_PAGE));
+  if (currentPage > totalPages) {
+    if (totalPages === 1) {
+      redirect(`/collections/${id}`);
+    }
+
+    redirect(`/collections/${id}?page=${totalPages}`);
+  }
+
+  const items = paginatedItems.items;
 
   return (
     <div className="mx-auto w-full max-w-7xl animate-in fade-in duration-500">
@@ -58,7 +76,7 @@ export default async function CollectionDetailPage({
                   </h1>
                   <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
                     <span className="font-medium text-foreground px-2 py-0.5 rounded-full bg-secondary/80">
-                      {items.length} {items.length === 1 ? "item" : "items"}
+                      {paginatedItems.totalItems} {paginatedItems.totalItems === 1 ? "item" : "items"}
                     </span>
                   </p>
                 </div>
@@ -91,6 +109,12 @@ export default async function CollectionDetailPage({
       </div>
 
       <CollectionItemsView items={items} />
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pathname={`/collections/${id}`}
+        searchParams={resolvedSearchParams}
+      />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Folder } from "lucide-react";
+import { Folder, SearchX } from "lucide-react";
 import {
   CommandEmpty,
   CommandGroup,
@@ -107,11 +107,20 @@ export function GlobalCommandPalette({
   }, [search, searchData]);
 
   return (
-    <CommandList className="max-h-[62vh] space-y-1 p-2">
-      <CommandEmpty className="p-4 text-center text-sm text-muted-foreground">No results found.</CommandEmpty>
+    <>
+      <CommandList className="max-h-[62vh] space-y-1 p-2">
+        <CommandEmpty className="flex flex-col items-center justify-center gap-3 py-12 text-sm text-muted-foreground">
+          <div className="flex size-12 items-center justify-center rounded-full bg-muted/40 ring-1 ring-border/50">
+            <SearchX className="size-5 text-muted-foreground/70" />
+          </div>
+          <div className="flex flex-col items-center gap-1">
+            <p className="font-medium text-foreground">No results found</p>
+            <p className="text-xs">We couldn&apos;t find anything matching &quot;{search}&quot;</p>
+          </div>
+        </CommandEmpty>
 
-            {results.items.length > 0 && (
-              <CommandGroup heading="Items" className="px-1 text-xs font-medium text-muted-foreground">
+        {results.items.length > 0 && (
+          <CommandGroup heading="Items" className="px-1 text-xs font-medium text-muted-foreground">
                 {results.items.map((item) => {
                   const ItemIcon = iconMap[item.type.icon];
 
@@ -123,9 +132,9 @@ export function GlobalCommandPalette({
                         onOpenChange(false);
                         onSelectItem(item.id);
                       }}
-                      className="group flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 outline-none hover:bg-muted/80 data-[selected=true]:bg-muted/80 data-[selected=true]:text-foreground"
+                      className="group flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 outline-none data-[selected=true]:bg-muted/80 data-[selected=true]:text-foreground"
                     >
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border/50 bg-background/50 text-muted-foreground shadow-sm transition-colors group-hover:bg-background">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border/50 bg-background/50 text-muted-foreground shadow-sm transition-colors group-data-[selected=true]:bg-background">
                         {ItemIcon ? (
                           <ItemIcon
                             className="size-4"
@@ -170,9 +179,9 @@ export function GlobalCommandPalette({
                   onOpenChange(false);
                   router.push(`/collections/${collection.id}`);
                 }}
-                className="group flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 outline-none hover:bg-muted/80 data-[selected=true]:bg-muted/80 data-[selected=true]:text-foreground"
+                className="group flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 outline-none data-[selected=true]:bg-muted/80 data-[selected=true]:text-foreground"
               >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border/50 bg-background/50 text-muted-foreground shadow-sm transition-colors group-hover:bg-background">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border/50 bg-background/50 text-muted-foreground shadow-sm transition-colors group-data-[selected=true]:bg-background">
                   <Folder className="size-4" />
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
@@ -187,6 +196,32 @@ export function GlobalCommandPalette({
             ))}
           </CommandGroup>
         )}
-    </CommandList>
+      </CommandList>
+      <div className="flex items-center justify-end border-t border-border/40 bg-muted/20 px-4 py-2 text-[10px] text-muted-foreground/80 sm:text-xs">
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-1.5 hidden sm:flex">
+            <kbd className="flex h-4 w-4 items-center justify-center rounded-[3px] border border-border/60 bg-muted/60 font-sans text-[10px] font-medium text-muted-foreground">
+              ↑
+            </kbd>
+            <kbd className="flex h-4 w-4 items-center justify-center rounded-[3px] border border-border/60 bg-muted/60 font-sans text-[10px] font-medium text-muted-foreground shadow-sm">
+              ↓
+            </kbd>
+            <span className="ml-0.5">navigate</span>
+          </span>
+          <span className="flex items-center gap-1.5">
+            <kbd className="flex h-4 min-w-[20px] items-center justify-center rounded-[3px] border border-border/60 bg-muted/60 px-1 font-sans text-[10px] font-medium text-muted-foreground shadow-sm">
+              ↵
+            </kbd>
+            <span className="ml-0.5">select</span>
+          </span>
+          <span className="flex items-center gap-1.5">
+            <kbd className="flex h-4 min-w-[24px] items-center justify-center rounded-[3px] border border-border/60 bg-muted/60 px-1 font-sans text-[9px] font-medium tracking-wide text-muted-foreground uppercase shadow-sm">
+              esc
+            </kbd>
+            <span className="ml-0.5">close</span>
+          </span>
+        </div>
+      </div>
+    </>
   );
 }
