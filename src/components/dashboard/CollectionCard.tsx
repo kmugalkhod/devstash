@@ -75,7 +75,7 @@ export function CollectionCard({
       tabIndex={href ? 0 : undefined}
       whileHover={{ y: -2 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-6 transition-all hover:border-white/10 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-white/5"
+      className="group relative flex h-[200px] cursor-pointer flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-6 transition-all hover:border-white/10 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-white/5"
       style={{
         borderTopWidth: "2px",
         borderTopColor: dominantColor,
@@ -89,8 +89,8 @@ export function CollectionCard({
 
       <div className="relative z-10">
         <div className="flex items-start justify-between">
-          <div>
-            <h3 className="font-bold text-foreground transition-colors group-hover:text-white">
+          <div className="flex-1 pr-2">
+            <h3 className="line-clamp-2 font-bold text-foreground transition-colors group-hover:text-white">
               {name}
             </h3>
             <p className="mt-1 text-xs text-zinc-400">
@@ -104,7 +104,7 @@ export function CollectionCard({
           />
         </div>
         {description && (
-          <p className="mt-4 text-sm text-zinc-400">{description}</p>
+          <p className="mt-4 line-clamp-3 text-sm text-zinc-400">{description}</p>
         )}
       </div>
 

@@ -1,12 +1,36 @@
 import { CollectionCard } from "@/components/dashboard/CollectionCard";
 import { NewCollectionDialog } from "@/components/dashboard/NewCollectionDialog";
-import { getAllUserCollections } from "@/lib/db/collections";
+import { PaginationControls } from "@/components/shared/PaginationControls";
+import { getPaginatedUserCollections } from "@/lib/db/collections";
 import { getAuthUserId } from "@/lib/auth-utils";
+import { COLLECTIONS_LIST_PER_PAGE } from "@/lib/limits";
 import { Library } from "lucide-react";
+import { redirect } from "next/navigation";
 
-export default async function CollectionsPage() {
+export default async function CollectionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const resolvedSearchParams = await searchParams;
+  const requestedPage = Number.parseInt(resolvedSearchParams.page ?? "1", 10);
+  const currentPage = Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+
   const userId = await getAuthUserId();
-  const collections = await getAllUserCollections(userId);
+  const { collections, totalCollections } = await getPaginatedUserCollections(
+    userId,
+    currentPage,
+    COLLECTIONS_LIST_PER_PAGE
+  );
+
+  const totalPages = Math.max(1, Math.ceil(totalCollections / COLLECTIONS_LIST_PER_PAGE));
+  if (currentPage > totalPages) {
+    if (totalPages === 1) {
+      redirect("/collections");
+    }
+
+    redirect(`/collections?page=${totalPages}`);
+  }
 
   return (
     <div className="mx-auto w-full max-w-7xl">
@@ -21,14 +45,14 @@ export default async function CollectionsPage() {
           <p className="mt-2 text-sm text-muted-foreground">
             View and manage your personalized collections.
             <span className="ml-2 inline-flex items-center rounded-full bg-secondary px-2 py-0.5 text-xs font-semibold text-secondary-foreground">
-              {collections.length} {collections.length === 1 ? "Total" : "Total"}
+              {totalCollections} {totalCollections === 1 ? "Total" : "Total"}
             </span>
           </p>
         </div>
         <NewCollectionDialog triggerClassName="gap-2" />
       </div>
 
-      {collections.length === 0 ? (
+      {totalCollections === 0 ? (
         <div className="flex min-h-100 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card/50 text-center">
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
             <Library className="h-6 w-6 text-primary" />
@@ -44,18 +68,27 @@ export default async function CollectionsPage() {
           />
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {collections.map((collection) => (
-            <CollectionCard
-              key={collection.id}
-              collectionId={collection.id}
-              name={collection.name}
-              itemCount={collection.itemCount}
-              description={collection.description}
-              types={collection.types}
-              href={`/collections/${collection.id}`}
-            />
-          ))}
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {collections.map((collection) => (
+              <CollectionCard
+                key={collection.id}
+                collectionId={collection.id}
+                name={collection.name}
+                itemCount={collection.itemCount}
+                description={collection.description}
+                types={collection.types}
+                href={`/collections/${collection.id}`}
+              />
+            ))}
+          </div>
+
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pathname="/collections"
+            searchParams={resolvedSearchParams}
+          />
         </div>
       )}
     </div>

@@ -17,6 +17,11 @@ export interface CollectionWithTypes {
   types: CollectionTypeInfo[];
 }
 
+export interface PaginatedCollections {
+  collections: CollectionWithTypes[];
+  totalCollections: number;
+}
+
 export interface DashboardStats {
   totalItems: number;
   totalCollections: number;
@@ -137,6 +142,45 @@ export async function getAllUserCollections(
   });
 
   return mapCollectionsWithTypes(collections);
+}
+
+/**
+ * Fetch one page of collections for a user with item counts and type info.
+ */
+export async function getPaginatedUserCollections(
+  userId: string,
+  page: number,
+  pageSize: number
+): Promise<PaginatedCollections> {
+  const safePage = Math.max(1, Math.trunc(page));
+  const safePageSize = Math.max(1, Math.trunc(pageSize));
+  const skip = (safePage - 1) * safePageSize;
+
+  const where = { userId };
+
+  const [collections, totalCollections] = await Promise.all([
+    prisma.collection.findMany({
+      where,
+      orderBy: { updatedAt: "desc" },
+      skip,
+      take: safePageSize,
+      include: {
+        items: {
+          include: {
+            item: {
+              select: { itemTypeId: true },
+            },
+          },
+        },
+      },
+    }),
+    prisma.collection.count({ where }),
+  ]);
+
+  return {
+    collections: await mapCollectionsWithTypes(collections),
+    totalCollections,
+  };
 }
 
 /**
