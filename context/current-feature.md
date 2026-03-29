@@ -1,4 +1,4 @@
-# Current Feature: Global Search / Command Palette
+# Current Feature
 
 ## Status
 
@@ -6,25 +6,11 @@ Not Started
 
 ## Goals
 
-- Add a global command palette that opens with Cmd+K on Mac and Ctrl+K on Windows.
-- Implement client-side fuzzy search across all user items and collections.
-- Display grouped search results with clear sections for items and collections.
-- Support full keyboard interaction: arrow key navigation and Enter to select.
-- Show item type icons for items and item counts for collections in search results.
-- Navigate to the item drawer or collection page when a result is selected.
-- Make the top bar search input open the command palette on click.
-- Show a Cmd+K or Ctrl+K hint in the top bar search UI.
+<!-- Add goals here -->
 
 ## Notes
 
-- Source spec: context/features/global-search-spec.md.
-- Use shadcn cmdk Command component for the palette UI and interactions.
-- Keep search local in the client after initial prefetch (no per-keystroke server round-trips).
-- Prefetch searchable data on app load.
-- Search payload should include:
-  - Items: id, title, type, and a lightweight content preview.
-  - Collections: id, name, and itemCount.
-- Reuse existing data fetching functions where possible instead of introducing duplicate query logic.
+<!-- Add notes here -->
 
 ## History
 
@@ -70,3 +56,4 @@ Not Started
 - **2026-03-28** — Add Item to Collections from Item Forms completed. Added multi-select collection inputs to New Item and Item Drawer edit forms, wired available collections into the dashboard top bar flow, and persisted item-to-collection assignments on create/update with server-side ownership validation.
 - **2026-03-28** — Collections Pages and Navigation Links completed. Added `/collections` and `/collections/[id]` pages, linked sidebar "View all collections" and collection cards to their target routes, reused existing collection/item cards, and added collection-scoped item fetching with drawer-enabled grid/list views.
 - **2026-03-29** — Collection Actions and Detail Management completed. Added collection detail action controls (edit, delete, and favorite placeholder), edit/delete dialogs, card-level 3-dots action menus, and navigation-safe interaction behavior so action clicks do not trigger card navigation.
+- **2026-03-29** — Global Search / Command Palette completed. Added shadcn cmdk component for a global command palette with fuzzy client-side search across collections and items. Refactored top bar to act as the primary, fixed-position search input (Cmd+K) modeled accurately after VS Code's quick open interface.
