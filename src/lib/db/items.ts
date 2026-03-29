@@ -165,7 +165,7 @@ export async function getPaginatedItemsByType(
     itemType: { name: typeName },
   };
 
-  const [items, totalItems] = await prisma.$transaction([
+  const [items, totalItems] = await Promise.all([
     prisma.item.findMany({
       where,
       orderBy: { createdAt: "desc" },
@@ -233,7 +233,7 @@ export async function getPaginatedItemsByCollectionId(
     },
   };
 
-  const [items, totalItems] = await prisma.$transaction([
+  const [items, totalItems] = await Promise.all([
     prisma.item.findMany({
       where,
       orderBy: { createdAt: "desc" },
