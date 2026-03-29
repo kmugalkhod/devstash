@@ -9,6 +9,7 @@ import { NewItemDialog } from "@/components/items/NewItemDialog";
 import { NewCollectionDialog } from "@/components/dashboard/NewCollectionDialog";
 import { GlobalCommandPalette } from "@/components/dashboard/GlobalCommandPalette";
 import { useItemDrawer } from "@/components/items/ItemDrawerProvider";
+import { Command } from "cmdk";
 import type { CollectionOption, ItemTypeInfo } from "@/lib/db/items";
 import type { GlobalSearchData } from "@/lib/db/search";
 
@@ -108,19 +109,29 @@ export function TopBar({
         </Link>
 
         <div className="relative flex-1 max-w-[700px]">
-          <div className="fixed left-1/2 top-[8px] z-[60] w-[min(760px,calc(100vw-2rem))] -translate-x-1/2">
-            <Search className={`pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-4 ${paletteOpen ? "text-foreground" : "text-muted-foreground"}`} />
-            <input
+          {paletteOpen && (
+            <div 
+              className="fixed inset-0 z-[50]" 
+              onClick={() => setPaletteOpen(false)} 
+            />
+          )}
+          <Command
+            shouldFilter={false}
+            className="fixed left-1/2 top-[8px] z-[60] w-[min(760px,calc(100vw-2rem))] -translate-x-1/2"
+            loop
+          >
+            <Search className={`pointer-events-none absolute left-3 top-[20px] -translate-y-1/2 size-4 ${paletteOpen ? "text-foreground" : "text-muted-foreground"} z-10`} />
+            <Command.Input
               ref={searchInputRef}
-              type="text"
               value={searchQuery}
               onClick={openPalette}
-              onChange={(event) => {
+              onValueChange={(val) => {
                 if (!paletteOpen) {
                   openPalette();
                 }
-                setSearchQuery(event.target.value);
+                setSearchQuery(val);
               }}
+              onFocus={openPalette}
               aria-label="Search snippets, prompts, notes"
               placeholder="Search snippets, prompts, notes..."
               className={`${
@@ -130,7 +141,7 @@ export function TopBar({
               } h-10 w-full border pl-10 pr-16 text-left text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground`}
             />
             {!paletteOpen && (
-              <kbd className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-5 items-center gap-0.5 rounded border border-border/80 bg-background/80 px-1.5 font-mono text-[10px] text-muted-foreground">
+              <kbd className="pointer-events-none absolute right-2 top-[20px] -translate-y-1/2 inline-flex h-5 items-center gap-0.5 rounded border border-border/80 bg-background/80 px-1.5 font-mono text-[10px] text-muted-foreground z-10">
                 {isMacShortcut ? (
                   <>
                     <span className="text-xs">⌘</span>K
@@ -143,7 +154,21 @@ export function TopBar({
                 )}
               </kbd>
             )}
-          </div>
+            
+            {paletteOpen && (
+              <div className="absolute left-0 top-[40px] w-full z-[60] overflow-hidden rounded-b-xl border border-t-0 border-border/80 bg-card/95 backdrop-blur-xl p-0 text-foreground shadow-[0_24px_80px_rgba(0,0,0,0.55)]">
+                <GlobalCommandPalette
+                  searchData={searchData}
+                  search={searchQuery}
+                  onSelectItem={(id) => {
+                    setPaletteOpen(false);
+                    openDrawer(id);
+                  }}
+                  onOpenChange={handlePaletteOpenChange}
+                />
+              </div>
+            )}
+          </Command>
         </div>
 
         <div className="ml-auto flex items-center gap-2">
@@ -157,14 +182,6 @@ export function TopBar({
           />
         </div>
       </header>
-
-      <GlobalCommandPalette
-        open={paletteOpen}
-        onOpenChange={handlePaletteOpenChange}
-        searchData={searchData}
-        onSelectItem={openDrawer}
-        search={searchQuery}
-      />
     </>
   );
 }
