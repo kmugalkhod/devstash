@@ -1,25 +1,22 @@
-# Current Feature: Pagination
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add pagination to /items/[type] and /collections/[id] pages
-- Pagination controls at bottom with page numbers and prev/next links
-- Disable (grey out) prev/next when not available
-- Use constants: ITEMS_PER_PAGE = 21, COLLECTIONS_PER_PAGE = 21
-- Dashboard limits: DASHBOARD_COLLECTIONS_LIMIT = 6, DASHBOARD_RECENT_ITEMS_LIMIT = 10
-- Do not fetch all resources at once. Only fetch the amount that a page requires
+<!-- Add goals here -->
 
 ## Notes
 
-Add pagination for items and collections listings with numbered page links.
+<!-- Add notes here -->
 
 ## History
 
 <!-- Keep this updated. Earliest to latest -->
+
+- **2026-03-30** — Pagination completed. Added pagination to `/items/[type]` and `/collections/[id]` pages. Created a reusable `PaginationControls` component with numbered page links, ellipsis logic, and prev/next buttons. Implemented Prisma skip/take queries for paginating types and collections. Configured centralized limits in `src/lib/limits.ts`. Fixed a UI sorting bug with drawer/sheet component where its z-index (z-[70]) competed with the search bar overlay.
 
 - **2026-03-15** — Initial Next.js 16 project setup with Create Next App. Cleaned up default boilerplate, added CLAUDE.md and context docs, pushed to GitHub.
 - **2026-03-15** — Dashboard UI Phase 1 completed. Initialized shadcn/ui, set up dark mode, created /dashboard route with top bar (search, settings, new collection/item buttons), sidebar and main placeholders.
