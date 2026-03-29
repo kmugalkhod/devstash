@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FolderPlus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 const inputClass =
   "w-full rounded-lg border border-zinc-800/80 bg-zinc-900/60 px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 outline-none transition-all focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600";
@@ -18,8 +19,22 @@ interface CreateCollectionResponse {
   error?: string;
 }
 
-export function NewCollectionDialog() {
+interface NewCollectionDialogProps {
+  triggerLabel?: string;
+  triggerVariant?: React.ComponentProps<typeof Button>["variant"];
+  triggerClassName?: string;
+  showOnMobile?: boolean;
+}
+
+export function NewCollectionDialog({
+  triggerLabel = "New Collection",
+  triggerVariant = "outline",
+  triggerClassName,
+  showOnMobile = false,
+}: NewCollectionDialogProps = {}) {
   const router = useRouter();
+  const nameInputId = useId();
+  const descriptionInputId = useId();
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [name, setName] = useState("");
@@ -83,15 +98,19 @@ export function NewCollectionDialog() {
   return (
     <>
       <Button
-        variant="outline"
-        className="hidden border-muted-foreground/20 sm:inline-flex"
+        variant={triggerVariant}
+        className={cn(
+          "border-muted-foreground/20",
+          showOnMobile ? "inline-flex" : "hidden sm:inline-flex",
+          triggerClassName
+        )}
         onClick={() => {
           resetDialogState();
           setOpen(true);
         }}
       >
         <FolderPlus className="size-4" />
-        New Collection
+        {triggerLabel}
       </Button>
 
       {open && (
@@ -110,13 +129,13 @@ export function NewCollectionDialog() {
               <div className="space-y-4 px-6 pb-6">
                 <div className="space-y-2">
                   <label
-                    htmlFor="collection-name"
+                    htmlFor={nameInputId}
                     className="block text-sm font-semibold text-zinc-200"
                   >
                     Name
                   </label>
                   <input
-                    id="collection-name"
+                    id={nameInputId}
                     name="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -130,7 +149,7 @@ export function NewCollectionDialog() {
                 <div className="space-y-2">
                   <div className="flex items-baseline gap-2">
                     <label
-                      htmlFor="collection-description"
+                      htmlFor={descriptionInputId}
                       className="text-sm font-semibold text-zinc-200"
                     >
                       Description
@@ -138,7 +157,7 @@ export function NewCollectionDialog() {
                     <span className="text-xs text-zinc-500">optional</span>
                   </div>
                   <textarea
-                    id="collection-description"
+                    id={descriptionInputId}
                     name="description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}

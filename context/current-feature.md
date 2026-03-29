@@ -1,16 +1,23 @@
-# Current Feature
+# Current Feature: Collection Actions and Detail Management
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals for the active feature -->
+- Add action controls on `/collections/[id]` for edit, delete, and favorite (favorite is UI-only placeholder for now).
+- Add an edit modal on `/collections/[id]` to update collection metadata.
+- Add delete confirmation on `/collections/[id]` that removes item membership from the collection (without deleting the item itself).
+- Add a 3-dots dropdown menu with edit, delete, and favorite actions on collection cards in `/collections` and dashboard views.
+- Ensure collection cards still navigate to collection detail when clicking anywhere outside the 3-dots action area.
 
 ## Notes
 
-<!-- Add notes and constraints for the active feature -->
+- Loaded from inline description via feature skill `load` action.
+- Favorite action is intentionally non-functional in this feature (icon/button and menu entry only).
+- "Delete" on collection detail is a detach/remove-from-collection operation for items, not item deletion.
+- Interaction behavior must prevent action clicks from triggering card navigation.
 
 ## History
 
@@ -54,3 +61,4 @@ Not Started
 - **2026-03-28** — Refactor Large Components and Utilities completed. Loaded and started a maintainability-focused refactor plan with prioritized split targets for oversized components and utilities, then completed the workflow cycle by finalizing feature context and resetting `current-feature.md` for the next feature.
 - **2026-03-28** — Collection Create completed. Implemented a working top-bar New Collection flow with modal UX, authenticated `POST /api/collections`, user-scoped database creation with case-insensitive duplicate-name protection, toast feedback for success/failure, and dashboard refresh so new collections appear immediately.
 - **2026-03-28** — Add Item to Collections from Item Forms completed. Added multi-select collection inputs to New Item and Item Drawer edit forms, wired available collections into the dashboard top bar flow, and persisted item-to-collection assignments on create/update with server-side ownership validation.
+- **2026-03-28** — Collections Pages and Navigation Links completed. Added `/collections` and `/collections/[id]` pages, linked sidebar "View all collections" and collection cards to their target routes, reused existing collection/item cards, and added collection-scoped item fetching with drawer-enabled grid/list views.

@@ -1,7 +1,12 @@
 import { notFound } from "next/navigation";
 import { getAuthUserId } from "@/lib/auth-utils";
-import { getItemsByType } from "@/lib/db/items";
+import {
+  getAvailableCollections,
+  getItemsByType,
+  getSystemItemTypes,
+} from "@/lib/db/items";
 import { ItemsListView } from "@/components/items/ItemsListView";
+import { NewItemDialog } from "@/components/items/NewItemDialog";
 import { iconMap } from "@/lib/icons";
 
 const typeSlugToName: Record<string, string> = {
@@ -24,6 +29,16 @@ const typeDisplayNames: Record<string, string> = {
   link: "Links",
 };
 
+const typeCreateLabels: Record<string, string> = {
+  snippet: "New Snippet",
+  prompt: "New Prompt",
+  command: "New Command",
+  note: "New Note",
+  file: "New File",
+  image: "New Image",
+  link: "New Link",
+};
+
 export default async function ItemsTypePage({
   params,
 }: {
@@ -37,33 +52,48 @@ export default async function ItemsTypePage({
   }
 
   const userId = await getAuthUserId();
-  const items = await getItemsByType(userId, typeName);
+  const [items, itemTypes, availableCollections] = await Promise.all([
+    getItemsByType(userId, typeName),
+    getSystemItemTypes(),
+    getAvailableCollections(userId),
+  ]);
 
   const displayName = typeDisplayNames[typeName] ?? typeName;
-  const typeInfo = items[0]?.type;
+  const typeInfo = items[0]?.type ?? itemTypes.find((type) => type.name === typeName);
   const iconName = typeInfo?.icon;
   const typeColor = typeInfo?.color;
+  const createLabel = typeCreateLabels[typeName] ?? "New Item";
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <div className="flex items-center gap-3">
-        {iconName && iconMap[iconName] && (
-          <div
-            className="flex size-9 items-center justify-center rounded-lg"
-            style={{ backgroundColor: `${typeColor}20` }}
-          >
-            {(() => {
-              const Icon = iconMap[iconName];
-              return <Icon className="size-5" style={{ color: typeColor }} />;
-            })()}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-center gap-3">
+          {iconName && iconMap[iconName] && (
+            <div
+              className="flex size-9 items-center justify-center rounded-lg"
+              style={{ backgroundColor: `${typeColor}20` }}
+            >
+              {(() => {
+                const Icon = iconMap[iconName];
+                return <Icon className="size-5" style={{ color: typeColor }} />;
+              })()}
+            </div>
+          )}
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">{displayName}</h1>
+            <p className="text-sm text-muted-foreground">
+              {items.length} {items.length === 1 ? "item" : "items"}
+            </p>
           </div>
-        )}
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">{displayName}</h1>
-          <p className="text-sm text-muted-foreground">
-            {items.length} {items.length === 1 ? "item" : "items"}
-          </p>
         </div>
+
+        <NewItemDialog
+          itemTypes={itemTypes}
+          collections={availableCollections}
+          defaultTypeName={typeName}
+          triggerLabel={createLabel}
+          triggerClassName="gap-2 self-start"
+        />
       </div>
 
       <ItemsListView items={items} typeName={displayName} typeKey={typeName} />

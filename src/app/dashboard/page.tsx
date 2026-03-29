@@ -54,10 +54,12 @@ async function CollectionsSection({ userId }: { userId: string }) {
           {collections.map((collection) => (
             <CollectionCard
               key={collection.id}
+              collectionId={collection.id}
               name={collection.name}
               itemCount={collection.itemCount}
               description={collection.description}
               types={collection.types}
+              href={`/collections/${collection.id}`}
             />
           ))}
         </div>

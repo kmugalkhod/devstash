@@ -1,9 +1,9 @@
 "use client";
 
-import { MoreVertical } from "lucide-react";
 import { motion } from "motion/react";
+import { useRouter } from "next/navigation";
 import { iconMap } from "@/lib/icons";
-import { Button } from "@/components/ui/button";
+import { CollectionActionsMenu } from "@/components/collections/CollectionActionsMenu";
 
 interface TypeInfo {
   id: string;
@@ -23,23 +23,56 @@ function isLowChroma(hex: string): boolean {
 }
 
 interface CollectionCardProps {
+  collectionId: string;
   name: string;
   itemCount: number;
   description: string | null;
   types: TypeInfo[];
+  href?: string;
 }
 
 export function CollectionCard({
+  collectionId,
   name,
   itemCount,
   description,
   types,
+  href,
 }: CollectionCardProps) {
+  const router = useRouter();
   const rawColor = types[0]?.color || "#94a3b8";
   const dominantColor = isLowChroma(rawColor) ? "#10b981" : rawColor;
 
+  function handleCardClick(event: React.MouseEvent<HTMLDivElement>) {
+    const target = event.target as HTMLElement;
+    if (target.closest('[data-collection-actions="true"]')) {
+      return;
+    }
+
+    if (href) {
+      router.push(href);
+    }
+  }
+
+  function handleCardKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    const target = event.target as HTMLElement;
+    if (target.closest('[data-collection-actions="true"]')) {
+      return;
+    }
+
+    if (!href) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      router.push(href);
+    }
+  }
+
   return (
     <motion.div
+      onClick={handleCardClick}
+      onKeyDown={handleCardKeyDown}
+      role={href ? "link" : undefined}
+      tabIndex={href ? 0 : undefined}
       whileHover={{ y: -2 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-6 transition-all hover:border-white/10 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-white/5"
@@ -64,14 +97,11 @@ export function CollectionCard({
               {itemCount} items
             </p>
           </div>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Collection options"
-            className="opacity-0 transition-opacity hover:bg-white/5 group-hover:opacity-100 group-focus-within:opacity-100"
-          >
-            <MoreVertical className="size-4" />
-          </Button>
+          <CollectionActionsMenu
+            collectionId={collectionId}
+            collectionName={name}
+            collectionDescription={description}
+          />
         </div>
         {description && (
           <p className="mt-4 text-sm text-zinc-400">{description}</p>

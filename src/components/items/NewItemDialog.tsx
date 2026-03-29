@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Plus, Loader2 } from "lucide-react";
@@ -13,6 +13,7 @@ import { CodeEditor } from "./CodeEditor";
 import { MarkdownEditor } from "./MarkdownEditor";
 import { FileUpload, type UploadedFileMeta } from "./FileUpload";
 import type { UploadItemType } from "@/lib/upload-constraints";
+import { cn } from "@/lib/utils";
 
 const FREE_TYPES = ["snippet", "prompt", "command", "note", "file", "image", "link"];
 
@@ -26,23 +27,52 @@ const CONTENT_PLACEHOLDER: Record<string, string> = {
 interface NewItemDialogProps {
   itemTypes: ItemTypeInfo[];
   collections: CollectionOption[];
+  defaultTypeName?: string;
+  defaultCollectionIds?: string[];
+  triggerLabel?: string;
+  triggerIcon?: React.ReactNode;
+  triggerVariant?: React.ComponentProps<typeof Button>["variant"];
+  triggerClassName?: string;
 }
 
 const inputClass =
   "w-full rounded-lg border border-zinc-800/80 bg-zinc-900/60 px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 outline-none transition-all focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600";
 
-export function NewItemDialog({ itemTypes, collections }: NewItemDialogProps) {
+export function NewItemDialog({
+  itemTypes,
+  collections,
+  defaultTypeName,
+  defaultCollectionIds,
+  triggerLabel,
+  triggerIcon,
+  triggerVariant = "default",
+  triggerClassName,
+}: NewItemDialogProps) {
   const router = useRouter();
+  const availableTypes = useMemo(
+    () => itemTypes.filter((t) => FREE_TYPES.includes(t.name)),
+    [itemTypes]
+  );
+  const normalizedDefaultTypeName =
+    defaultTypeName && availableTypes.some((type) => type.name === defaultTypeName)
+      ? defaultTypeName
+      : "";
+  const normalizedDefaultCollectionIds = useMemo(
+    () => [...new Set((defaultCollectionIds ?? []).map((id) => id.trim()).filter(Boolean))],
+    [defaultCollectionIds]
+  );
+
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [selectedTypeName, setSelectedTypeName] = useState("");
+  const [selectedTypeName, setSelectedTypeName] = useState(normalizedDefaultTypeName);
   const [codeContent, setCodeContent] = useState("");
   const [codeLanguage, setCodeLanguage] = useState("");
   const [markdownContent, setMarkdownContent] = useState("");
   const [uploadedFile, setUploadedFile] = useState<UploadedFileMeta | null>(null);
-  const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
+  const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>(
+    normalizedDefaultCollectionIds
+  );
 
-  const availableTypes = itemTypes.filter((t) => FREE_TYPES.includes(t.name));
   const selectedType = availableTypes.find((t) => t.name === selectedTypeName);
 
   const showContent =
@@ -64,12 +94,12 @@ export function NewItemDialog({ itemTypes, collections }: NewItemDialogProps) {
       : null;
 
   function resetDialogState() {
-    setSelectedTypeName("");
+    setSelectedTypeName(normalizedDefaultTypeName);
     setCodeContent("");
     setCodeLanguage("");
     setMarkdownContent("");
     setUploadedFile(null);
-    setSelectedCollectionIds([]);
+    setSelectedCollectionIds(normalizedDefaultCollectionIds);
   }
 
   function toggleCollection(collectionId: string) {
@@ -154,14 +184,22 @@ export function NewItemDialog({ itemTypes, collections }: NewItemDialogProps) {
   return (
     <>
       <Button
+        variant={triggerVariant}
+        className={cn(triggerClassName)}
         onClick={() => {
           resetDialogState();
           setOpen(true);
         }}
       >
-        <Plus className="size-4" />
-        <span className="sm:hidden">New</span>
-        <span className="hidden sm:inline">New Item</span>
+        {triggerIcon ?? <Plus className="size-4" />}
+        {triggerLabel ? (
+          <span>{triggerLabel}</span>
+        ) : (
+          <>
+            <span className="sm:hidden">New</span>
+            <span className="hidden sm:inline">New Item</span>
+          </>
+        )}
       </Button>
       {open && <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className={`gap-0 p-0 transition-all duration-200 ${showCodeEditor ? "sm:max-w-175" : "sm:max-w-130"}`}>
