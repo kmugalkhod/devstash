@@ -1,22 +1,16 @@
-# Current Feature: Settings Page and Account Actions
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create a protected Settings page at `/settings` for authenticated users.
-- Add a Settings link in the user avatar dropdown at the bottom of the sidebar.
-- Move account actions from profile to settings, including delete account and forgot password entry.
-- Keep the profile page focused on profile information and non-account-action content.
+<!-- Add goals here -->
 
 ## Notes
 
-- Protect `/settings` using the same auth guard behavior used for existing protected routes.
-- Reuse existing account action flows and APIs where possible to avoid duplicate backend logic.
-- Preserve existing UI patterns for dropdown links, dialogs, and destructive actions.
-- Ensure the settings link appears and works in both desktop and mobile sidebar experiences.
+<!-- Add notes here -->
 
 ## History
 
@@ -65,3 +59,4 @@ In Progress
 - **2026-03-28** — Collections Pages and Navigation Links completed. Added `/collections` and `/collections/[id]` pages, linked sidebar "View all collections" and collection cards to their target routes, reused existing collection/item cards, and added collection-scoped item fetching with drawer-enabled grid/list views.
 - **2026-03-29** — Collection Actions and Detail Management completed. Added collection detail action controls (edit, delete, and favorite placeholder), edit/delete dialogs, card-level 3-dots action menus, and navigation-safe interaction behavior so action clicks do not trigger card navigation.
 - **2026-03-29** — Global Search / Command Palette completed. Added shadcn cmdk component for a global command palette with fuzzy client-side search across collections and items. Refactored top bar to act as the primary, fixed-position search input (Cmd+K) modeled accurately after VS Code's quick open interface.
+- **2026-03-31** — Settings Page and Account Actions completed. Added protected `/settings` route and page, moved account actions (change password, forgot password link, delete account) out of profile into `src/components/settings/AccountActions.tsx`, updated sidebar user dropdown with settings navigation, and extended route protection for settings pages.
