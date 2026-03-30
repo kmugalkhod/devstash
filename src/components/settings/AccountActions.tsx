@@ -31,12 +31,20 @@ import {
 
 export function AccountActions({ hasPassword }: { hasPassword: boolean }) {
   return (
-    <div className="space-y-4">
-      <h2 className="text-lg font-semibold">Account Actions</h2>
-      <div className="rounded-xl border border-white/5 bg-zinc-900/50 p-6">
-        <div className="flex flex-col gap-4">
-          {hasPassword && <ChangePasswordRow />}
-          <ForgotPasswordRow />
+    <div className="space-y-8">
+      <div className="space-y-4">
+        <h2 className="text-lg font-semibold">Account Security</h2>
+        <div className="rounded-xl border border-border bg-card p-0 shadow-sm">
+          <div className="flex flex-col divide-y divide-border">
+            {hasPassword && <ChangePasswordRow />}
+            <ForgotPasswordRow />
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <h2 className="text-lg font-semibold text-destructive">Danger Zone</h2>
+        <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-6 shadow-sm">
           <DeleteAccountRow />
         </div>
       </div>
@@ -101,10 +109,10 @@ function ChangePasswordRow() {
   }
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between p-6">
       <div>
         <h3 className="text-sm font-medium">Change Password</h3>
-        <p className="text-xs text-zinc-500">Update your account password</p>
+        <p className="text-sm text-muted-foreground mt-1">Update your account password</p>
       </div>
       <Dialog
         open={open}
@@ -185,7 +193,6 @@ function ChangePasswordRow() {
               />
               <Button
                 type="submit"
-                className="bg-blue-600 text-white hover:bg-blue-700"
                 disabled={loading}
               >
                 {loading ? "Changing..." : "Change password"}
@@ -200,13 +207,18 @@ function ChangePasswordRow() {
 
 function ForgotPasswordRow() {
   return (
-    <div className="border-t border-white/5 pt-4">
+    <div className="p-6">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-medium">Forgot Password</h3>
-          <p className="text-xs text-zinc-500">Send yourself a password reset link</p>
+          <p className="text-sm text-muted-foreground mt-1">Send yourself a password reset link</p>
         </div>
-        <Button variant="outline" size="sm" render={<Link href="/forgot-password" />}>
+        <Button
+          variant="outline"
+          size="sm"
+          nativeButton={false}
+          render={<Link href="/forgot-password" />}
+        >
           <Mail className="size-3.5" />
           Send link
         </Button>
@@ -236,11 +248,11 @@ function DeleteAccountRow() {
   }
 
   return (
-    <div className="border-t border-white/5 pt-4">
+    <div>
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-medium text-destructive">Delete Account</h3>
-          <p className="text-xs text-zinc-500">
+          <p className="text-sm text-destructive/80 mt-1">
             Permanently delete your account and all data. This cannot be undone.
           </p>
         </div>

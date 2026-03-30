@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import Editor, { type OnMount } from "@monaco-editor/react";
 import { Copy, Check } from "lucide-react";
+import { useEditorPreferences } from "@/components/settings/EditorPreferencesContext";
 
 interface CodeEditorProps {
   value: string;
@@ -15,6 +16,7 @@ const LINE_HEIGHT = 19;
 const EDITOR_PADDING = 24; // top + bottom inner padding
 const MIN_LINES = 3;
 const MAX_HEIGHT = 400;
+let customThemesRegistered = false;
 
 const LANGUAGE_MAP: Record<string, string> = {
   js: "javascript",
@@ -82,6 +84,54 @@ function detectLanguage(code: string): string {
   return "plaintext";
 }
 
+function registerCustomThemes(monaco: Parameters<OnMount>[1]) {
+  if (customThemesRegistered) {
+    return;
+  }
+
+  monaco.editor.defineTheme("monokai", {
+    base: "vs-dark",
+    inherit: true,
+    rules: [
+      { token: "comment", foreground: "75715e" },
+      { token: "string", foreground: "e6db74" },
+      { token: "number", foreground: "ae81ff" },
+      { token: "keyword", foreground: "f92672" },
+      { token: "type", foreground: "66d9ef" },
+    ],
+    colors: {
+      "editor.background": "#272822",
+      "editor.foreground": "#f8f8f2",
+      "editorLineNumber.foreground": "#75715e",
+      "editor.selectionBackground": "#49483e",
+      "editor.inactiveSelectionBackground": "#3e3d32",
+      "editorCursor.foreground": "#f8f8f0",
+    },
+  });
+
+  monaco.editor.defineTheme("github-dark", {
+    base: "vs-dark",
+    inherit: true,
+    rules: [
+      { token: "comment", foreground: "8b949e" },
+      { token: "string", foreground: "a5d6ff" },
+      { token: "number", foreground: "79c0ff" },
+      { token: "keyword", foreground: "ff7b72" },
+      { token: "type", foreground: "ffa657" },
+    ],
+    colors: {
+      "editor.background": "#0d1117",
+      "editor.foreground": "#c9d1d9",
+      "editorLineNumber.foreground": "#6e7681",
+      "editor.selectionBackground": "#264f78",
+      "editor.inactiveSelectionBackground": "#1f3552",
+      "editorCursor.foreground": "#58a6ff",
+    },
+  });
+
+  customThemesRegistered = true;
+}
+
 export function CodeEditor({
   value,
   onChange,
@@ -91,6 +141,7 @@ export function CodeEditor({
   const [copied, setCopied] = useState(false);
   const [editorHeight, setEditorHeight] = useState(120);
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
+  const { preferences: editorPreferences } = useEditorPreferences();
 
   async function handleCopy() {
     if (!value) return;
@@ -99,8 +150,9 @@ export function CodeEditor({
     setTimeout(() => setCopied(false), 2000);
   }
 
-  const handleMount: OnMount = (editor) => {
+  const handleMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
+    registerCustomThemes(monaco);
 
     function updateHeight() {
       const lineCount = Math.max(
@@ -128,7 +180,7 @@ export function CodeEditor({
   return (
     <div className="group relative overflow-hidden rounded-xl border border-neutral-800/90 bg-[#1e1e1e] transition-all focus-within:border-zinc-600 focus-within:ring-2 focus-within:ring-zinc-700/40">
       {/* macOS-style header */}
-      <div className="flex items-center gap-3 border-b border-neutral-800/80 bg-gradient-to-r from-zinc-900/60 to-zinc-900/20 px-4 py-2.5">
+      <div className="flex items-center gap-3 border-b border-neutral-800/80 bg-linear-to-r from-zinc-900/60 to-zinc-900/20 px-4 py-2.5">
         {/* Window dots */}
         <div className="flex items-center gap-1.5">
           <div className="size-3 rounded-full bg-[#ff5f57]" />
@@ -169,7 +221,7 @@ export function CodeEditor({
         height={editorHeight}
         value={value}
         language={normalizedLang}
-        theme="vs-dark"
+        theme={editorPreferences.theme}
         loading={
           <div className="flex items-center justify-center bg-[#1e1e1e]" style={{ height: editorHeight }}>
             <span className="text-xs text-neutral-600 animate-pulse">Loading editor...</span>
@@ -178,12 +230,13 @@ export function CodeEditor({
         options={{
           readOnly,
           domReadOnly: readOnly,
-          minimap: { enabled: false },
-          fontSize: 13,
+          minimap: { enabled: editorPreferences.minimap },
+          fontSize: editorPreferences.fontSize,
+          tabSize: editorPreferences.tabSize,
           lineHeight: LINE_HEIGHT,
           padding: { top: 12, bottom: 12 },
           scrollBeyondLastLine: false,
-          wordWrap: "on",
+          wordWrap: editorPreferences.wordWrap,
           folding: false,
           lineNumbers: readOnly ? "off" : "on",
           glyphMargin: false,

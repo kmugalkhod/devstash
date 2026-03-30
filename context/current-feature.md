@@ -1,16 +1,26 @@
-# Current Feature
+# Current Feature: Editor Preferences Settings
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals here -->
+- Add editor preferences section to the settings page.
+- Provide editable controls for font size, tab size, word wrap, minimap, and theme.
+- Persist preferences to the `User.editorPreferences` JSON column.
+- Create and run a Prisma migration for schema changes (no `db push`).
+- Implement a server action to update editor preferences.
+- Apply saved preferences to the Monaco editor component.
+- Auto-save each preference change without a manual save button.
+- Show a success toast after preferences are saved.
+- Create an `EditorPreferencesContext` for shared client-side preference state.
 
 ## Notes
 
-<!-- Add notes here -->
+- Loaded from `context/features/editor-settings-spec.md`.
+- Defaults from spec: word wrap `on`, minimap `off`, theme `vs-dark`.
+- Theme options required: `vs-dark`, `monokai`, `github-dark`.
 
 ## History
 
