@@ -1,16 +1,22 @@
-# Current Feature
+# Current Feature: Settings Page and Account Actions
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals here -->
+- Create a protected Settings page at `/settings` for authenticated users.
+- Add a Settings link in the user avatar dropdown at the bottom of the sidebar.
+- Move account actions from profile to settings, including delete account and forgot password entry.
+- Keep the profile page focused on profile information and non-account-action content.
 
 ## Notes
 
-<!-- Add notes here -->
+- Protect `/settings` using the same auth guard behavior used for existing protected routes.
+- Reuse existing account action flows and APIs where possible to avoid duplicate backend logic.
+- Preserve existing UI patterns for dropdown links, dialogs, and destructive actions.
+- Ensure the settings link appears and works in both desktop and mobile sidebar experiences.
 
 ## History
 

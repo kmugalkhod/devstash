@@ -7,7 +7,8 @@ const { auth } = NextAuth(authConfig);
 export const proxy = auth((req) => {
   const { pathname } = req.nextUrl;
 
-  const isProtectedRoute = pathname.startsWith("/dashboard");
+  const isProtectedRoute =
+    pathname.startsWith("/dashboard") || pathname.startsWith("/settings");
 
   if (isProtectedRoute && !req.auth) {
     return NextResponse.redirect(new URL("/sign-in", req.nextUrl));
@@ -17,5 +18,5 @@ export const proxy = auth((req) => {
 });
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/dashboard/:path*", "/settings/:path*"],
 };

@@ -8,6 +8,7 @@ import {
   ChevronLeft,
   Folder,
   LogOut,
+  Settings,
   User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -261,6 +262,10 @@ function SidebarContent({
             <DropdownMenuItem render={<Link href="/dashboard/profile" />}>
               <User className="size-4" />
               Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem render={<Link href="/settings" />}>
+              <Settings className="size-4" />
+              Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

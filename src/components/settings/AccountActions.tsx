@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { KeyRound, Trash2 } from "lucide-react";
+import { KeyRound, Mail, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,13 +29,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export function ProfileActions({ hasPassword }: { hasPassword: boolean }) {
+export function AccountActions({ hasPassword }: { hasPassword: boolean }) {
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold">Account</h2>
+      <h2 className="text-lg font-semibold">Account Actions</h2>
       <div className="rounded-xl border border-white/5 bg-zinc-900/50 p-6">
         <div className="flex flex-col gap-4">
           {hasPassword && <ChangePasswordRow />}
+          <ForgotPasswordRow />
           <DeleteAccountRow />
         </div>
       </div>
@@ -102,9 +104,7 @@ function ChangePasswordRow() {
     <div className="flex items-center justify-between">
       <div>
         <h3 className="text-sm font-medium">Change Password</h3>
-        <p className="text-xs text-zinc-500">
-          Update your account password
-        </p>
+        <p className="text-xs text-zinc-500">Update your account password</p>
       </div>
       <Dialog
         open={open}
@@ -198,6 +198,23 @@ function ChangePasswordRow() {
   );
 }
 
+function ForgotPasswordRow() {
+  return (
+    <div className="border-t border-white/5 pt-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-sm font-medium">Forgot Password</h3>
+          <p className="text-xs text-zinc-500">Send yourself a password reset link</p>
+        </div>
+        <Button variant="outline" size="sm" render={<Link href="/forgot-password" />}>
+          <Mail className="size-3.5" />
+          Send link
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function DeleteAccountRow() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -222,9 +239,7 @@ function DeleteAccountRow() {
     <div className="border-t border-white/5 pt-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-medium text-destructive">
-            Delete Account
-          </h3>
+          <h3 className="text-sm font-medium text-destructive">Delete Account</h3>
           <p className="text-xs text-zinc-500">
             Permanently delete your account and all data. This cannot be undone.
           </p>
