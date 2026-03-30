@@ -1,26 +1,16 @@
-# Current Feature: Editor Preferences Settings
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add editor preferences section to the settings page.
-- Provide editable controls for font size, tab size, word wrap, minimap, and theme.
-- Persist preferences to the `User.editorPreferences` JSON column.
-- Create and run a Prisma migration for schema changes (no `db push`).
-- Implement a server action to update editor preferences.
-- Apply saved preferences to the Monaco editor component.
-- Auto-save each preference change without a manual save button.
-- Show a success toast after preferences are saved.
-- Create an `EditorPreferencesContext` for shared client-side preference state.
+<!-- Add bullet points for what success looks like -->
 
 ## Notes
 
-- Loaded from `context/features/editor-settings-spec.md`.
-- Defaults from spec: word wrap `on`, minimap `off`, theme `vs-dark`.
-- Theme options required: `vs-dark`, `monokai`, `github-dark`.
+<!-- Add any additional context, constraints, or details from the spec -->
 
 ## History
 
@@ -70,3 +60,4 @@ In Progress
 - **2026-03-29** — Collection Actions and Detail Management completed. Added collection detail action controls (edit, delete, and favorite placeholder), edit/delete dialogs, card-level 3-dots action menus, and navigation-safe interaction behavior so action clicks do not trigger card navigation.
 - **2026-03-29** — Global Search / Command Palette completed. Added shadcn cmdk component for a global command palette with fuzzy client-side search across collections and items. Refactored top bar to act as the primary, fixed-position search input (Cmd+K) modeled accurately after VS Code's quick open interface.
 - **2026-03-31** — Settings Page and Account Actions completed. Added protected `/settings` route and page, moved account actions (change password, forgot password link, delete account) out of profile into `src/components/settings/AccountActions.tsx`, updated sidebar user dropdown with settings navigation, and extended route protection for settings pages.
+- **2026-03-31** — Editor Preferences Settings completed. Added editor preferences section to the settings page, structured creatively within shadcn UI standard `Card` designs. Controls included for font size, tab size, word wrap, minimap, and theme. Persisted settings via a new Prisma `editorPreferences` JSON schema on the User model. Implemented an `EditorPreferencesContext` providing immediate real-time rendering on the Monaco editor with debounced auto-saving.
