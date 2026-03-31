@@ -1,22 +1,32 @@
-# Current Feature
+# Current Feature: Favorites Page
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add bullet points for what success looks like -->
+- Star icon button in TopBar links to `/favorites`
+- `/favorites` route exists and is protected (auth-required)
+- Fetches all favorited items and collections for the current user
+- Compact, high-density list view (VS Code/terminal style — no cards)
+- Each row shows: type icon, title, type badge, date added
+- Items section and Collections section with counts shown
+- Clicking an item opens ItemDrawer; clicking a collection navigates to `/collections/[id]`
+- Empty state when no favorites exist
+- Sorted by most recently favorited (`updatedAt` desc)
 
 ## Notes
 
-<!-- Add any additional context, constraints, or details from the spec -->
+- UI style: monospace/semi-monospace font, minimal padding, subtle hover states, clean lines — no cards or heavy borders
+- Reuse `ItemDrawerProvider` for item click behavior
+- No pagination needed (favorites list is expected to stay small)
 
 ## History
 
 <!-- Keep this updated. Earliest to latest -->
 
-- **2026-03-30** — Pagination completed. Added pagination to `/items/[type]` and `/collections/[id]` pages. Created a reusable `PaginationControls` component with numbered page links, ellipsis logic, and prev/next buttons. Implemented Prisma skip/take queries for paginating types and collections. Configured centralized limits in `src/lib/limits.ts`. Fixed a UI sorting bug with drawer/sheet component where its z-index (z-[70]) competed with the search bar overlay.
+- **2026-04-01** — Favorites UI refinement completed. Redesigned `/dashboard/favorites` with a richer hero header, clearer item/collection section hierarchy, stronger metadata presentation, improved empty state, and more polished hover/spacing treatment while preserving the compact favorites workflow.
 
 - **2026-03-15** — Initial Next.js 16 project setup with Create Next App. Cleaned up default boilerplate, added CLAUDE.md and context docs, pushed to GitHub.
 - **2026-03-15** — Dashboard UI Phase 1 completed. Initialized shadcn/ui, set up dark mode, created /dashboard route with top bar (search, settings, new collection/item buttons), sidebar and main placeholders.
@@ -30,7 +40,7 @@ Not Started
 - **2026-03-20** — UI/UX Refinement completed. Reduced stat card height (smaller padding, font, icon). Improved typography contrast: secondary text lightened to zinc-400, timestamps to zinc-500, snippet previews to zinc-400 on bg-black/40, tags brightened to zinc-300 with bg-white/8. Increased card padding (+4px). Increased section margins (space-y-10, mb-6). Added hover shadow glow (shadow-white/3) on all cards. Limited dashboard collections to 4 to fit grid.
 - **2026-03-22** — Prisma 7 compliance audit completed. Verified all v7 breaking changes already addressed: prisma.config.ts with defineConfig(), @prisma/adapter-pg driver adapter, correct PrismaClient import from generated output, no url in datasource block, no deprecated preview flags, Node.js 22.13.1, TypeScript 5.9.3. No code changes needed — project was set up with Prisma 7 from the start.
 - **2026-03-22** — Dashboard UI Improvements completed. Added Suspense boundaries with skeleton fallbacks for all dashboard sections. Restyled PRO badge with amber theme. Added Clock icon to Recent Items heading. Increased collection overlay and stats icon opacities. Widened search bar. Added mobile brand logomark and short "New" label. Tightened card spacing. Improved view toggle active state. Added sky-400 tint to sidebar Recent icon. Added keyboard accessibility to collection options button.
-- **2026-03-22** — Auth Setup (Phase 1) completed. Installed NextAuth v5 (next-auth@beta) with @auth/prisma-adapter. Split auth config pattern: edge-compatible auth.config.ts (GitHub provider) + full auth.ts (Prisma adapter, JWT strategy, user.id in session). Route protection via src/proxy.ts redirecting unauthenticated users from /dashboard/\* to NextAuth default sign-in page. Created API route handler and next-auth type declarations. Fixed malformed AUTH_SECRET in .env.
+- **2026-03-22** — Auth Setup (Phase 1) completed. Installed NextAuth v5 (next-auth@beta) with @auth/prisma-adapter. Split auth config pattern: edge-compatible auth.config.ts (GitHub provider) + full auth.ts (Prisma adapter, JWT strategy, user.id in session). Route protection via src/proxy.ts redirecting unauthenticated users from protected routes to the custom `/sign-in` page. Created API route handler and next-auth type declarations. Fixed malformed AUTH_SECRET in .env.
 - **2026-03-22** — Auth Credentials (Phase 2) completed. Added Credentials provider to split auth config pattern. Added password field to User model via migration. Created registration API route (POST /api/auth/register) with validation (required fields, password match, min 8 chars, duplicate check, bcrypt hashing). Credentials sign-in with bcrypt verification in auth.ts. GitHub OAuth still works alongside credentials.
 - **2026-03-22** — Auth UI (Phase 3) completed. Custom sign-in page (`/sign-in`) with email/password form, GitHub OAuth button, registration success banner, and OAuth error handling. Custom register page (`/register`) with Zod-validated form. Sidebar avatar dropdown with profile link and sign-out. Replaced `getDemoUserId()` with real NextAuth session (`getAuthUserId`). Added rate limiting, Zod validation to register API. Extended middleware matcher for static assets. Added empty states for collections/items. Extracted shared AuthHeader component with DevStash brand wordmark. Code quality fixes: getInitials crash guard, pinned items query limit, computed saturation check for collection colors, Link-based profile navigation. Deleted dead code (mock-data.ts, demo-user.ts).
 - **2026-03-22** — Email Verification completed. Installed Resend SDK. Created `src/lib/email.ts` (branded HTML email template) and `src/lib/tokens.ts` (24-hour token generation/validation using existing VerificationToken model). Registration sends verification email via Resend, shows "check your email" screen. `/verify-email` route validates token and sets `user.emailVerified`. Unverified credential users blocked at sign-in with custom `EmailNotVerifiedError`. GitHub OAuth users skip verification. Verify-email page with success/failure states using soft icon containers.
@@ -43,7 +53,7 @@ Not Started
 - **2026-03-25** — Items List View completed. Created dynamic route `/dashboard/items/[type]` displaying type-filtered items with grid/list view toggle. Added `getItemsByType` Prisma query in `src/lib/db/items.ts`. Created `ItemsListView` client component with `ViewToggle`. Page header shows type icon, color, and item count. Updated sidebar links from `/items/TYPE` to `/dashboard/items/TYPE`. Reuses existing `ItemCard` and `ItemCardList` components.
 - **2026-03-26** — Fix Slow Item Type Switching completed. Removed `force-dynamic` from dashboard layout so sidebar queries don't re-run on every navigation. Added `loading.tsx` skeleton for `/dashboard/items/[type]` route for instant visual feedback.
 - **2026-03-26** — Item Drawer completed. Right-side slide-in Sheet drawer opens on item card click. Fetches full item detail via `GET /api/items/[id]` with auth check. Action bar with favorite, pin, copy, edit, delete buttons and close. Shows content preview, tags, collections, metadata. `ItemDrawerProvider` context manages drawer state and fetch logic. Works on both dashboard and items list pages. Added `getItemById` query in `src/lib/db/items.ts`.
-- **2026-03-26** — Performance Fix completed. Replaced `@prisma/adapter-neon` (HTTP/WebSocket) with `@prisma/adapter-pg` (native TCP connection pool) for 2-3x faster DB queries. Narrowed middleware matcher to `/dashboard/:path*` only. Enabled React Compiler (`reactCompiler: true`). Removed `channel_binding=require` from DATABASE_URL. Excluded `prisma/` from tsconfig to fix pre-existing build type error.
+- **2026-03-26** — Performance Fix completed. Replaced `@prisma/adapter-neon` (HTTP/WebSocket) with `@prisma/adapter-pg` (native TCP connection pool) for 2-3x faster DB queries. Narrowed middleware matcher to protected app routes. Enabled React Compiler (`reactCompiler: true`). Removed `channel_binding=require` from DATABASE_URL. Excluded `prisma/` from tsconfig to fix pre-existing build type error.
 - **2026-03-27** — Item Drawer Edit Mode completed. Pencil icon toggles inline edit mode with Save/Cancel action bar. Editable fields: title, description, tags (comma-separated), plus type-specific (content, language, url). Server action `updateItem` in `src/actions/items.ts` with Zod validation. Query function `updateItem` in `src/lib/db/items.ts` with tag disconnect/reconnect. Installed sonner for toast notifications. `router.refresh()` syncs card lists after save.
 - **2026-03-27** — Item Delete with Confirmation completed. Wired Trash2 button in item drawer to shadcn AlertDialog confirmation dialog. Server action `deleteItem` in `src/actions/items.ts` with auth check and `revalidatePath`. Prisma `deleteItem` query in `src/lib/db/items.ts` with ownership verification. Sonner toast for success/error feedback. Drawer closes and card lists refresh after deletion.
 - **2026-03-27** — Item Create completed. New Item modal dialog triggered from top bar "New Item" button. Type selector as colored pill buttons (snippet, prompt, command, note, link). Dynamic fields per type: title/description/tags for all; content + language for snippet/command; content for prompt/note; URL for link. Server action `createItem` with Zod validation. Prisma `createItem` query in `lib/db/items.ts`. Toast on success, modal closes, page refreshes. Installed shadcn Select and Textarea components. Polished dialog design with dark inputs, separated footer, type-colored Create button.
@@ -59,5 +69,6 @@ Not Started
 - **2026-03-28** — Collections Pages and Navigation Links completed. Added `/collections` and `/collections/[id]` pages, linked sidebar "View all collections" and collection cards to their target routes, reused existing collection/item cards, and added collection-scoped item fetching with drawer-enabled grid/list views.
 - **2026-03-29** — Collection Actions and Detail Management completed. Added collection detail action controls (edit, delete, and favorite placeholder), edit/delete dialogs, card-level 3-dots action menus, and navigation-safe interaction behavior so action clicks do not trigger card navigation.
 - **2026-03-29** — Global Search / Command Palette completed. Added shadcn cmdk component for a global command palette with fuzzy client-side search across collections and items. Refactored top bar to act as the primary, fixed-position search input (Cmd+K) modeled accurately after VS Code's quick open interface.
+- **2026-03-30** — Pagination completed. Added pagination to `/dashboard/items/[type]` and `/collections/[id]` pages. Created a reusable `PaginationControls` component with numbered page links, ellipsis logic, and prev/next buttons. Implemented Prisma skip/take queries for paginating types and collections. Configured centralized limits in `src/lib/limits.ts`. Fixed a UI sorting bug with drawer/sheet component where its z-index (z-[70]) competed with the search bar overlay.
 - **2026-03-31** — Settings Page and Account Actions completed. Added protected `/settings` route and page, moved account actions (change password, forgot password link, delete account) out of profile into `src/components/settings/AccountActions.tsx`, updated sidebar user dropdown with settings navigation, and extended route protection for settings pages.
 - **2026-03-31** — Editor Preferences Settings completed. Added editor preferences section to the settings page, structured creatively within shadcn UI standard `Card` designs. Controls included for font size, tab size, word wrap, minimap, and theme. Persisted settings via a new Prisma `editorPreferences` JSON schema on the User model. Implemented an `EditorPreferencesContext` providing immediate real-time rendering on the Monaco editor with debounced auto-saving.

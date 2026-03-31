@@ -256,6 +256,36 @@ export async function getPaginatedItemsByCollectionId(
 /**
  * Fetch pinned items for a user, ordered by most recently updated.
  */
+export interface FavoriteItem {
+  id: string;
+  title: string;
+  type: ItemTypeInfo;
+  updatedAt: string;
+}
+
+/**
+ * Fetch all favorited items for a user, sorted by most recently updated.
+ */
+export async function getFavoriteItems(userId: string): Promise<FavoriteItem[]> {
+  const items = await prisma.item.findMany({
+    where: { userId, isFavorite: true },
+    orderBy: { updatedAt: "desc" },
+    select: {
+      id: true,
+      title: true,
+      updatedAt: true,
+      itemType: { select: { id: true, name: true, icon: true, color: true } },
+    },
+  });
+
+  return items.map((item) => ({
+    id: item.id,
+    title: item.title,
+    type: item.itemType,
+    updatedAt: item.updatedAt.toISOString(),
+  }));
+}
+
 export async function getPinnedItems(userId: string, limit = 8): Promise<DashboardItem[]> {
   const items = await prisma.item.findMany({
     where: { userId, isPinned: true },

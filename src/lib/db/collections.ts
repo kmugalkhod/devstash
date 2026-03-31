@@ -319,6 +319,38 @@ export async function deleteCollection(
   return result.count > 0;
 }
 
+export interface FavoriteCollection {
+  id: string;
+  name: string;
+  itemCount: number;
+  updatedAt: string;
+}
+
+/**
+ * Fetch all favorited collections for a user, sorted by most recently updated.
+ */
+export async function getFavoriteCollections(
+  userId: string
+): Promise<FavoriteCollection[]> {
+  const collections = await prisma.collection.findMany({
+    where: { userId, isFavorite: true },
+    orderBy: { updatedAt: "desc" },
+    select: {
+      id: true,
+      name: true,
+      updatedAt: true,
+      _count: { select: { items: true } },
+    },
+  });
+
+  return collections.map((col) => ({
+    id: col.id,
+    name: col.name,
+    itemCount: col._count.items,
+    updatedAt: col.updatedAt.toISOString(),
+  }));
+}
+
 /**
  * Fetch dashboard stats for a user.
  */

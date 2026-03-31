@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Search, PanelLeft, X } from "lucide-react";
+import { Search, PanelLeft, X, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "./SidebarContext";
 import { NewItemDialog } from "@/components/items/NewItemDialog";
@@ -206,6 +206,11 @@ export function TopBar({
         </div>
 
         <div className="ml-auto flex items-center gap-2">
+          <Link href="/dashboard/favorites">
+            <Button variant="ghost" size="icon" aria-label="Favorites">
+              <Star className="size-4" />
+            </Button>
+          </Link>
           <NewCollectionDialog />
           <NewItemDialog
             itemTypes={itemTypes}
