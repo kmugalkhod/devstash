@@ -1,32 +1,20 @@
-# Current Feature: Favorites Page
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Star icon button in TopBar links to `/favorites`
-- `/favorites` route exists and is protected (auth-required)
-- Fetches all favorited items and collections for the current user
-- Compact, high-density list view (VS Code/terminal style — no cards)
-- Each row shows: type icon, title, type badge, date added
-- Items section and Collections section with counts shown
-- Clicking an item opens ItemDrawer; clicking a collection navigates to `/collections/[id]`
-- Empty state when no favorites exist
-- Sorted by most recently favorited (`updatedAt` desc)
+<!-- Add bullet points for what success looks like -->
 
 ## Notes
 
-- UI style: monospace/semi-monospace font, minimal padding, subtle hover states, clean lines — no cards or heavy borders
-- Reuse `ItemDrawerProvider` for item click behavior
-- No pagination needed (favorites list is expected to stay small)
+<!-- Add any additional context, constraints, or details from the spec -->
 
 ## History
 
 <!-- Keep this updated. Earliest to latest -->
-
-- **2026-04-01** — Favorites UI refinement completed. Redesigned `/dashboard/favorites` with a richer hero header, clearer item/collection section hierarchy, stronger metadata presentation, improved empty state, and more polished hover/spacing treatment while preserving the compact favorites workflow.
 
 - **2026-03-15** — Initial Next.js 16 project setup with Create Next App. Cleaned up default boilerplate, added CLAUDE.md and context docs, pushed to GitHub.
 - **2026-03-15** — Dashboard UI Phase 1 completed. Initialized shadcn/ui, set up dark mode, created /dashboard route with top bar (search, settings, new collection/item buttons), sidebar and main placeholders.
@@ -72,3 +60,4 @@ In Progress
 - **2026-03-30** — Pagination completed. Added pagination to `/dashboard/items/[type]` and `/collections/[id]` pages. Created a reusable `PaginationControls` component with numbered page links, ellipsis logic, and prev/next buttons. Implemented Prisma skip/take queries for paginating types and collections. Configured centralized limits in `src/lib/limits.ts`. Fixed a UI sorting bug with drawer/sheet component where its z-index (z-[70]) competed with the search bar overlay.
 - **2026-03-31** — Settings Page and Account Actions completed. Added protected `/settings` route and page, moved account actions (change password, forgot password link, delete account) out of profile into `src/components/settings/AccountActions.tsx`, updated sidebar user dropdown with settings navigation, and extended route protection for settings pages.
 - **2026-03-31** — Editor Preferences Settings completed. Added editor preferences section to the settings page, structured creatively within shadcn UI standard `Card` designs. Controls included for font size, tab size, word wrap, minimap, and theme. Persisted settings via a new Prisma `editorPreferences` JSON schema on the User model. Implemented an `EditorPreferencesContext` providing immediate real-time rendering on the Monaco editor with debounced auto-saving.
+- **2026-04-01** — Favorites Page completed. Added `/dashboard/favorites` route (protected via existing middleware). Star icon in TopBar links to the page. `getFavoriteItems` and `getFavoriteCollections` Prisma queries added to `lib/db/items.ts` and `lib/db/collections.ts`. `FavoritesView` client component renders two compact sections (Items and Collections) with type icons, badges, relative timestamps, and row-level interactions: item click opens ItemDrawer, collection click navigates to `/collections/[id]`. Empty state shown when nothing is starred. Sorted by `updatedAt` desc.
