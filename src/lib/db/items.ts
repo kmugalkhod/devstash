@@ -137,7 +137,7 @@ export async function getItemsByType(
       userId,
       itemType: { name: typeName },
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
     include: {
       itemType: { select: { id: true, name: true, icon: true, color: true } },
       tags: { include: { tag: { select: { name: true } } } },
@@ -168,7 +168,7 @@ export async function getPaginatedItemsByType(
   const [items, totalItems] = await Promise.all([
     prisma.item.findMany({
       where,
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
       skip,
       take: safePageSize,
       include: {
@@ -201,7 +201,7 @@ export async function getItemsByCollectionId(
         },
       },
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
     include: {
       itemType: { select: { id: true, name: true, icon: true, color: true } },
       tags: { include: { tag: { select: { name: true } } } },
@@ -236,7 +236,7 @@ export async function getPaginatedItemsByCollectionId(
   const [items, totalItems] = await Promise.all([
     prisma.item.findMany({
       where,
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
       skip,
       take: safePageSize,
       include: {

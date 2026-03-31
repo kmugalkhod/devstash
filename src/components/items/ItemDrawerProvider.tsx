@@ -91,7 +91,8 @@ export function ItemDrawerProvider({
 
   const handleItemUpdated = useCallback((updated: ItemDetail) => {
     setItem(updated);
-  }, []);
+    router.refresh();
+  }, [router]);
 
   const handleItemDeleted = useCallback(() => {
     setOpen(false);
