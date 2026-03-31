@@ -58,6 +58,7 @@ async function CollectionsSection({ userId }: { userId: string }) {
               name={collection.name}
               itemCount={collection.itemCount}
               description={collection.description}
+              isFavorite={collection.isFavorite}
               types={collection.types}
               href={`/collections/${collection.id}`}
             />

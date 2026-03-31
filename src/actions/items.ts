@@ -6,6 +6,8 @@ import {
   createItem as createItemDb,
   updateItem as updateItemDb,
   deleteItem as deleteItemDb,
+  toggleItemFavorite as toggleItemFavoriteDb,
+  toggleItemPin as toggleItemPinDb,
 } from "@/lib/db/items";
 import { isR2KeyOwnedByUser } from "@/lib/r2";
 import { revalidatePath } from "next/cache";
@@ -134,6 +136,36 @@ export async function updateItem(
 
     return { success: false as const, error: "Failed to update item" };
   }
+}
+
+export async function toggleFavorite(itemId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false as const, error: "Unauthorized" };
+  }
+
+  const result = await toggleItemFavoriteDb(itemId, session.user.id);
+  if (!result) {
+    return { success: false as const, error: "Item not found" };
+  }
+
+  revalidatePath("/dashboard/favorites");
+  return { success: true as const, data: result };
+}
+
+export async function togglePin(itemId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false as const, error: "Unauthorized" };
+  }
+
+  const result = await toggleItemPinDb(itemId, session.user.id);
+  if (!result) {
+    return { success: false as const, error: "Item not found" };
+  }
+
+  revalidatePath("/dashboard");
+  return { success: true as const, data: result };
 }
 
 export async function deleteItem(itemId: string) {

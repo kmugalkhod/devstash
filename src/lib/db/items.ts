@@ -609,6 +609,52 @@ export async function deleteItem(
   return true;
 }
 
+/**
+ * Toggle isFavorite on an item. Returns new value or null if not found/unauthorized.
+ */
+export async function toggleItemFavorite(
+  itemId: string,
+  userId: string
+): Promise<{ isFavorite: boolean } | null> {
+  const existing = await prisma.item.findUnique({
+    where: { id: itemId },
+    select: { userId: true, isFavorite: true },
+  });
+
+  if (!existing || existing.userId !== userId) return null;
+
+  const updated = await prisma.item.update({
+    where: { id: itemId },
+    data: { isFavorite: !existing.isFavorite },
+    select: { isFavorite: true },
+  });
+
+  return { isFavorite: updated.isFavorite };
+}
+
+/**
+ * Toggle isPinned on an item. Returns new value or null if not found/unauthorized.
+ */
+export async function toggleItemPin(
+  itemId: string,
+  userId: string
+): Promise<{ isPinned: boolean } | null> {
+  const existing = await prisma.item.findUnique({
+    where: { id: itemId },
+    select: { userId: true, isPinned: true },
+  });
+
+  if (!existing || existing.userId !== userId) return null;
+
+  const updated = await prisma.item.update({
+    where: { id: itemId },
+    data: { isPinned: !existing.isPinned },
+    select: { isPinned: true },
+  });
+
+  return { isPinned: updated.isPinned };
+}
+
 function mapItem(item: {
   id: string;
   title: string;

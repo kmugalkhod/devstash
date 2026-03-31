@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CollectionEditDialog } from "@/components/collections/CollectionEditDialog";
 import { DeleteCollectionDialog } from "@/components/collections/DeleteCollectionDialog";
+import { toggleCollectionFavorite } from "@/actions/collections";
 
 interface CollectionDetailActionsProps {
   collectionId: string;
@@ -19,13 +20,24 @@ export function CollectionDetailActions({
   collectionId,
   collectionName,
   collectionDescription,
-  isFavorite,
+  isFavorite: initialFavorite,
 }: CollectionDetailActionsProps) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(initialFavorite);
+  const [toggling, setToggling] = useState(false);
 
-  function handleFavoriteClick() {
-    toast.info("Favorite collections are coming soon");
+  async function handleFavoriteClick() {
+    setToggling(true);
+    setIsFavorite((prev) => !prev);
+    const result = await toggleCollectionFavorite(collectionId);
+    setToggling(false);
+    if (result.success) {
+      toast.success(result.data.isFavorite ? "Added to favorites" : "Removed from favorites");
+    } else {
+      setIsFavorite((prev) => !prev);
+      toast.error(result.error ?? "Failed to update favorite");
+    }
   }
 
   return (
@@ -36,6 +48,7 @@ export function CollectionDetailActions({
         size="sm"
         className="gap-2"
         onClick={handleFavoriteClick}
+        disabled={toggling}
       >
         <Star
           className={cn(
@@ -43,7 +56,7 @@ export function CollectionDetailActions({
             isFavorite && "fill-yellow-500 text-yellow-500"
           )}
         />
-        <span>Favorite</span>
+        <span>{isFavorite ? "Unfavorite" : "Favorite"}</span>
       </Button>
 
       <Button

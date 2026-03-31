@@ -1,16 +1,26 @@
-# Current Feature
+# Current Feature: Favorite Toggle Button
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add bullet points for what success looks like -->
+- Favorite button in the Item Drawer action bar toggles `isFavorite` on items and reflects the current state visually (filled vs outline star)
+- Favorite button on Collection cards (dashboard grid and `/collections` list) toggles `isFavorite` on collections
+- Favorite button on Collection detail page (`/collections/[id]`) header toggles `isFavorite` for that collection
+- All favorite toggles are optimistically updated in the UI with toast feedback on error
+- Server actions handle the toggle with auth checks and `revalidatePath`
+- Favorites page (`/dashboard/favorites`) reflects changes immediately after toggling
 
 ## Notes
 
-<!-- Add any additional context, constraints, or details from the spec -->
+- Item drawer already has a Star icon button in the action bar — it needs to be wired up (currently a no-op or placeholder)
+- Collection cards have a 3-dots menu — the favorite action may already exist as a placeholder there; wire it up or add a dedicated star button
+- Collection detail page has action controls — ensure favorite is wired up
+- Use existing `isFavorite` boolean field on both `Item` and `Collection` models (no schema changes needed)
+- Follow existing server action pattern: `src/actions/items.ts` and create/extend `src/actions/collections.ts`
+- Reuse `revalidatePath` to sync favorites page and dashboard sidebar
 
 ## History
 

@@ -12,11 +12,13 @@ import {
 import { cn } from "@/lib/utils";
 import { CollectionEditDialog } from "@/components/collections/CollectionEditDialog";
 import { DeleteCollectionDialog } from "@/components/collections/DeleteCollectionDialog";
+import { toggleCollectionFavorite } from "@/actions/collections";
 
 interface CollectionActionsMenuProps {
   collectionId: string;
   collectionName: string;
   collectionDescription: string | null;
+  isFavorite?: boolean;
   triggerClassName?: string;
   onDeleted?: () => void;
 }
@@ -25,14 +27,23 @@ export function CollectionActionsMenu({
   collectionId,
   collectionName,
   collectionDescription,
+  isFavorite: initialFavorite = false,
   triggerClassName,
   onDeleted,
 }: CollectionActionsMenuProps) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(initialFavorite);
 
-  function handleFavoriteClick() {
-    toast.info("Favorite collections are coming soon");
+  async function handleFavoriteClick() {
+    setIsFavorite((prev) => !prev);
+    const result = await toggleCollectionFavorite(collectionId);
+    if (result.success) {
+      toast.success(result.data.isFavorite ? "Added to favorites" : "Removed from favorites");
+    } else {
+      setIsFavorite((prev) => !prev);
+      toast.error(result.error ?? "Failed to update favorite");
+    }
   }
 
   return (
@@ -84,8 +95,8 @@ export function CollectionActionsMenu({
               handleFavoriteClick();
             }}
           >
-            <Star className="size-4" />
-            Favorite
+            <Star className={cn("size-4", isFavorite && "fill-yellow-500 text-yellow-500")} />
+            {isFavorite ? "Unfavorite" : "Favorite"}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
