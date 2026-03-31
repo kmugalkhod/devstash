@@ -1,26 +1,16 @@
-# Current Feature: Favorite Toggle Button
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Favorite button in the Item Drawer action bar toggles `isFavorite` on items and reflects the current state visually (filled vs outline star)
-- Favorite button on Collection cards (dashboard grid and `/collections` list) toggles `isFavorite` on collections
-- Favorite button on Collection detail page (`/collections/[id]`) header toggles `isFavorite` for that collection
-- All favorite toggles are optimistically updated in the UI with toast feedback on error
-- Server actions handle the toggle with auth checks and `revalidatePath`
-- Favorites page (`/dashboard/favorites`) reflects changes immediately after toggling
+<!-- Add bullet points for what success looks like -->
 
 ## Notes
 
-- Item drawer already has a Star icon button in the action bar — it needs to be wired up (currently a no-op or placeholder)
-- Collection cards have a 3-dots menu — the favorite action may already exist as a placeholder there; wire it up or add a dedicated star button
-- Collection detail page has action controls — ensure favorite is wired up
-- Use existing `isFavorite` boolean field on both `Item` and `Collection` models (no schema changes needed)
-- Follow existing server action pattern: `src/actions/items.ts` and create/extend `src/actions/collections.ts`
-- Reuse `revalidatePath` to sync favorites page and dashboard sidebar
+<!-- Add any additional context, constraints, or details from the spec -->
 
 ## History
 
@@ -71,3 +61,4 @@ In Progress
 - **2026-03-31** — Settings Page and Account Actions completed. Added protected `/settings` route and page, moved account actions (change password, forgot password link, delete account) out of profile into `src/components/settings/AccountActions.tsx`, updated sidebar user dropdown with settings navigation, and extended route protection for settings pages.
 - **2026-03-31** — Editor Preferences Settings completed. Added editor preferences section to the settings page, structured creatively within shadcn UI standard `Card` designs. Controls included for font size, tab size, word wrap, minimap, and theme. Persisted settings via a new Prisma `editorPreferences` JSON schema on the User model. Implemented an `EditorPreferencesContext` providing immediate real-time rendering on the Monaco editor with debounced auto-saving.
 - **2026-04-01** — Favorites Page completed. Added `/dashboard/favorites` route (protected via existing middleware). Star icon in TopBar links to the page. `getFavoriteItems` and `getFavoriteCollections` Prisma queries added to `lib/db/items.ts` and `lib/db/collections.ts`. `FavoritesView` client component renders two compact sections (Items and Collections) with type icons, badges, relative timestamps, and row-level interactions: item click opens ItemDrawer, collection click navigates to `/collections/[id]`. Empty state shown when nothing is starred. Sorted by `updatedAt` desc.
+- **2026-04-01** — Favorite Toggle Button completed. Wired up Star and Pin buttons in ItemDrawer action bar with `toggleFavorite` and `togglePin` server actions (optimistic update via `onItemUpdated`). Added `toggleCollectionFavorite` server action in new `src/actions/collections.ts`. Collection detail page Favorite button and collection card 3-dots Favorite menu item now functional with optimistic local state and toast feedback. `isFavorite` prop added to `CollectionCard` and passed through from all pages. No schema changes needed.
