@@ -109,6 +109,7 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
     setTogglingPin(false);
     if (result.success) {
       onItemUpdated({ ...item, isPinned: result.data.isPinned });
+      toast.success(result.data.isPinned ? "Item pinned" : "Item unpinned");
     } else {
       toast.error(result.error ?? "Failed to update pin");
     }

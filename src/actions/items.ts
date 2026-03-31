@@ -164,7 +164,7 @@ export async function togglePin(itemId: string) {
     return { success: false as const, error: "Item not found" };
   }
 
-  revalidatePath("/dashboard");
+  revalidatePath("/", "layout");
   return { success: true as const, data: result };
 }
 
