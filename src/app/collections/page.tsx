@@ -77,6 +77,7 @@ export default async function CollectionsPage({
                 name={collection.name}
                 itemCount={collection.itemCount}
                 description={collection.description}
+                isFavorite={collection.isFavorite}
                 types={collection.types}
                 href={`/collections/${collection.id}`}
               />

@@ -319,6 +319,29 @@ export async function deleteCollection(
   return result.count > 0;
 }
 
+/**
+ * Toggle isFavorite on a collection. Returns new value or null if not found/unauthorized.
+ */
+export async function toggleCollectionFavorite(
+  userId: string,
+  collectionId: string
+): Promise<{ isFavorite: boolean } | null> {
+  const existing = await prisma.collection.findFirst({
+    where: { id: collectionId, userId },
+    select: { isFavorite: true },
+  });
+
+  if (!existing) return null;
+
+  const updated = await prisma.collection.update({
+    where: { id: collectionId },
+    data: { isFavorite: !existing.isFavorite },
+    select: { isFavorite: true },
+  });
+
+  return { isFavorite: updated.isFavorite };
+}
+
 export interface FavoriteCollection {
   id: string;
   name: string;

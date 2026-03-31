@@ -37,7 +37,7 @@ import { iconMap } from "@/lib/icons";
 import type { ItemDetail } from "@/lib/db/items";
 import { formatBytes } from "@/lib/upload-constraints";
 import { ItemDrawerEdit } from "./ItemDrawerEdit";
-import { deleteItem } from "@/actions/items";
+import { deleteItem, toggleFavorite, togglePin } from "@/actions/items";
 import { toast } from "sonner";
 import { CodeEditor } from "./CodeEditor";
 import { MarkdownEditor } from "./MarkdownEditor";
@@ -55,6 +55,8 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
   const [copied, setCopied] = useState(false);
   const [editing, setEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [togglingFav, setTogglingFav] = useState(false);
+  const [togglingPin, setTogglingPin] = useState(false);
 
   async function handleCopy() {
     if (!item?.content) return;
@@ -88,6 +90,30 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
     }
   }
 
+  async function handleToggleFavorite() {
+    if (!item) return;
+    setTogglingFav(true);
+    const result = await toggleFavorite(item.id);
+    setTogglingFav(false);
+    if (result.success) {
+      onItemUpdated({ ...item, isFavorite: result.data.isFavorite });
+    } else {
+      toast.error(result.error ?? "Failed to update favorite");
+    }
+  }
+
+  async function handleTogglePin() {
+    if (!item) return;
+    setTogglingPin(true);
+    const result = await togglePin(item.id);
+    setTogglingPin(false);
+    if (result.success) {
+      onItemUpdated({ ...item, isPinned: result.data.isPinned });
+    } else {
+      toast.error(result.error ?? "Failed to update pin");
+    }
+  }
+
   function handleDownload() {
     if (!item?.fileUrl) return;
     const url = `/api/items/download/${item.id}?download=1`;
@@ -118,12 +144,16 @@ export function ItemDrawer({ item, loading, open, onOpenChange, onItemUpdated, o
                 label="Favorite"
                 active={item.isFavorite}
                 activeClassName="fill-yellow-500 text-yellow-500"
+                onClick={handleToggleFavorite}
+                disabled={togglingFav}
               />
               <ActionButton
                 icon={Pin}
                 label="Pin"
                 active={item.isPinned}
                 activeClassName="fill-foreground text-foreground"
+                onClick={handleTogglePin}
+                disabled={togglingPin}
               />
               <ActionButton
                 icon={Copy}

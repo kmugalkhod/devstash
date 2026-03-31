@@ -27,6 +27,7 @@ interface CollectionCardProps {
   name: string;
   itemCount: number;
   description: string | null;
+  isFavorite: boolean;
   types: TypeInfo[];
   href?: string;
 }
@@ -36,6 +37,7 @@ export function CollectionCard({
   name,
   itemCount,
   description,
+  isFavorite,
   types,
   href,
 }: CollectionCardProps) {
@@ -101,6 +103,7 @@ export function CollectionCard({
             collectionId={collectionId}
             collectionName={name}
             collectionDescription={description}
+            isFavorite={isFavorite}
           />
         </div>
         {description && (
