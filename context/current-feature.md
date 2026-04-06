@@ -1,21 +1,32 @@
-# Current Feature
-
-<!-- Feature Name Here -->
+# Current Feature: Homepage
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!--
-- Goal 1
-- Goal 2
--->
+- Navbar with logo, nav links (Features, Pricing), Sign In and Get Started actions
+- Hero section with gradient headline, proof strip, CTAs, and dashboard preview image
+- Logo cloud section with mock company names
+- Features bento grid with 4 cards (Code Snippets, AI Prompts, Commands, AI Insights)
+- Pricing section with monthly/yearly toggle, Free and Pro cards with correct feature lists
+- CTA banner with "Get Started for Free" link
+- Footer with logo, link columns, and dynamic copyright year
+- All buttons and links point to correct routes (`/sign-in`, `/register`, `#features`, `#pricing`)
+- All styling in Tailwind — no custom CSS files
 
 ## Notes
 
-<!-- Add technical notes, constraints, or links here -->
+- Prototype reference: `prototypes/homepage/` (index.html + styles.css)
+- Dashboard preview image: `context/screenshots/x-post-dashboard.png` via `next/image`
+- Components live in `src/components/homepage/`; page assembled in `src/app/page.tsx`
+- All sections are server components except `PricingSection` (client — toggle state)
+- Background glow orbs via absolute divs with Tailwind blur/opacity
+- Gradient text via `bg-clip-text text-transparent bg-gradient-to-r`
+- Use Lucide icons: Layers, Code, Sparkles, Terminal, StickyNote, File, Image, Link, Check
+- Use shadcn Button and Badge where applicable
+- Pro pricing: $8/mo monthly → $6/mo yearly (Save 25%)
 
 ## History
 

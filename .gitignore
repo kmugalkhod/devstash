@@ -27,6 +27,8 @@ screenshots/*
 tests/*
 tests
 screenshots
+!public/screenshots
+!public/screenshots/**
 # debug
 npm-debug.log*
 yarn-debug.log*
