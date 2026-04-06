@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DevStash
 
-## Getting Started
+DevStash is a developer knowledge hub for storing snippets, prompts, commands, notes, links, files, and images in one searchable workspace.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 App Router
+- React 19
+- TypeScript 5
+- Tailwind CSS 4
+- Prisma 7 with PostgreSQL
+- NextAuth v5
+
+## Core Features
+
+- Email/password and GitHub authentication
+- Email verification and password reset flows
+- Dashboard with real database-backed collections and items
+- Item creation, editing, deletion, pinning, and favoriting
+- Collection pages, editing, and deletion
+- Global command palette search
+- Markdown editing and Monaco-based code editing
+- Cloudflare R2 file and image upload support
+- Editor preferences persisted per user
+
+## Commands
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+npm start
+npm run lint
+npm run test
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Use `.env` for local development. Keep production variable names aligned with `.env.production` and `.env._production`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Key integrations used by the app:
 
-## Learn More
+- PostgreSQL via `DATABASE_URL`
+- NextAuth secrets and GitHub OAuth credentials
+- Resend for email delivery
+- Upstash Redis for rate limiting
+- Cloudflare R2 for file storage
 
-To learn more about Next.js, take a look at the following resources:
+## Project Context
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Project-specific planning and history live in the `context/` directory:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `context/project-overview.md`
+- `context/coding-standards.md`
+- `context/ai-interaction.md`
+- `context/current-feature.md`

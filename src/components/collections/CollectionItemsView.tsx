@@ -128,6 +128,7 @@ export function CollectionItemsView({ items }: CollectionItemsViewProps) {
                       typeIcon={item.type.icon}
                       typeColor={item.type.color}
                       isFavorite={item.isFavorite}
+                      isPinned={item.isPinned}
                       tags={item.tags}
                       createdAt={item.createdAt}
                       onClick={() => openDrawer(item.id)}
@@ -145,6 +146,7 @@ export function CollectionItemsView({ items }: CollectionItemsViewProps) {
                       typeIcon={item.type.icon}
                       typeColor={item.type.color}
                       isFavorite={item.isFavorite}
+                      isPinned={item.isPinned}
                       tags={item.tags}
                       createdAt={item.createdAt}
                       onClick={() => openDrawer(item.id)}

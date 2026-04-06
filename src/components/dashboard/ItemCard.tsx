@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Copy, Star } from "lucide-react";
+import { Check, Copy, Star, Pin } from "lucide-react";
 import { getRelativeTime } from "@/lib/utils";
 import { iconMap } from "@/lib/icons";
 
@@ -12,6 +12,7 @@ interface ItemCardProps {
   typeIcon: string;
   typeColor: string;
   isFavorite: boolean;
+  isPinned: boolean;
   tags: string[];
   createdAt: string;
   onClick?: () => void;
@@ -24,6 +25,7 @@ export function ItemCard({
   typeIcon,
   typeColor,
   isFavorite,
+  isPinned,
   tags,
   createdAt,
   onClick,
@@ -80,6 +82,9 @@ export function ItemCard({
             )}
             {isFavorite && (
               <Star className="size-3.5 fill-yellow-500 text-yellow-500" />
+            )}
+            {isPinned && (
+              <Pin className="size-3.5 fill-foreground text-foreground" />
             )}
             <span
               className="text-xs text-zinc-400"

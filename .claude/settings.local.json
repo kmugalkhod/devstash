@@ -3,7 +3,12 @@
     "allow": [
       "Bash(git push:*)",
       "mcp__context7__resolve-library-id",
-      "mcp__context7__query-docs"
+      "mcp__context7__query-docs",
+      "mcp__neon__describe_project",
+      "mcp__neon__run_sql",
+      "mcp__neon__run_sql_transaction",
+      "Bash(npx tsx -e \":*)",
+      "Bash(npx tsx:*)"
     ]
   }
 }

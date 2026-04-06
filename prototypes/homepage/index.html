@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevStash - Developer Knowledge Hub</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="dark-theme">
+    <!-- Glowing Background Orbs -->
+    <div class="bg-glow top-glow"></div>
+    <div class="bg-glow center-glow"></div>
+
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="logo">
+          <svg
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+            stroke="currentColor"
+            stroke-width="2"
+            fill="none"
+          >
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+          DevStash
+        </div>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+        </div>
+        <div class="nav-actions">
+          <a href="/sign-in" class="btn btn-ghost">Sign In</a>
+          <a href="/register" class="btn btn-primary">Get Started</a>
+        </div>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="hero-content fade-in-up">
+        <div class="badge-wrapper">
+          <div class="badge">
+            <span class="badge-dot"></span>
+            Introducing DevStash 2.0
+          </div>
+        </div>
+        <h1 class="gradient-text">
+          Stop Losing Your<br />Developer Knowledge.
+        </h1>
+        <p class="hero-subtitle">
+          One fast, searchable, AI-enhanced hub for all your dev knowledge,
+          snippets, prompts, and resources. Built for modern engineers.
+        </p>
+
+        <div class="hero-proof-strip">
+          <span>Snippets</span>
+          <span>Prompts</span>
+          <span>Commands</span>
+          <span>Notes</span>
+          <span>Files</span>
+          <span>Links</span>
+        </div>
+
+        <div class="hero-ctas">
+          <a href="/register" class="btn btn-primary lg shadow-glow">
+            Start Organizing Free
+          </a>
+          <a href="/sign-in" class="btn btn-outline lg">Sign In</a>
+        </div>
+
+        <div class="hero-microcopy">
+          No sales call. No setup friction. Sign in and start using DevStash.
+        </div>
+      </div>
+
+      <div class="hero-dashboard-preview fade-in-up delay-2">
+        <div class="dashboard-wrapper">
+          <!-- Using the requested screenshot -->
+          <img
+            src="../../context/screenshots/x-post-dashboard.png"
+            alt="DevStash Dashboard"
+            class="dashboard-img"
+            onerror="
+              this.src =
+                'https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?q=80&w=1200&auto=format&fit=crop'
+            "
+          />
+          <div class="glow-border"></div>
+        </div>
+      </div>
+    </header>
+
+    <section id="logos" class="logo-cloud fade-in-up delay-3">
+      <p class="logo-title">Trusted by developers at innovative companies</p>
+      <div class="logos">
+        <!-- Mock Logos -->
+        <span>Acme Corp</span>
+        <span>Globex</span>
+        <span>Soylent</span>
+        <span>Initech</span>
+        <span>Umbrella</span>
+      </div>
+    </section>
+
+    <section id="features" class="features-section">
+      <div class="section-header fade-in-up">
+        <h2 class="gradient-text-sub">Everything in One Place</h2>
+        <p>
+          Finally, a unified workspace that bridges the gap between your
+          snippets, prompts, commands, and notes.
+        </p>
+      </div>
+
+      <div class="bento-grid">
+        <!-- Bento Box 1 -->
+        <div class="bento-item span-2 bento-glow fade-in-up delay-1">
+          <div class="bento-spotlight"></div>
+          <div class="bento-content">
+            <div class="bento-icon snippet-icon">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+            </div>
+            <h3>Code Snippets</h3>
+            <p>
+              Save, categorize, and find code blocks instantly with our
+              blazing-fast global search. Syntax highlighting for over 100
+              languages.
+            </p>
+          </div>
+          <div class="bento-visual snippet-visual">
+            <pre><code>const stash = new DevStash();<br/>await stash.store(myKnowledge);</code></pre>
+          </div>
+        </div>
+
+        <!-- Bento Box 2 -->
+        <div class="bento-item fade-in-up delay-2 bento-glow">
+          <div class="bento-spotlight"></div>
+          <div class="bento-content">
+            <div class="bento-icon prompt-icon">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+                />
+              </svg>
+            </div>
+            <h3>AI Prompts</h3>
+            <p>
+              Your personal library of effective AI triggers and system
+              messages.
+            </p>
+            <div class="mini-stack">
+              <span class="mini-pill prompt">System prompt</span>
+              <span class="mini-pill prompt">Review workflow</span>
+              <span class="mini-pill prompt">Debugging</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento Box 3 -->
+        <div class="bento-item fade-in-up delay-3 bento-glow">
+          <div class="bento-spotlight"></div>
+          <div class="bento-content">
+            <div class="bento-icon command-icon">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="4 17 10 11 4 5"></polyline>
+                <line x1="12" y1="19" x2="20" y2="19"></line>
+              </svg>
+            </div>
+            <h3>Commands</h3>
+            <p>
+              Store complex terminal commands safely without losing them in
+              history.
+            </p>
+            <div class="terminal-line">$ git rebase -i HEAD~5</div>
+          </div>
+        </div>
+
+        <!-- Bento Box 4 -->
+        <div class="bento-item span-2 bento-glow fade-in-up delay-4">
+          <div class="bento-spotlight"></div>
+          <div class="bento-content">
+            <div class="bento-icon ai-icon">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+            </div>
+            <h3>AI-Powered Insights</h3>
+            <p>
+              Get automatic tags, code summaries, and "Explain This Code"
+              functionality powered by advanced LLMs directly inside your
+              dashboard.
+            </p>
+            <ul class="clean-list">
+              <li>Auto-tagging</li>
+              <li>Code explanations</li>
+              <li>Prompt optimization</li>
+            </ul>
+          </div>
+          <div class="insight-panel">
+            <div class="insight-row">
+              <span>AI Generated Tags</span>
+              <strong>typescript, auth, performance</strong>
+            </div>
+            <div class="insight-row muted">
+              <span>Summary</span>
+              <strong>Reusable knowledge, searchable instantly.</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="pricing-section">
+      <div class="section-header fade-in-up">
+        <h2 class="gradient-text-sub">Simple, Transparent Pricing</h2>
+        <p>Start for free, upgrade when you need supercharged workflows.</p>
+      </div>
+
+      <div class="pricing-toggle fade-in-up">
+        <span class="toggle-label">Monthly</span>
+        <label class="switch">
+          <input type="checkbox" id="pricingSwitch" />
+          <span class="slider round"></span>
+        </label>
+        <span class="toggle-label"
+          >Yearly <span class="discount badge-dot">Save 25%</span></span
+        >
+      </div>
+
+      <div class="pricing-cards">
+        <div class="price-card fade-in-up delay-1">
+          <div class="card-glow"></div>
+          <div class="card-content">
+            <h3>Free</h3>
+            <div class="price">$0<span>/mo</span></div>
+            <p class="plan-desc">
+              For developers curating their personal stash.
+            </p>
+            <ul class="features-list">
+              <li>Up to 50 items</li>
+              <li>3 Collections</li>
+              <li>Basic Search</li>
+              <li>Community Support</li>
+            </ul>
+            <a href="/register" class="btn btn-free w-full">Get Started</a>
+          </div>
+        </div>
+
+        <div class="price-card pro-card fade-in-up delay-2">
+          <div class="card-glow"></div>
+          <div class="popular-badge">Most Popular</div>
+          <div class="card-content">
+            <h3>Pro</h3>
+            <div class="price">
+              <span id="proPrice">$8</span><span>/mo</span>
+            </div>
+            <p class="plan-desc">
+              For professionals who need AI power and scale.
+            </p>
+            <ul class="features-list">
+              <li>Unlimited items & collections</li>
+              <li>All AI features (Auto-tag, Explain)</li>
+              <li>File & Image uploads</li>
+              <li>Priority Support</li>
+            </ul>
+            <a href="/register" class="btn btn-primary w-full shadow-glow">
+              Upgrade to Pro
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section fade-in-up">
+      <div class="cta-box">
+        <div class="cta-glow"></div>
+        <h2 class="gradient-text-sub">Ready to organize your chaos?</h2>
+        <p>
+          Join thousands of developers keeping their knowledge safe in DevStash.
+        </p>
+        <a href="/register" class="btn btn-primary lg shadow-glow"
+          >Get Started for Free</a
+        >
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-container">
+        <div class="footer-brand">
+          <div class="logo">
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+            >
+              <path
+                d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+              />
+            </svg>
+            DevStash
+          </div>
+          <p class="footer-desc">
+            The modern developer's knowledge hub. Snippets, prompts, and
+            commands organized perfectly.
+          </p>
+        </div>
+        <div class="footer-links">
+          <div class="link-group">
+            <h4>Product</h4>
+            <a href="#">Features</a>
+            <a href="#">Pricing</a>
+          </div>
+          <div class="link-group">
+            <h4>Company</h4>
+            <a href="#">About Us</a>
+            <a href="#">Contact</a>
+            <a href="#">Privacy Policy</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>
+          &copy; <span id="currentYear"></span> DevStash. All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

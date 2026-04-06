@@ -88,6 +88,7 @@ export function ItemsListView({ items, typeName, typeKey }: ItemsListViewProps) 
               typeIcon={item.type.icon}
               typeColor={item.type.color}
               isFavorite={item.isFavorite}
+              isPinned={item.isPinned}
               tags={item.tags}
               createdAt={item.createdAt}
               onClick={() => openDrawer(item.id)}
@@ -105,6 +106,7 @@ export function ItemsListView({ items, typeName, typeKey }: ItemsListViewProps) 
               typeIcon={item.type.icon}
               typeColor={item.type.color}
               isFavorite={item.isFavorite}
+              isPinned={item.isPinned}
               tags={item.tags}
               createdAt={item.createdAt}
               onClick={() => openDrawer(item.id)}

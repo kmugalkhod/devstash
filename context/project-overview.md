@@ -25,15 +25,15 @@
 
 Developers keep their essentials scattered across too many surfaces:
 
-| What                | Where it ends up              |
-| ------------------- | ----------------------------- |
-| Code snippets       | VS Code, Notion, Gists       |
-| AI prompts          | Chat histories                |
-| Context files       | Buried in project directories |
-| Useful links        | Browser bookmarks             |
-| Docs & notes        | Random folders                |
-| Terminal commands    | `.bash_history`, `.txt` files |
-| Project templates   | GitHub Gists                  |
+| What              | Where it ends up              |
+| ----------------- | ----------------------------- |
+| Code snippets     | VS Code, Notion, Gists        |
+| AI prompts        | Chat histories                |
+| Context files     | Buried in project directories |
+| Useful links      | Browser bookmarks             |
+| Docs & notes      | Random folders                |
+| Terminal commands | `.bash_history`, `.txt` files |
+| Project templates | GitHub Gists                  |
 
 This causes constant context switching, lost knowledge, and inconsistent workflows. **DevStash** consolidates everything into a single, fast, searchable, AI-enhanced hub.
 
@@ -44,9 +44,9 @@ This causes constant context switching, lost knowledge, and inconsistent workflo
 | Persona                        | Core Need                                               |
 | ------------------------------ | ------------------------------------------------------- |
 | **Everyday Developer**         | Quick access to snippets, prompts, commands, and links  |
-| **AI-first Developer**         | Store prompts, contexts, workflows, and system messages  |
-| **Content Creator / Educator** | Organize code blocks, explanations, and course notes     |
-| **Full-stack Builder**         | Collect patterns, boilerplates, and API examples          |
+| **AI-first Developer**         | Store prompts, contexts, workflows, and system messages |
+| **Content Creator / Educator** | Organize code blocks, explanations, and course notes    |
+| **Full-stack Builder**         | Collect patterns, boilerplates, and API examples        |
 
 ---
 
@@ -56,15 +56,15 @@ This causes constant context switching, lost knowledge, and inconsistent workflo
 
 Items are the core unit in DevStash. Each item has a **type** that determines its behavior. Users start with system-defined types (non-editable); custom types will come later as a Pro feature.
 
-| Type      | Content Model | Icon         | Color                          | Route             |
-| --------- | ------------- | ------------ | ------------------------------ | ----------------- |
-| Snippet   | `text`        | `Code`       | 🔵 `#3b82f6` (Blue)           | `/items/snippets` |
-| Prompt    | `text`        | `Sparkles`   | 🟣 `#8b5cf6` (Purple)         | `/items/prompts`  |
-| Command   | `text`        | `Terminal`   | 🟠 `#f97316` (Orange)         | `/items/commands` |
-| Note      | `text`        | `StickyNote` | 🟡 `#fde047` (Yellow)         | `/items/notes`    |
-| File      | `file`        | `File`       | ⚪ `#6b7280` (Gray) — Pro     | `/items/files`    |
-| Image     | `file`        | `Image`      | 🩷 `#ec4899` (Pink) — Pro     | `/items/images`   |
-| Link      | `url`         | `Link`       | 🟢 `#10b981` (Emerald)        | `/items/links`    |
+| Type    | Content Model | Icon         | Color                     | Route                       |
+| ------- | ------------- | ------------ | ------------------------- | --------------------------- |
+| Snippet | `text`        | `Code`       | 🔵 `#3b82f6` (Blue)       | `/dashboard/items/snippets` |
+| Prompt  | `text`        | `Sparkles`   | 🟣 `#8b5cf6` (Purple)     | `/dashboard/items/prompts`  |
+| Command | `text`        | `Terminal`   | 🟠 `#f97316` (Orange)     | `/dashboard/items/commands` |
+| Note    | `text`        | `StickyNote` | 🟡 `#fde047` (Yellow)     | `/dashboard/items/notes`    |
+| File    | `file`        | `File`       | ⚪ `#6b7280` (Gray) — Pro | `/dashboard/items/files`    |
+| Image   | `file`        | `Image`      | 🩷 `#ec4899` (Pink) — Pro | `/dashboard/items/images`   |
+| Link    | `url`         | `Link`       | 🟢 `#10b981` (Emerald)    | `/dashboard/items/links`    |
 
 Items should be quick to access and create via a slide-out drawer.
 
@@ -375,19 +375,19 @@ All icons sourced from [Lucide Icons](https://lucide.dev/icons/).
 
 ## Tech Stack
 
-| Layer              | Technology                                                                    | Links                                                                                                          |
-| ------------------ | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| **Framework**      | Next.js 16 / React 19 (SSR + API routes)                                     | [nextjs.org](https://nextjs.org/docs)                                                                          |
-| **Language**       | TypeScript                                                                    | [typescriptlang.org](https://www.typescriptlang.org/docs/)                                                    |
-| **Database**       | Neon (Serverless PostgreSQL)                                                  | [neon.tech](https://neon.tech/docs)                                                                            |
-| **ORM**            | Prisma 7 (latest)                                                             | [prisma.io](https://www.prisma.io/docs)                                                                       |
-| **Caching**        | Redis (TBD)                                                                   | [redis.io](https://redis.io/docs/)                                                                             |
-| **File Storage**   | Cloudflare R2                                                                 | [developers.cloudflare.com/r2](https://developers.cloudflare.com/r2/)                                          |
-| **Auth**           | NextAuth v5 (email/password + GitHub OAuth)                                   | [authjs.dev](https://authjs.dev/getting-started)                                                               |
-| **AI**             | OpenAI `gpt-5-nano`                                                           | [platform.openai.com](https://platform.openai.com/docs)                                                       |
-| **Styling**        | Tailwind CSS v4 + shadcn/ui                                                   | [tailwindcss.com](https://tailwindcss.com/docs) / [ui.shadcn.com](https://ui.shadcn.com/docs)                 |
-| **Payments**       | Stripe (subscriptions)                                                        | [stripe.com/docs](https://docs.stripe.com/)                                                                   |
-| **Icons**          | Lucide React                                                                  | [lucide.dev](https://lucide.dev/icons/)                                                                        |
+| Layer            | Technology                                  | Links                                                                                         |
+| ---------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| **Framework**    | Next.js 16 / React 19 (SSR + API routes)    | [nextjs.org](https://nextjs.org/docs)                                                         |
+| **Language**     | TypeScript                                  | [typescriptlang.org](https://www.typescriptlang.org/docs/)                                    |
+| **Database**     | Neon (Serverless PostgreSQL)                | [neon.tech](https://neon.tech/docs)                                                           |
+| **ORM**          | Prisma 7 (latest)                           | [prisma.io](https://www.prisma.io/docs)                                                       |
+| **Caching**      | Redis (TBD)                                 | [redis.io](https://redis.io/docs/)                                                            |
+| **File Storage** | Cloudflare R2                               | [developers.cloudflare.com/r2](https://developers.cloudflare.com/r2/)                         |
+| **Auth**         | NextAuth v5 (email/password + GitHub OAuth) | [authjs.dev](https://authjs.dev/getting-started)                                              |
+| **AI**           | OpenAI `gpt-5-nano`                         | [platform.openai.com](https://platform.openai.com/docs)                                       |
+| **Styling**      | Tailwind CSS v4 + shadcn/ui                 | [tailwindcss.com](https://tailwindcss.com/docs) / [ui.shadcn.com](https://ui.shadcn.com/docs) |
+| **Payments**     | Stripe (subscriptions)                      | [stripe.com/docs](https://docs.stripe.com/)                                                   |
+| **Icons**        | Lucide React                                | [lucide.dev](https://lucide.dev/icons/)                                                       |
 
 > **Important:** Never use `db push` or directly update the database structure. Always create Prisma migrations that are run in dev first, then in production.
 
@@ -506,11 +506,10 @@ sequenceDiagram
 
 ### Screenshots
 
-Refer to the screenshots below as a base for  the dashboard UI. It does not have to be exact. Use it as a reference 
+Refer to the screenshots below as a base for the dashboard UI. It does not have to be exact. Use it as a reference
 
 - @context\screenshots\devstash-dashboard.png
 - @context\screenshots\devstash-drawer.png
-
 
 ### Layout
 
@@ -553,20 +552,20 @@ Refer to the screenshots below as a base for  the dashboard UI. It does not have
 
 ## Useful Links & Resources
 
-| Resource                   | URL                                                                 |
-| -------------------------- | ------------------------------------------------------------------- |
-| Next.js 16 Docs            | https://nextjs.org/docs                                             |
-| React 19 Docs              | https://react.dev                                                   |
-| Prisma Docs                | https://www.prisma.io/docs                                          |
-| Neon Serverless Postgres    | https://neon.tech/docs                                              |
-| NextAuth v5 (Auth.js)      | https://authjs.dev                                                  |
-| Tailwind CSS v4            | https://tailwindcss.com/docs                                        |
-| shadcn/ui Components       | https://ui.shadcn.com/docs                                          |
-| Lucide Icons               | https://lucide.dev/icons/                                           |
-| Cloudflare R2              | https://developers.cloudflare.com/r2/                               |
-| Stripe Subscriptions       | https://docs.stripe.com/billing/subscriptions/overview              |
-| OpenAI API                 | https://platform.openai.com/docs                                    |
+| Resource                 | URL                                                    |
+| ------------------------ | ------------------------------------------------------ |
+| Next.js 16 Docs          | https://nextjs.org/docs                                |
+| React 19 Docs            | https://react.dev                                      |
+| Prisma Docs              | https://www.prisma.io/docs                             |
+| Neon Serverless Postgres | https://neon.tech/docs                                 |
+| NextAuth v5 (Auth.js)    | https://authjs.dev                                     |
+| Tailwind CSS v4          | https://tailwindcss.com/docs                           |
+| shadcn/ui Components     | https://ui.shadcn.com/docs                             |
+| Lucide Icons             | https://lucide.dev/icons/                              |
+| Cloudflare R2            | https://developers.cloudflare.com/r2/                  |
+| Stripe Subscriptions     | https://docs.stripe.com/billing/subscriptions/overview |
+| OpenAI API               | https://platform.openai.com/docs                       |
 
 ---
 
-*Last updated: March 2026*
+_Last updated: March 2026_

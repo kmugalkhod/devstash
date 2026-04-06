@@ -53,6 +53,7 @@ function ItemSection({
               typeIcon={item.type.icon}
               typeColor={item.type.color}
               isFavorite={item.isFavorite}
+              isPinned={item.isPinned}
               tags={item.tags}
               createdAt={item.createdAt}
               onClick={() => onItemClick(item.id)}
@@ -70,6 +71,7 @@ function ItemSection({
               typeIcon={item.type.icon}
               typeColor={item.type.color}
               isFavorite={item.isFavorite}
+              isPinned={item.isPinned}
               tags={item.tags}
               createdAt={item.createdAt}
               onClick={() => onItemClick(item.id)}
