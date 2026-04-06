@@ -1,32 +1,16 @@
-# Current Feature: Homepage
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Navbar with logo, nav links (Features, Pricing), Sign In and Get Started actions
-- Hero section with gradient headline, proof strip, CTAs, and dashboard preview image
-- Logo cloud section with mock company names
-- Features bento grid with 4 cards (Code Snippets, AI Prompts, Commands, AI Insights)
-- Pricing section with monthly/yearly toggle, Free and Pro cards with correct feature lists
-- CTA banner with "Get Started for Free" link
-- Footer with logo, link columns, and dynamic copyright year
-- All buttons and links point to correct routes (`/sign-in`, `/register`, `#features`, `#pricing`)
-- All styling in Tailwind — no custom CSS files
+<!-- Add goals here -->
 
 ## Notes
 
-- Prototype reference: `prototypes/homepage/` (index.html + styles.css)
-- Dashboard preview image: `context/screenshots/x-post-dashboard.png` via `next/image`
-- Components live in `src/components/homepage/`; page assembled in `src/app/page.tsx`
-- All sections are server components except `PricingSection` (client — toggle state)
-- Background glow orbs via absolute divs with Tailwind blur/opacity
-- Gradient text via `bg-clip-text text-transparent bg-gradient-to-r`
-- Use Lucide icons: Layers, Code, Sparkles, Terminal, StickyNote, File, Image, Link, Check
-- Use shadcn Button and Badge where applicable
-- Pro pricing: $8/mo monthly → $6/mo yearly (Save 25%)
+<!-- Add notes here -->
 
 ## History
 
@@ -80,3 +64,4 @@ In Progress
 - **2026-04-01** — Favorite Toggle Button completed. Wired up Star and Pin buttons in ItemDrawer action bar with `toggleFavorite` and `togglePin` server actions (optimistic update via `onItemUpdated`). Added `toggleCollectionFavorite` server action in new `src/actions/collections.ts`. Collection detail page Favorite button and collection card 3-dots Favorite menu item now functional with optimistic local state and toast feedback. `isFavorite` prop added to `CollectionCard` and passed through from all pages. No schema changes needed.
 - **2026-04-01** — Pinned Items completed. Pin button in ItemDrawer fully functional with optimistic UI, success/error toasts ("Item pinned" / "Item unpinned"), and `router.refresh()` to re-render listings. Pinned items sort to top across all four listing queries: `getItemsByType`, `getPaginatedItemsByType`, `getItemsByCollectionId`, `getPaginatedItemsByCollectionId`. `revalidatePath("/", "layout")` in `togglePin` server action ensures server cache is cleared on pin toggle.
 - **2026-04-07** — Homepage Marketing Mockup completed. Built a full landing page prototype in `prototypes/homepage` with `index.html` and `styles.css`. Implemented a dark theme hero section, a clean non-rotated flat dashboard preview, features bento grid with gradient glows, interactive pricing toggle, and responsive logo cloud and footer.
+- **2026-04-07** — Homepage completed. Implemented full marketing homepage at `/` replacing the dashboard redirect. Components in `src/components/homepage/`: Navbar (fixed pill, backdrop blur), HeroSection (gradient h1, proof strip, dual CTAs, dashboard preview image), LogoCloud (mock companies), FeaturesSection (3-col bento grid — Code Snippets, AI Prompts, Commands, AI Insights), PricingSection (client component — monthly/yearly toggle, $8→$6 Pro pricing), CTASection, Footer (dynamic copyright year). Dashboard preview image served from `public/screenshots/`. All Tailwind, no custom CSS.
