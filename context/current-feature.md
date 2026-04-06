@@ -1,16 +1,21 @@
 # Current Feature
 
+<!-- Feature Name Here -->
+
 ## Status
 
 Not Started
 
 ## Goals
 
-<!-- Add bullet points for what success looks like -->
+<!--
+- Goal 1
+- Goal 2
+-->
 
 ## Notes
 
-<!-- Add any additional context, constraints, or details from the spec -->
+<!-- Add technical notes, constraints, or links here -->
 
 ## History
 
@@ -63,3 +68,4 @@ Not Started
 - **2026-04-01** — Favorites Page completed. Added `/dashboard/favorites` route (protected via existing middleware). Star icon in TopBar links to the page. `getFavoriteItems` and `getFavoriteCollections` Prisma queries added to `lib/db/items.ts` and `lib/db/collections.ts`. `FavoritesView` client component renders two compact sections (Items and Collections) with type icons, badges, relative timestamps, and row-level interactions: item click opens ItemDrawer, collection click navigates to `/collections/[id]`. Empty state shown when nothing is starred. Sorted by `updatedAt` desc.
 - **2026-04-01** — Favorite Toggle Button completed. Wired up Star and Pin buttons in ItemDrawer action bar with `toggleFavorite` and `togglePin` server actions (optimistic update via `onItemUpdated`). Added `toggleCollectionFavorite` server action in new `src/actions/collections.ts`. Collection detail page Favorite button and collection card 3-dots Favorite menu item now functional with optimistic local state and toast feedback. `isFavorite` prop added to `CollectionCard` and passed through from all pages. No schema changes needed.
 - **2026-04-01** — Pinned Items completed. Pin button in ItemDrawer fully functional with optimistic UI, success/error toasts ("Item pinned" / "Item unpinned"), and `router.refresh()` to re-render listings. Pinned items sort to top across all four listing queries: `getItemsByType`, `getPaginatedItemsByType`, `getItemsByCollectionId`, `getPaginatedItemsByCollectionId`. `revalidatePath("/", "layout")` in `togglePin` server action ensures server cache is cleared on pin toggle.
+- **2026-04-07** — Homepage Marketing Mockup completed. Built a full landing page prototype in `prototypes/homepage` with `index.html` and `styles.css`. Implemented a dark theme hero section, a clean non-rotated flat dashboard preview, features bento grid with gradient glows, interactive pricing toggle, and responsive logo cloud and footer.
