@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Check, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const FREE_FEATURES = [
   "Up to 50 items",
@@ -18,8 +20,42 @@ const PRO_FEATURES = [
   "Priority Support",
 ];
 
-export default function PricingSection() {
+type Props = {
+  isAuthenticated?: boolean;
+  isPro?: boolean;
+};
+
+export default function PricingSection({
+  isAuthenticated = false,
+  isPro = false,
+}: Props) {
   const [yearly, setYearly] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  async function handleUpgrade() {
+    if (!isAuthenticated) {
+      router.push(`/sign-in?redirect=%2F%23pricing`);
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ plan: yearly ? "yearly" : "monthly" }),
+      });
+      const data = (await res.json()) as { checkout_url?: string; error?: string };
+      if (!res.ok || !data.checkout_url) {
+        throw new Error(data.error ?? "Failed to start checkout");
+      }
+      window.location.href = data.checkout_url;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Something went wrong";
+      toast.error(message);
+      setLoading(false);
+    }
+  }
 
   return (
     <section id="pricing" className="py-32 px-4 max-w-4xl mx-auto">
@@ -80,10 +116,10 @@ export default function PricingSection() {
             ))}
           </ul>
           <Link
-            href="/register"
+            href={isAuthenticated ? "/dashboard" : "/register"}
             className="block w-full text-center py-3 rounded-xl text-sm font-semibold text-white bg-black border border-white/10 hover:bg-zinc-900 hover:border-white/20 transition-colors"
           >
-            Get Started
+            {isAuthenticated ? "Go to Dashboard" : "Get Started"}
           </Link>
         </div>
 
@@ -114,12 +150,24 @@ export default function PricingSection() {
               </li>
             ))}
           </ul>
-          <Link
-            href="/register"
-            className="block w-full text-center py-3 rounded-xl text-sm font-semibold text-black bg-white hover:bg-zinc-100 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:shadow-[0_0_40px_rgba(255,255,255,0.4)]"
-          >
-            Upgrade to Pro
-          </Link>
+          {isPro ? (
+            <Link
+              href="/settings"
+              className="block w-full text-center py-3 rounded-xl text-sm font-semibold text-white bg-white/5 border border-white/15 hover:bg-white/10 transition-colors"
+            >
+              Manage Subscription
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={handleUpgrade}
+              disabled={loading}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold text-black bg-white hover:bg-zinc-100 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+              Upgrade to Pro
+            </button>
+          )}
         </div>
       </div>
     </section>

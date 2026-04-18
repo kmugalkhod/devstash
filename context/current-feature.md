@@ -2,15 +2,38 @@
 
 ## Status
 
-Not Started
+In Progress — Dodo Payments Pro Subscription
 
 ## Goals
 
-<!-- Add goals here -->
+- Integrate `@dodopayments/nextjs` for full Pro subscription lifecycle.
+- When a user subscribes to Pro, grant elevated access automatically.
+- Must flow end-to-end: Pricing CTA → Dodo checkout → webhook → `isPro=true` → gated features unlocked → customer portal to manage/cancel.
+
+## Scope
+
+- **Checkout Route Handler** (`/api/checkout`) — POST session checkout, picks monthly/yearly product from query/body.
+- **Customer Portal Route Handler** (`/api/customer-portal`) — GET, redirects Pro users to Dodo portal.
+- **Webhook Route Handler** (`/api/webhooks/dodo`) — processes `subscription.active/renewed/cancelled/expired/failed` + `payment.succeeded`, updates `user.isPro` + Dodo IDs.
+- **Schema migration** — rename `stripeCustomerId`/`stripeSubscriptionId` → `dodoCustomerId`/`dodoSubscriptionId`, add `proExpiresAt DateTime?` and `proPlan String?`.
+- **Pro helper** — `src/lib/pro.ts` with `isUserPro(userId)` and `requirePro(userId)`; centralizes gating logic.
+- **Server-side enforcement** — block non-Pro users from creating `file`/`image` items via `createItem` action and `/api/items/upload`.
+- **UI wiring**:
+  - PricingSection Pro CTA → form action calling checkout session API.
+  - Settings page → "Manage subscription" button (only shown when Pro).
+  - Success banner on `/dashboard?upgraded=1`.
+
+## Out of Scope (follow-up)
+
+- Free-tier item cap (50 items) and collection cap (3 collections) — limits file exists but caps are not enforced. Document but don't implement here.
+- AI feature gates — not built yet.
+- Custom item types — not built yet.
 
 ## Notes
 
-<!-- Add notes here -->
+- Env vars already set: `DODO_PAYMENTS_API_KEY`, `DODO_PAYMENTS_WEBHOOK_KEY`, `DODO_PAYMENTS_ENVIRONMENT=test_mode`, `DODO_PAYMENTS_RETURN_URL`, `DODO_PRODUCT_ID_MONTHLY`, `DODO_PRODUCT_ID_YEARLY`.
+- Middleware matcher only covers `/dashboard/*` and `/settings/*`, so webhook + checkout endpoints are publicly reachable (required for Dodo to call them).
+- Webhook handler MUST be idempotent — Dodo retries on non-2xx.
 
 ## History
 

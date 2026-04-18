@@ -14,6 +14,7 @@ import {
 } from "@/lib/db/collections";
 import { getPinnedItems, getRecentItems } from "@/lib/db/items";
 import { getAuthUserId } from "@/lib/auth-utils";
+import { UpgradedBanner } from "@/components/dashboard/UpgradedBanner";
 
 async function StatsSection({ userId }: { userId: string }) {
   const stats = await getDashboardStats(userId);
@@ -83,6 +84,9 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-10">
+      <Suspense fallback={null}>
+        <UpgradedBanner />
+      </Suspense>
       <Suspense fallback={<StatsCardsSkeleton />}>
         <StatsSection userId={userId} />
       </Suspense>

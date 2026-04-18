@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { uploadToR2 } from "@/lib/r2";
 import { parseUploadItemType, validateUploadFile } from "@/lib/upload-constraints";
+import { isUserPro } from "@/lib/pro";
 
 export async function POST(request: Request) {
   try {
@@ -24,6 +25,13 @@ export async function POST(request: Request) {
     const itemType = parseUploadItemType(itemTypeRaw);
     if (!itemType) {
       return NextResponse.json({ error: "Invalid item type" }, { status: 400 });
+    }
+
+    if (!(await isUserPro(session.user.id))) {
+      return NextResponse.json(
+        { error: "Upgrade to Pro to upload files and images" },
+        { status: 403 }
+      );
     }
 
     if (!(file instanceof File)) {

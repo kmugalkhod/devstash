@@ -18,8 +18,10 @@ model User {
   image                String?
   password             String?
   isPro                Boolean   @default(false)
-  stripeCustomerId     String?   @unique
-  stripeSubscriptionId String?   @unique
+  dodoCustomerId       String?   @unique
+  dodoSubscriptionId   String?   @unique
+  proPlan              String?
+  proExpiresAt         DateTime?
   editorPreferences    Json?
 
   accounts    Account[]
