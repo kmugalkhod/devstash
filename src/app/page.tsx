@@ -5,8 +5,14 @@ import FeaturesSection from "@/components/homepage/FeaturesSection";
 import PricingSection from "@/components/homepage/PricingSection";
 import CTASection from "@/components/homepage/CTASection";
 import Footer from "@/components/homepage/Footer";
+import { auth } from "@/auth";
+import { isUserPro } from "@/lib/pro";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await auth();
+  const isAuthed = Boolean(session?.user?.id);
+  const isPro = isAuthed ? await isUserPro(session!.user!.id!) : false;
+
   return (
     <div className="relative bg-black text-white overflow-x-hidden">
       {/* Background glow orbs */}
@@ -18,7 +24,7 @@ export default function HomePage() {
         <HeroSection />
         <LogoCloud />
         <FeaturesSection />
-        <PricingSection />
+        <PricingSection isAuthenticated={isAuthed} isPro={isPro} />
         <CTASection />
       </main>
       <Footer />

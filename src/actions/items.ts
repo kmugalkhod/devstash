@@ -10,6 +10,8 @@ import {
   toggleItemPin as toggleItemPinDb,
 } from "@/lib/db/items";
 import { isR2KeyOwnedByUser } from "@/lib/r2";
+import { prisma } from "@/lib/prisma";
+import { isProItemType, isUserPro } from "@/lib/pro";
 import { revalidatePath } from "next/cache";
 
 const createItemSchema = z.object({
@@ -53,6 +55,21 @@ export async function createItem(formData: z.input<typeof createItemSchema>) {
   }
 
   try {
+    const itemType = await prisma.itemType.findUnique({
+      where: { id: parsed.data.itemTypeId },
+      select: { name: true },
+    });
+    if (!itemType) {
+      return { success: false as const, error: "Invalid item type" };
+    }
+
+    if (isProItemType(itemType.name) && !(await isUserPro(session.user.id))) {
+      return {
+        success: false as const,
+        error: "Upgrade to Pro to create file and image items",
+      };
+    }
+
     const fileUrl = parsed.data.fileUrl?.trim() ?? null;
     const hasFileName = parsed.data.fileName !== null;
     const hasFileSize = parsed.data.fileSize !== null;
